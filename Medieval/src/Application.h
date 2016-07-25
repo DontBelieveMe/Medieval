@@ -11,14 +11,16 @@ public:
 
 	static Application& getInstance();
 
+    ShaderProgram &Shader() {return *shader;}
+
 private:
 	GLFWwindow* window;
 	ShaderProgram* shader;
-	
+
     void init();
 	void mainLoop();
 	void destroy();
-	
+
 	~Application();
 
 };

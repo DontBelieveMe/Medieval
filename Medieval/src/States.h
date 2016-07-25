@@ -14,4 +14,5 @@ namespace StateSystem
 
     void tick();
     void render();
+    void cleanup();
 }
