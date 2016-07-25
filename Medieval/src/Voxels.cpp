@@ -21,6 +21,7 @@ Model Voxels::loadObjData(const std::string& objPath, int yPos)
     std::vector<glm::vec2> texCoords;
     std::vector<glm::vec3> normals;
     std::vector<std::vector<std::string>> faces;
+	std::vector<GLushort> indices;
 
     std::ifstream file(objPath);
     std::string line;
@@ -46,10 +47,10 @@ Model Voxels::loadObjData(const std::string& objPath, int yPos)
 
         for (unsigned int ii = 1; ii <= 3; ii++)
         {
-            std::vector<std::string> indices = splitStr(faceLine[ii], '/');
-            const int vertIndex = std::stoi(indices[0]) - 1;
-            const int texIndex = std::stoi(indices[1]) - 1;
-            const int normIndex = std::stoi(indices[2]) - 1;
+            std::vector<std::string> objindices = splitStr(faceLine[ii], '/');
+            const int vertIndex = std::stoi(objindices[0]) - 1;
+            const int texIndex = std::stoi(objindices[1]) - 1;
+            const int normIndex = std::stoi(objindices[2]) - 1;
             glm::vec3 vertex = vertices[vertIndex];
             glm::vec2 texCoord = texCoords[texIndex];
             glm::vec3 normal = normals[normIndex];
@@ -60,9 +61,9 @@ Model Voxels::loadObjData(const std::string& objPath, int yPos)
         }
     }
 
-    Model _model = Model{ currentIndex, count };
-    currentIndex += count;
-
+	Model _model = { currentIndex, count };
+	
+	currentIndex += count;
 	return _model;
 }
 
@@ -131,10 +132,10 @@ void Voxels::setDrawingStage()
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * data.size(), &data[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    
+
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glEnableVertexAttribArray(VERTEX_ATTRIB);
     glEnableVertexAttribArray(TEXTURE_ATTRIB);
     glEnableVertexAttribArray(NORMAL_ATTRIB);
@@ -142,6 +143,7 @@ void Voxels::setDrawingStage()
     glVertexAttribPointer(TEXTURE_ATTRIB, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void*)(sizeof(GLfloat) * 3));
     glVertexAttribPointer(NORMAL_ATTRIB, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void*)(sizeof(GLfloat) * 5));
     glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
@@ -157,3 +159,4 @@ void Voxels::destroy()
     glDeleteBuffers(1, &vbo);
     glDeleteTextures(1, &texture);
 }
+

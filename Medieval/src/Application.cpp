@@ -45,10 +45,10 @@ void Application::mainLoop()
     Model ruu = vox.loadModel("res/models/Ruu.obj", "res/models/Ruu.png");
     Model grothar = vox.loadModel("res/models/Grothar.obj", "res/models/Grothar.png");
     vox.setDrawingStage();
-    vox.bind();
 
     GLfloat rot = 0;
 
+	shader->uploadMatrix4f(0, glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.001f, 10000.0f));
 	glfwShowWindow(window); //window becomes visible here
 	while (!glfwWindowShouldClose(window))
 	{
@@ -69,8 +69,7 @@ void Application::mainLoop()
         glEnable(GL_CULL_FACE);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		shader->uploadMatrix4f(0, glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.001f, 10000.0f));
-
+		vox.bind();
         shader->uploadMatrix4f(1, glm::rotate(glm::translate(glm::mat4(1.0), glm::vec3(-6, -2, -15)), glm::radians(rot), glm::vec3(0, 1, 0)));
         drawModel(ruu);
         shader->uploadMatrix4f(1, glm::rotate(glm::translate(glm::mat4(1.0), glm::vec3(6, -2, -15)), glm::radians(rot), glm::vec3(0, 1, 0)));

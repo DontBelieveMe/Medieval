@@ -75,12 +75,23 @@ void ShaderProgram::validateProgram() {
 }
 
 GLint ShaderProgram::getUniformLoc(const std::string& name) {
-	GLint loc = glGetUniformLocation(this->program, name.c_str());
-	if (loc == -1) {
-		std::cout << "Error: Uniform " << name << " does not exist!" << std::endl;
-		return -1;
+	std::unordered_map<std::string, GLint>::const_iterator it = uniformLocCache.find(name);
+	if (it != uniformLocCache.end()) 
+	{
+		return uniformLocCache[name];
+	} 
+	else {
+		GLint loc = glGetUniformLocation(this->program, name.c_str());
+		if (loc == -1) {
+			std::cout << "Error: Uniform " << name << " does not exist!" << std::endl;
+			// Goto is evil (but here it is slighly better than multiple return points
+			goto errorGettingLoc;
+		}
+		return loc;
 	}
-	return loc;
+
+	errorGettingLoc:
+	return -1;
 }
 
 void  ShaderProgram::uploadMatrix4f(GLint loc, const glm::mat4& matrix) 
