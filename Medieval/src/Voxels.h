@@ -26,7 +26,8 @@ struct Model;
 class Voxels
 {
 private:
-    
+    const unsigned int numberOfModels;
+
 	bool loadingStage = true; //starts off true
     int currentIndex = 0;
 	std::vector<GLfloat> data; //only contains data in loading stage
@@ -43,6 +44,8 @@ private:
     std::vector<std::string> splitStr(const std::string & toSplit, char splitter);
 
 public:
+
+    Voxels(const unsigned int numberOfModels); // due to an issue I ran into, you need to specify the amount of models you are going to load
 
 	Model loadModel(const std::string& objPath, const std::string& pallettePath);
 

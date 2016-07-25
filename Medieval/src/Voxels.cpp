@@ -1,5 +1,8 @@
 #include "Voxels.h"
 
+Voxels::Voxels(const unsigned int numberOfModels) : numberOfModels(numberOfModels)
+{}
+
 Model Voxels::loadModel(const std::string& objPath, const std::string& palettePath)
 {
 	int yPos = loadPixIntoVec(palettePath);
@@ -10,8 +13,9 @@ Model Voxels::loadModel(const std::string& objPath, const std::string& palettePa
 
 Model Voxels::loadObjData(const std::string& objPath, int yPos)
 {
-    const unsigned int height = pixels.size() / 256;
-    GLfloat texYOffset = yPos * (1.0f / (GLfloat)height);
+    GLfloat stripWidth = (1.0f / (GLfloat)numberOfModels);
+    GLfloat texYOffset = (stripWidth * (GLfloat)yPos) + stripWidth / 2.0f;
+    cout << "off: " << texYOffset << endl;
 
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> texCoords;
@@ -50,7 +54,7 @@ Model Voxels::loadObjData(const std::string& objPath, int yPos)
             glm::vec2 texCoord = texCoords[texIndex];
             glm::vec3 normal = normals[normIndex];
             data.push_back(vertex.x); data.push_back(vertex.y); data.push_back(vertex.z);
-            data.push_back(texCoord.x); data.push_back(texCoord.y + texYOffset);
+            data.push_back(texCoord.x); data.push_back(texYOffset);
             data.push_back(normal.x); data.push_back(normal.y); data.push_back(normal.z);
             count++;
         }
@@ -114,7 +118,9 @@ int Voxels::loadPixIntoVec(const std::string& palettePath)
 		pixels.push_back(fullColor);
 	}
 
-	return currentY;
+    int yPos = currentY;
+    currentY++;
+	return yPos;
 }
 
 void Voxels::setDrawingStage()
@@ -141,9 +147,7 @@ void Voxels::setDrawingStage()
     glBindTexture(GL_TEXTURE_2D, texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    GLsizei height = (GLsizei)(pixels.size() / 256);
-    cout << "height: " << height << endl;
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, &pixels[0]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, numberOfModels, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, &pixels[0]);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 

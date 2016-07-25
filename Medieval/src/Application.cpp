@@ -39,8 +39,9 @@ void Application::mainLoop()
 	double lastTime = glfwGetTime(), secTime = lastTime, delta = 0, sPerTick = 1.0 / 60.0;
 	int ticks = 0, frames = 0;
 
-    Voxels vox;
+    Voxels vox(2);
     Model ent = vox.loadModel("res/models/Ent.obj", "res/models/Ent.png");
+    Model door = vox.loadModel("res/models/Door.obj", "res/models/Door.png");
     vox.setDrawingStage();
     vox.bind();
 
@@ -66,9 +67,17 @@ void Application::mainLoop()
         glEnable(GL_CULL_FACE);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		shader->uploadMatrix4f(0, glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.001f, 200.0f));
-		shader->uploadMatrix4f(1, glm::rotate(glm::translate(glm::mat4(1.0), glm::vec3(0, -13, -60)), glm::radians(rot), glm::vec3(0, 1, 0)));
-		drawModel(ent);
+		shader->uploadMatrix4f(0, glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.001f, 10000.0f));
+
+        srand(894759348754l);
+        for (int i = 0; i < 1000; i++)
+        {
+            shader->uploadMatrix4f(1, glm::rotate(glm::translate(glm::mat4(1.0), glm::vec3((rand() % 400) - 100, (rand() % 400) - 100, -60 - rand() % 400)), glm::radians(rot), glm::vec3(0, 1, 0)));
+            if (rand() % 2 == 0)
+                drawModel(ent);
+            else
+                drawModel(door);
+        }
 
        // StateSystem::render();
 
