@@ -10,6 +10,8 @@ Model Voxels::loadModel(const std::string& objPath, const std::string& palettePa
 Model Voxels::loadObjData(const std::string& objPath)
 {
 	
+
+
 	return Model{ 0, 0 };
 }
 
