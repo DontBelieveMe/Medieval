@@ -66,9 +66,9 @@ void Application::mainLoop()
         glEnable(GL_CULL_FACE);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glUniformMatrix4fv(0, 1, GL_FALSE, &(glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.001f, 200.0f))[0][0]);
-        glUniformMatrix4fv(1, 1, GL_FALSE, &(   glm::rotate(    glm::translate(glm::mat4(1.0), glm::vec3(0, -13, -60))     , glm::radians(rot), glm::vec3(1, 1, 0))     )[0][0]);
-        drawModel(ent);
+		shader->uploadMatrix4f(0, glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.001f, 200.0f));
+		shader->uploadMatrix4f(1, glm::rotate(glm::translate(glm::mat4(1.0), glm::vec3(0, -13, -60)), glm::radians(rot), glm::vec3(0, 1, 0)));
+		drawModel(ent);
 
        // StateSystem::render();
 
