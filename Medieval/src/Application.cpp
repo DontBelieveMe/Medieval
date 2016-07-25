@@ -26,13 +26,11 @@ void Application::init()
 	glfwSwapInterval(0);
 #endif
 
-    shader = new ShaderProgram("res/vert.shader", "res/frag.shader");
-    shader->use();
+    shader = std::make_unique<ShaderProgram>("res/vert.shader", "res/frag.shader");
 }
 
 void Application::mainLoop()
 {
-	
 	double lastTime = glfwGetTime(), secTime = glfwGetTime(), delta = 0, sPerTick = 1.0 / 60.0;
 	int ticks = 0, frames = 0;
 
@@ -49,7 +47,26 @@ void Application::mainLoop()
 			glfwPollEvents();
 			delta -= 1.0;
 		}
+        
+        float vertices[] = {
+            -1.0f, -1.0f, 0.0f,
+            1.0f, -1.0f, 0.0f,
+            0.0f,  1.0f, 0.0f,
+        };
 
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        GLuint pos;
+        glGenBuffers(1, &pos);
+        glBindBuffer(GL_ARRAY_BUFFER, pos);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        
+        shader->use();
+        glEnableVertexAttribArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, pos);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		glfwSwapBuffers(window);
 		frames++;

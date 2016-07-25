@@ -2,6 +2,8 @@
 #include "includes.h"
 #include "Shader.h"
 
+#include <memory>
+
 class Application
 {
 public:
@@ -11,12 +13,10 @@ public:
 
 private:
 	GLFWwindow* window;
-    ShaderProgram *shader;
-
-	void init();
-
+    std::unique_ptr<ShaderProgram> shader;
+	
+    void init();
 	void mainLoop();
-
 	void destroy();
 	
 };
