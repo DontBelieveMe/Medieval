@@ -1,10 +1,13 @@
 #version 330
 
+uniform sampler2D tex;
+
 out vec4 fragColor;
 
 in mat4 Model;
 in vec3 Normal;
 in vec3 VertPos;
+in vec2 TexCoord;
 
 void main()
 {
@@ -14,5 +17,7 @@ void main()
     vec3 diffuse = vec3(0.5, 0.5, 0.5) * max(dot(s, tnorm), 0.0);
     diffuse += vec3(0.25, 0.25, 0.25);
 
-	fragColor = vec4(vec3(0.0, 1.0, 0.0) * diffuse, 1.0);
+    vec4 color = texture(tex, TexCoord);
+
+	fragColor = vec4(color.rgb * diffuse, 1.0);
 }

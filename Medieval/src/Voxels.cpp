@@ -2,18 +2,21 @@
 
 Model Voxels::loadModel(const std::string& objPath, const std::string& palettePath)
 {
-	loadPixIntoVec(palettePath);
-    Model m = loadObjData(objPath);
+	int yPos = loadPixIntoVec(palettePath);
+    Model m = loadObjData(objPath, yPos);
 
 	return m;
 }
 
-Model Voxels::loadObjData(const std::string& objPath)
+Model Voxels::loadObjData(const std::string& objPath, int yPos)
 {
+    const unsigned int height = pixels.size() / 256;
+    GLfloat texYOffset = yPos * (1.0f / (GLfloat)height);
+
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> texCoords;
     std::vector<glm::vec3> normals;
-    std::vector<std::string> faces;
+    std::vector<std::vector<std::string>> faces;
 
     std::ifstream file(objPath);
     std::string line;
@@ -28,14 +31,14 @@ Model Voxels::loadObjData(const std::string& objPath)
         if (splitString[0] == "vn")//normal
             normals.push_back(glm::vec3(std::stof(splitString[1]), std::stof(splitString[2]), std::stof(splitString[3])));
         if (splitString[0] == "f")
-            faces.push_back(line);
+            faces.push_back(splitString);
     }
     file.close();
 
     int count = 0;
     for (unsigned int i = 0; i < faces.size(); i++)
     {
-        std::vector<std::string> faceLine = splitStr(faces[i], ' ');
+        std::vector<std::string> faceLine = faces[i];
 
         for (unsigned int ii = 1; ii <= 3; ii++)
         {
@@ -47,7 +50,7 @@ Model Voxels::loadObjData(const std::string& objPath)
             glm::vec2 texCoord = texCoords[texIndex];
             glm::vec3 normal = normals[normIndex];
             data.push_back(vertex.x); data.push_back(vertex.y); data.push_back(vertex.z);
-            data.push_back(texCoord.x); data.push_back(texCoord.y);
+            data.push_back(texCoord.x); data.push_back(texCoord.y + texYOffset);
             data.push_back(normal.x); data.push_back(normal.y); data.push_back(normal.z);
             count++;
         }
@@ -134,10 +137,19 @@ void Voxels::setDrawingStage()
     glVertexAttribPointer(NORMAL_ATTRIB, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void*)(sizeof(GLfloat) * 5));
     glBindVertexArray(0);
 
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    GLsizei height = (GLsizei)(pixels.size() / 256);
+    cout << "height: " << height << endl;
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, &pixels[0]);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Voxels::destroy()
 {
     glDeleteVertexArrays(1, &vao);//releases vbo, to also be deleted
     glDeleteBuffers(1, &vbo);
+    glDeleteTextures(1, &texture);
 }

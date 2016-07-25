@@ -11,12 +11,14 @@ layout(location = 2) in vec3 normal;
 out mat4 Model;
 out vec3 Normal;
 out vec3 VertPos;
+out vec2 TexCoord;
 
 void main()
 {
     Model = model;
     Normal = normal;
     VertPos = vertPos;
+    TexCoord = texCoord;
 
 	gl_Position = projection * model * vec4(vertPos, 1.0f);
 }

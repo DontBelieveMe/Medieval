@@ -38,7 +38,7 @@ private:
 
 	int loadPixIntoVec(const std::string & palettePath); //returns the y-position
 
-	Model loadObjData(const std::string & objPath);
+	Model loadObjData(const std::string & objPath, int yPos);
 
     std::vector<std::string> splitStr(const std::string & toSplit, char splitter);
 
@@ -48,8 +48,8 @@ public:
 
 	void setDrawingStage(); //after this is done, it cannot be undone.
 
-    inline void bind() { glBindVertexArray(vao); }
-    inline void halt() { glBindVertexArray(0); };
+    inline void bind() { glBindVertexArray(vao); glBindTexture(GL_TEXTURE_2D, texture); }
+    inline void halt() { glBindVertexArray(0); glBindTexture(GL_TEXTURE_2D, 0); };
 
     void destroy();
 
