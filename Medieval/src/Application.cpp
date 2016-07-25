@@ -26,13 +26,16 @@ void Application::init()
 	glfwSwapInterval(0);
 #endif
 
-    shader = std::make_unique<ShaderProgram>("res/vert.shader", "res/frag.shader");
+	shader = new ShaderProgram("res/vert.shader", "res/frag.shader");
+	shader->use();
 }
 
 void Application::mainLoop()
 {
 	double lastTime = glfwGetTime(), secTime = glfwGetTime(), delta = 0, sPerTick = 1.0 / 60.0;
 	int ticks = 0, frames = 0;
+
+	GLfloat rot = 0;
 
 	glfwShowWindow(window); //window becomes visible here
 	while (!glfwWindowShouldClose(window))
@@ -43,6 +46,7 @@ void Application::mainLoop()
 
 		while (delta > 0)
 		{
+			rot+=1;
 			ticks++;
 			glfwPollEvents();
 			delta -= 1.0;
@@ -55,18 +59,26 @@ void Application::mainLoop()
         };
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        GLuint pos;
-        glGenBuffers(1, &pos);
-        glBindBuffer(GL_ARRAY_BUFFER, pos);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        
-        shader->use();
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, pos);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+		glUniformMatrix4fv(0, 1, GL_FALSE, &glm::perspective(45.0f, ((float)WIDTH / (float)HEIGHT), 0.001f, 200.0f)[0][0]);
+		glm::mat4 model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0, 0, -3));
+		model = glm::rotate(model, glm::radians(rot), glm::vec3(0, 1, 0));
+		glUniformMatrix4fv(1, 1, GL_FALSE, &model[0][0]);
+
+		glEnableVertexAttribArray(0);
+		float data[] = {
+			-0.5f, 0.5f, 0.0f,
+			0.5f, 0.5f, 0.0f,
+			0.5f, -0.5f, 0.0f,
+			-0.5f, 0.5f, 0.0f,
+			0.5f, -0.5f, 0.0f,
+			-0.5f, -0.5f, 0.0f,
+		};
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, data);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDisableVertexAttribArray(0);
 
 		glfwSwapBuffers(window);
 		frames++;
@@ -86,6 +98,11 @@ void Application::destroy()
 {
 	glfwDestroyWindow(window);
 	glfwTerminate();
+}
+
+Application::~Application()
+{
+	delete shader;
 }
 
 Application& Application::getInstance()

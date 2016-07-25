@@ -2,7 +2,14 @@
 
 Model Voxels::loadModel(std::string objPath, std::string palettePath)
 {
-	int ypos = loadPixIntoVec(palettePath);
+	loadPixIntoVec(palettePath);
+
+	return Model{ 0, 0 };
+}
+
+Model Voxels::loadObjData(std::string objPath)
+{
+	
 	return Model{ 0, 0 };
 }
 
@@ -14,7 +21,7 @@ int Voxels::loadPixIntoVec(std::string palettePath)
 	if (err) {
 		std::string err_text = lodepng_error_text(err);
 		std::cerr << "Error loading image: " << palettePath << ": " << err_text << endl;
-		exit(1);
+		system("pause");  exit(1);
 	}
 	if (height != 1)
 		std::cerr << "Palette: " << palettePath << " is not one pixel tall!!" << endl;
@@ -28,8 +35,10 @@ int Voxels::loadPixIntoVec(std::string palettePath)
 		GLubyte b = lodeData[x + 2];
 		GLubyte a = lodeData[x + 3];
 		GLuint fullColor = r << 24 | g << 16 | b << 8 | a;
-		pixels[(x / 4) + currentY * 256] = fullColor;
+		pixels.push_back(fullColor);
 	}
+
+	return currentY;
 }
 
 void Voxels::setDrawingStage()

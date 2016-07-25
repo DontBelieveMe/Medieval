@@ -13,11 +13,13 @@ public:
 
 private:
 	GLFWwindow* window;
-    std::unique_ptr<ShaderProgram> shader;
+	ShaderProgram* shader;
 	
     void init();
 	void mainLoop();
 	void destroy();
 	
+	~Application();
+
 };
 

@@ -34,6 +34,8 @@ private:
 
 	int loadPixIntoVec(std::string pallettePath); //returns the y-position
 
+	Model loadObjData(std::string objPath);
+
 public:
 
 	Model loadModel(std::string objPath, std::string pallettePath);

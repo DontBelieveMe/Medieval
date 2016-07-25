@@ -63,7 +63,7 @@ void ShaderProgram::checkError(GLuint element, bool isProgram, GLenum status, co
             glGetProgramInfoLog(element, logLen, NULL, log);
         else
             glGetShaderInfoLog(element, logLen, NULL, log);
-        std::cout << errorMsg << std::endl;
+        std::cout << errorMsg << log << std::endl;
         delete[] log;
         system("pause");
         exit(1);
