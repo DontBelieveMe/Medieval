@@ -3,8 +3,9 @@
 Model Voxels::loadModel(const std::string& objPath, const std::string& palettePath)
 {
 	loadPixIntoVec(palettePath);
+    Model m = loadObjData(objPath);
 
-	return Model{ 0, 0 };
+	return m;
 }
 
 Model Voxels::loadObjData(const std::string& objPath)
@@ -26,7 +27,7 @@ Model Voxels::loadObjData(const std::string& objPath)
             texCoords.push_back(glm::vec2(std::stof(splitString[1]), std::stof(splitString[2])));
         if (splitString[0] == "vn")//normal
             normals.push_back(glm::vec3(std::stof(splitString[1]), std::stof(splitString[2]), std::stof(splitString[3])));
-        if (splitString[1] == "f")
+        if (splitString[0] == "f")
             faces.push_back(line);
     }
     file.close();

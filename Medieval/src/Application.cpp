@@ -3,6 +3,8 @@
 #include "Shader.h"
 #include "States.h"
 
+#include "Voxels.h"
+
 void Application::run()
 {
 	init();
@@ -36,6 +38,13 @@ void Application::mainLoop()
 	double lastTime = glfwGetTime(), secTime = lastTime, delta = 0, sPerTick = 1.0 / 60.0;
 	int ticks = 0, frames = 0;
 
+    Voxels vox;
+    Model ent = vox.loadModel("res/models/Ent.obj", "res/models/Ent.png");
+    vox.setDrawingStage();
+    vox.bind();
+
+    GLfloat rot = 0;
+
 	glfwShowWindow(window); //window becomes visible here
 	while (!glfwWindowShouldClose(window))
 	{
@@ -46,12 +55,21 @@ void Application::mainLoop()
 		while (delta > 0)
 		{
 			glfwPollEvents();
-			StateSystem::tick();
+            rot += 1.0;
+			//StateSystem::tick();
 			ticks++;
 			delta -= 1.0;
 		}
 
-        StateSystem::render();
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glUniformMatrix4fv(0, 1, GL_FALSE, &(glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.001f, 200.0f))[0][0]);
+        glUniformMatrix4fv(1, 1, GL_FALSE, &(   glm::rotate(    glm::translate(glm::mat4(1.0), glm::vec3(0, -13, -60))     , glm::radians(rot), glm::vec3(0, 1, 0))     )[0][0]);
+        drawModel(ent);
+
+       // StateSystem::render();
 
 		glfwSwapBuffers(window);
 		frames++;
@@ -64,6 +82,9 @@ void Application::mainLoop()
 			secTime += 1.0;
 		}
 	}
+
+    vox.halt();
+    vox.destroy();
 }
 
 void Application::destroy()
