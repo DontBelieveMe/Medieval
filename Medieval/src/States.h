@@ -5,7 +5,7 @@ namespace StateSystem
     using FunctionPointer = void (*)();
     struct State
     {
-        FunctionPointer tick, render;
+        FunctionPointer tick, render, cleanup;
     };
 
     void setState(State (*func)());

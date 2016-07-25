@@ -35,6 +35,10 @@ namespace States
                 glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, data);
                 glDrawArrays(GL_TRIANGLES, 0, 6);
                 glDisableVertexAttribArray(0);
+            },
+
+            []{ // Cleanup
+
             }
         };
     }
@@ -42,9 +46,9 @@ namespace States
     /*
     StateSystem::State Template()
     {
-        // Your variables here marked as static.
+        // Put your variables here marked as static.
 
-        // If you want to reset your variables to a some value when you enable this state, also do it here.
+        // Do your init here.
 
         return
         {
@@ -57,6 +61,12 @@ namespace States
             []{ // Render
 
                 // Render code here
+
+            },
+
+            []{ // Cleanup
+
+                // This will be called when you leave the state
 
             }
         };
@@ -79,6 +89,7 @@ namespace StateSystem
         current_state.tick();
         while (next_state)
         {
+            current_state.cleanup();
             current_state = next_state();
             next_state = 0;
             current_state.tick();
