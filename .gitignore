@@ -3,7 +3,9 @@
 *.sdf
 
 /Debug
+/Release
 /Medieval/Debug
+/Medieval/Release
 /.vs
 /Medieval.VC.db
 

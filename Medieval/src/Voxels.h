@@ -15,6 +15,8 @@ it IS the drawing stage.
 #include "includes.h"
 #include "../extern/lodepng.h"
 #include <vector>
+#include <sstream>
+#include <fstream>
 
 #define PALETTE_WIDTH 256 //all magica voxel palettes are the same size
 #define drawModel(model) glDrawArrays(GL_TRIANGLES, model.index, model.count)
@@ -24,7 +26,9 @@ struct Model;
 class Voxels
 {
 private:
+    
 	bool loadingStage = true; //starts off true
+    int currentIndex = 0;
 	std::vector<GLfloat> data; //only contains data in loading stage
 	GLuint vao, vbo; //this is for drawing stage
 
@@ -32,15 +36,22 @@ private:
 	int currentY = 0;
 	GLuint texture; //draw stage texture
 
-	int loadPixIntoVec(const std::string& palettePath); //returns the y-position
+	int loadPixIntoVec(const std::string & palettePath); //returns the y-position
 
-	Model loadObjData(const std::string& objPath);
+	Model loadObjData(const std::string & objPath);
+
+    std::vector<std::string> splitStr(const std::string & toSplit, char splitter);
 
 public:
 
 	Model loadModel(const std::string& objPath, const std::string& pallettePath);
 
 	void setDrawingStage(); //after this is done, it cannot be undone.
+
+    inline void bind() { glBindVertexArray(vao); }
+    inline void halt() { glBindVertexArray(0); };
+
+    void destroy();
 
 };
 

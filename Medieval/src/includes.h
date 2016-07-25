@@ -6,6 +6,10 @@
 #define TICKS_PER_SECOND 60.0
 #define V_SYNC_ENABLED
 
+#define VERTEX_ATTRIB 0
+#define TEXTURE_ATTRIB 1
+#define NORMAL_ATTRIB 2
+
 #include <../extern/glad/glad.h>
 #include <GLFW/glfw3.h>
 
