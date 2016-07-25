@@ -76,6 +76,7 @@ void Application::mainLoop()
 			0.5f, -0.5f, 0.0f,
 			-0.5f, -0.5f, 0.0f,
 		};
+
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, data);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glDisableVertexAttribArray(0);

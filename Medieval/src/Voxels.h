@@ -10,13 +10,13 @@ it IS the drawing stage.
 
 * @author: Ned Boulter
 */
-#define PALETTE_WIDTH 256 //all magica voxel palettes are the same size
-
 #pragma once
+
 #include "includes.h"
 #include "../extern/lodepng.h"
 #include <vector>
 
+#define PALETTE_WIDTH 256 //all magica voxel palettes are the same size
 #define drawModel(model) glDrawArrays(GL_TRIANGLES, model.index, model.count)
 
 struct Model;
@@ -32,13 +32,13 @@ private:
 	int currentY = 0;
 	GLuint texture; //draw stage texture
 
-	int loadPixIntoVec(std::string pallettePath); //returns the y-position
+	int loadPixIntoVec(const std::string& palettePath); //returns the y-position
 
-	Model loadObjData(std::string objPath);
+	Model loadObjData(const std::string& objPath);
 
 public:
 
-	Model loadModel(std::string objPath, std::string pallettePath);
+	Model loadModel(const std::string& objPath, const std::string& pallettePath);
 
 	void setDrawingStage(); //after this is done, it cannot be undone.
 

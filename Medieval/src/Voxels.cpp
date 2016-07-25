@@ -1,19 +1,19 @@
 #include "Voxels.h"
 
-Model Voxels::loadModel(std::string objPath, std::string palettePath)
+Model Voxels::loadModel(const std::string& objPath, const std::string& palettePath)
 {
 	loadPixIntoVec(palettePath);
 
 	return Model{ 0, 0 };
 }
 
-Model Voxels::loadObjData(std::string objPath)
+Model Voxels::loadObjData(const std::string& objPath)
 {
 	
 	return Model{ 0, 0 };
 }
 
-int Voxels::loadPixIntoVec(std::string palettePath)
+int Voxels::loadPixIntoVec(const std::string& palettePath)
 {
 	std::vector<GLubyte> lodeData;//data from lodepng
 	unsigned int width, height;
@@ -29,7 +29,7 @@ int Voxels::loadPixIntoVec(std::string palettePath)
 	if (width != 256)
 		std::cerr << "Palettes are supposed to be 256pix wide from MagicaVoxel, if this is wrong, contact Ned" << endl;
 
-	for (int x = 0; x < lodeData.size(); x+=4)
+	for (unsigned int x = 0; x < lodeData.size(); x+=4)
 	{
 		GLubyte r = lodeData[x];
 		GLubyte g = lodeData[x + 1];
