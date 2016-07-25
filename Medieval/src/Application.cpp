@@ -14,6 +14,7 @@ void Application::init()
 {
 	glfwInit();
 	glfwWindowHint(GLFW_VISIBLE, GL_FALSE); // so we can choose when to make it visible
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	window = glfwCreateWindow(WIDTH, HEIGHT, TITLE, NULL, NULL);
 	glfwMakeContextCurrent(window);
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress); // load extensions
