@@ -68,15 +68,22 @@ namespace States
 namespace StateSystem
 {
     State current_state = States::EntryPoint();
+    State (*next_state)();
 
     void setState(State (*func)())
     {
-        current_state = func();
+        next_state = func;
     }
 
     void tick()
     {
         current_state.tick();
+        while (next_state)
+        {
+            current_state = next_state();
+            next_state = 0;
+            current_state.tick();
+        }
     }
     void render()
     {
