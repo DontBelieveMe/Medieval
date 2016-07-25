@@ -91,7 +91,6 @@ void Application::mainLoop()
 			secTime += 1.0;
 		}
 	}
-
 }
 
 void Application::destroy()

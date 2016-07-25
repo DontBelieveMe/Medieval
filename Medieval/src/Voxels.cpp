@@ -16,13 +16,14 @@ Model Voxels::loadObjData(std::string objPath)
 int Voxels::loadPixIntoVec(std::string palettePath)
 {
 	std::vector<GLubyte> lodeData;//data from lodepng
-	unsigned width, height;
-	unsigned err = lodepng::decode(lodeData, width, height, palettePath);
+	unsigned int width, height;
+	unsigned int err = lodepng::decode(lodeData, width, height, palettePath);
 	if (err) {
 		std::string err_text = lodepng_error_text(err);
 		std::cerr << "Error loading image: " << palettePath << ": " << err_text << endl;
 		system("pause");  exit(1);
 	}
+
 	if (height != 1)
 		std::cerr << "Palette: " << palettePath << " is not one pixel tall!!" << endl;
 	if (width != 256)
