@@ -1,5 +1,7 @@
 #pragma once
 
+// State system by Egor
+
 namespace StateSystem
 {
     using FunctionPointer = void (*)();
