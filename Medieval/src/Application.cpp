@@ -4,6 +4,7 @@
 #include "States.h"
 
 #include "Voxels.h"
+#include "Renderer2D.h"
 
 void Application::run()
 {
@@ -31,7 +32,7 @@ void Application::init()
 #endif
 
 	shader = new ShaderProgram("res/vert.shader", "res/frag.shader");
-	shader->use();
+	uiShader = new ShaderProgram("res/vert2D.shader", "res/frag2D.shader");
 }
 
 void Application::mainLoop()
@@ -47,8 +48,21 @@ void Application::mainLoop()
     vox.setDrawingStage();
 
     GLfloat rot = 0;
+	GLfloat rot2 = 0;
 
+	Renderer2D r2d;
+	float vertices[] = {
+		-1.0f, -1.0f, 0.0f,  1.0f, 0.0f, 0.0f,
+		1.0f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f,
+		0.0f,  1.0f, 0.0f,   0.0f, 0.0f, 1.0f
+	};
+	r2d.createVertexArray(vertices, sizeof(vertices));
+
+	glEnable(GL_DEPTH_TEST);
+	
+	shader->use();
 	shader->uploadMatrix4f(0, glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.001f, 10000.0f));
+	shader->halt();
 	glfwShowWindow(window); //window becomes visible here
 	while (!glfwWindowShouldClose(window))
 	{
@@ -59,21 +73,28 @@ void Application::mainLoop()
 		while (delta > 0)
 		{
 			glfwPollEvents();
-            rot += 1.0;
+            rot += 0.5f;
+			rot2 -= 0.5f;
 			//StateSystem::tick();
 			ticks++;
 			delta -= 1.0;
 		}
+		
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_CULL_FACE);
 
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		shader->use();
 		vox.bind();
-        shader->uploadMatrix4f(1, glm::rotate(glm::translate(glm::mat4(1.0), glm::vec3(-6, -2, -15)), glm::radians(rot), glm::vec3(0, 1, 0)));
+		
+		shader->uploadMatrix4f(1, glm::rotate(glm::translate(glm::mat4(1.0), glm::vec3(-6, -2, -15)), glm::radians(rot), glm::vec3(0, 1, 0)));
         drawModel(ruu);
-        shader->uploadMatrix4f(1, glm::rotate(glm::translate(glm::mat4(1.0), glm::vec3(6, -2, -15)), glm::radians(rot), glm::vec3(0, 1, 0)));
+		shader->uploadMatrix4f(1, glm::rotate(glm::translate(glm::mat4(1.0), glm::vec3(6, -2, -15)), glm::radians(rot2), glm::vec3(0, 1, 0)));
         drawModel(grothar);
+		shader->halt();
+		glDisable(GL_CULL_FACE);
+		uiShader->use();
+		r2d.draw();
+		uiShader->halt();
 
        // StateSystem::render();
 

@@ -1,3 +1,7 @@
+/*
+ * @author Barney Wilks
+*/
+
 #pragma once
 
 #ifdef _WIN32
