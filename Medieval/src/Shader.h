@@ -20,6 +20,10 @@ private:
     void   checkError(GLuint element, bool isProgram, GLenum status, const std::string& errorMsg);
     void   validateProgram();
 
+
+	GLint getUniformLoc(const std::string& name);
+	void  uploadMatrix4f(GLint loc, const glm::mat4& matrix);
+	void  uploadMatrix4f(const std::string& name, const glm::mat4& matrix);
 private:
     GLuint program;
 };
