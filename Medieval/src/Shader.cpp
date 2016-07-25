@@ -73,3 +73,22 @@ void ShaderProgram::checkError(GLuint element, bool isProgram, GLenum status, co
 void ShaderProgram::validateProgram() {
     glValidateProgram(this->program);
 }
+
+GLint ShaderProgram::getUniformLoc(const std::string& name) {
+	GLint loc = glGetUniformLocation(this->program, name.c_str());
+	if (loc == -1) {
+		std::cout << "Error: Uniform " << name << " does not exist!" << std::endl;
+		return -1;
+	}
+	return loc;
+}
+
+void  ShaderProgram::uploadMatrix4f(GLint loc, const glm::mat4& matrix) 
+{
+	glUniformMatrix4fv(loc, 1, GL_FALSE, &(matrix[0][0]));
+}
+
+void ShaderProgram::uploadMatrix4f(const std::string& name, const glm::mat4& matrix)
+{
+	uploadMatrix4f(getUniformLoc(name), matrix);
+}
