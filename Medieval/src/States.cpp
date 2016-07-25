@@ -48,7 +48,6 @@ namespace States
 
         return
         {
-
             []{ // Tick
 
                 // Tick code here
