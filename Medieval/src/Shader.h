@@ -15,15 +15,15 @@ public:
     inline void use() { glUseProgram(this->program); }
     inline void halt() { glUseProgram(0); }
 
+	GLint getUniformLoc(const std::string& name);
+	void  uploadMatrix4f(GLint loc, const glm::mat4& matrix);
+	void  uploadMatrix4f(const std::string& name, const glm::mat4& matrix);
 private:
     GLuint createShader(const std::string& path, GLenum type, const std::string& errorMsg);
     void   checkError(GLuint element, bool isProgram, GLenum status, const std::string& errorMsg);
     void   validateProgram();
 
 
-	GLint getUniformLoc(const std::string& name);
-	void  uploadMatrix4f(GLint loc, const glm::mat4& matrix);
-	void  uploadMatrix4f(const std::string& name, const glm::mat4& matrix);
 private:
     GLuint program;
 };
