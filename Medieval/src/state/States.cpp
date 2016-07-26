@@ -35,7 +35,7 @@ namespace States
 		static Renderer2D r2d(&uiShader, glm::ortho(0.f, 800.f, 0.f, 600.f));
 		r2d.createVertexArray(vertices, sizeof(vertices));
 
-		static Texture test2dtexture("res/texture.png");
+		static Texture test2dtexture("res/images/texture.png");
 		glEnable(GL_DEPTH_TEST);
 		
         return
