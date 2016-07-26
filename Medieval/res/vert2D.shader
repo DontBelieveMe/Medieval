@@ -7,9 +7,11 @@ layout(location = 2) in vec2 uv;
 out vec3 passCol;
 out vec2 passUv;
 
+uniform mat4 ortho;
+
 void main()
 {
 	passUv = uv;
 	passCol = col;
-	gl_Position = vec4(pos, 1.0);
+	gl_Position = ortho * vec4(pos, 1.0);
 }

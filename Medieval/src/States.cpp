@@ -27,26 +27,16 @@ namespace States
 		modelShader.halt();
 
 		float vertices[] = {
-			-1.0f, -1.0f, 0.0f,  1.0f, 0.0f, 0.0f,		0.f, 0.f,
-			1.0f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f,		1.f, 0.f,
-			-1.0f,  1.0f, 0.0f,   0.0f, 0.0f, 1.0f,		0.f, 1.f
+			0.f, 0.f,  0.f,			  1.0f, 0.0f, 0.0f,		0.f, 1.f,
+			800, 0,    0.0f,		  0.0f, 1.0f, 0.0f,		1.f, 1.f,
+			0,   600,  0.0f,		  0.0f, 0.0f, 1.0f,		0.f, 0.0f
 		};
 
-		//float quadvertices[] = {
-		//	-0.5f, 0.5f, 0.f, 1.0f, 0.0f, 0.0f,
-		//	-0.5f, -0.5f, 0.f, 0.0f, 1.0f, 0.0f,
-		//	0.5f, -0.5f, 0.f, 0.0f, 0.0f, 1.0f,
-		//	0.5f, -0.5f, 0.f, 1.0f, 0.0f, 0.0f,
-		//	0.5f, 0.5f, 0.f, 0.0f, 1.0f, 0.0f,
-		//	-0.5f, 0.5f, 0.f, 0.0f, 1.0f, 0.0f
-		//};
-
-		static Renderer2D r2d;
-		
+		static Renderer2D r2d(&uiShader, glm::ortho(0.f, 800.f, 0.f, 600.f));
 		r2d.createVertexArray(vertices, sizeof(vertices));
 
-		static Texture texture("res/texture.png");
-
+		static Texture test2dtexture("res/texture.png");
+	
 		glEnable(GL_DEPTH_TEST);
 		
         return
@@ -57,6 +47,7 @@ namespace States
 
             []{ // Render
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 				glEnable(GL_CULL_FACE);
 				modelShader.use();
                 vox.bind();
@@ -64,16 +55,13 @@ namespace States
                 drawModel(ruu);
 				modelShader.uploadMatrix4f(1, glm::rotate(glm::translate(glm::mat4(1.0), glm::vec3(6, -2, -15)), glm::radians(rot), glm::vec3(0, 1, 0)));
                 drawModel(grothar);
+				modelShader.halt();
 				
 				// To disable the temporary 2D rendering on the screen
-				// Comment out these 5 lines
-				modelShader.halt();
+				// Comment out these lines
 				glDisable(GL_CULL_FACE);
-				uiShader.use();
-				texture.bind();
+				test2dtexture.bind();
 				r2d.draw();
-				glBindTexture(GL_TEXTURE_2D, 0);
-				uiShader.halt();
 				// To here :P
 			},
 
