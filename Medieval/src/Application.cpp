@@ -52,15 +52,11 @@ void Application::mainLoop()
 
 		while (delta > 0)
 		{
-<<<<<<< HEAD
 			glfwPollEvents();
-            rot += 0.5f;
-			//StateSystem::tick();
-=======
+            //StateSystem::tick();
 		    Input::tick(); // PollEvents(); has been moved here.
 			//StateSystem::tick(); // State system is done, use it. No code here plz.
             StateSystem::get().tick();
->>>>>>> 4c83e105a7b6b076534c5aa424769719649ac37f
 			ticks++;
 			delta -= 1.0;
 		}
