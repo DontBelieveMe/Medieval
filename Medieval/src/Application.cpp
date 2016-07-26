@@ -52,7 +52,6 @@ void Application::mainLoop()
 
 		while (delta > 0)
 		{
-			glfwPollEvents();
 			//StateSystem::tick(); // State system is done, use it. No code here plz.
             StateSystem::get().tick();
 		    Input::tick(); // PollEvents(); has been moved here.
