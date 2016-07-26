@@ -52,9 +52,9 @@ void Application::mainLoop()
 
 		while (delta > 0)
 		{
+		    Input::tick(); // PollEvents(); has been moved here.
 			//StateSystem::tick(); // State system is done, use it. No code here plz.
             StateSystem::get().tick();
-		    Input::tick(); // PollEvents(); has been moved here.
 			ticks++;
 			delta -= 1.0;
 		}
