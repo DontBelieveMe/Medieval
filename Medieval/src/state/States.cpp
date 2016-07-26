@@ -32,7 +32,7 @@ namespace States
 			0,   600,  0.0f,		  0.0f, 0.0f, 1.0f,		0.f, 0.0f
     	};
 
-		static Renderer2D r2d(&uiShader, glm::ortho(0.f, 800.f, 0.f, 600.f));
+		static Renderer2D r2d(&uiShader, glm::ortho(0.f, 800.f, 0.f, 600.f, 1.0f, -1.0f));
 		r2d.createVertexArray(vertices, sizeof(vertices));
 
 		static Texture test2dtexture("res/images/texture.png");

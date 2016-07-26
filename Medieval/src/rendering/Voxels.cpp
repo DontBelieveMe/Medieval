@@ -15,7 +15,6 @@ Model Voxels::loadObjData(const std::string& objPath, int yPos)
 {
     GLfloat stripWidth = (1.0f / (GLfloat)numberOfModels);
     GLfloat texYOffset = (stripWidth * (GLfloat)yPos) + stripWidth / 2.0f;
-    cout << "off: " << texYOffset << endl;
 
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> texCoords;
