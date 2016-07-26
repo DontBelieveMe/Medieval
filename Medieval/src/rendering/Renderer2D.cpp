@@ -1,6 +1,6 @@
 #include "Renderer2D.h"
 
-Renderer2D::Renderer2D(ShaderProgram *shader, glm::mat4& ortho)
+Renderer2D::Renderer2D(ShaderProgram *shader, const glm::mat4 &ortho)
 	: shaderRef(shader)
 {
 	shader->use();
@@ -41,9 +41,9 @@ void Renderer2D::draw()
 {
 	shaderRef->use();
 	glBindVertexArray(vao);
-	
+
 	glDrawArrays(GL_TRIANGLES, 0, count);
-	
+
 	glBindVertexArray(0);
 	shaderRef->halt();
 }

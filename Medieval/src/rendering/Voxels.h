@@ -21,7 +21,7 @@ it IS the drawing stage.
 #include <map>
 
 #define PALETTE_WIDTH 256 //all magica voxel palettes are the same size
-#define drawModel(model) glDrawArrays(GL_TRIANGLES, model.index, model.count)
+#define drawModel(model) glDrawArrays(GL_TRIANGLES, model.index, model.count);
 
 struct Model;
 
