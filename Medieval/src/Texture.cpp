@@ -12,10 +12,10 @@ Texture::Texture(const std::string& path)
 		std::cout << "LodePNG Error: " << errorMsg << std::endl;
 		system("pause"); exit(1);
 	}
-
+	glEnable(GL_TEXTURE_2D);
 	glGenTextures(1, &texId);
 	glBindTexture(GL_TEXTURE_2D, texId);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &data[0]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glBindTexture(GL_TEXTURE_2D, 0);

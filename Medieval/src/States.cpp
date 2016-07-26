@@ -4,6 +4,7 @@
 #include "application.h"
 
 #include "Renderer2D.h"
+#include "Texture.h"
 
 namespace States
 {
@@ -26,9 +27,9 @@ namespace States
 		modelShader.halt();
 
 		float vertices[] = {
-			-1.0f, -1.0f, 0.0f,  1.0f, 0.0f, 0.0f,
-			1.0f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f,
-			0.0f,  1.0f, 0.0f,   0.0f, 0.0f, 1.0f
+			-1.0f, -1.0f, 0.0f,  1.0f, 0.0f, 0.0f,		0.f, 0.f,
+			1.0f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f,		1.f, 0.f,
+			-1.0f,  1.0f, 0.0f,   0.0f, 0.0f, 1.0f,		0.f, 1.f
 		};
 
 		//float quadvertices[] = {
@@ -41,9 +42,13 @@ namespace States
 		//};
 
 		static Renderer2D r2d;
+		
 		r2d.createVertexArray(vertices, sizeof(vertices));
 
+		static Texture texture("res/texture.png");
+
 		glEnable(GL_DEPTH_TEST);
+		
         return
         {
             []{ // Tick
@@ -65,7 +70,9 @@ namespace States
 				modelShader.halt();
 				glDisable(GL_CULL_FACE);
 				uiShader.use();
+				texture.bind();
 				r2d.draw();
+				glBindTexture(GL_TEXTURE_2D, 0);
 				uiShader.halt();
 				// To here :P
 			},

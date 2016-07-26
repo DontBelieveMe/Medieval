@@ -17,6 +17,5 @@ public:
 private:
 	GLuint texId;
 	unsigned int width, height;
-
 };
 
