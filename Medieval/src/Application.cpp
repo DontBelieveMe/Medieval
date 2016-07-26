@@ -1,7 +1,8 @@
 #include "Application.h"
 
 #include "rendering/Shader.h"
-#include "state/States.h"
+//#include "state/States.h"
+#include "state/StateSystem.h"
 
 #include "rendering/Voxels.h"
 #include "rendering/Renderer2D.h"
@@ -30,6 +31,8 @@ void Application::init()
 #else
 	glfwSwapInterval(0);
 #endif
+
+    StateSystem::get().setDefaultState();
 }
 
 void Application::mainLoop()
@@ -48,15 +51,16 @@ void Application::mainLoop()
 		while (delta > 0)
 		{
 			glfwPollEvents();
-			StateSystem::tick(); // State system is done, use it. No code here plz.
+			//StateSystem::tick(); // State system is done, use it. No code here plz.
+            StateSystem::get().tick();
 			ticks++;
 			delta -= 1.0;
 		}
 
-		StateSystem::render(); // State system is done, use it. No code here plz.
+		//StateSystem::render(); // State system is done, use it. No code here plz.
+        StateSystem::get().render();
 
-		glfwSwapBuffers(window);
-
+        glfwSwapBuffers(window);
 		frames++;
 
 		if (glfwGetTime() - secTime >= 1.0)
@@ -67,12 +71,11 @@ void Application::mainLoop()
 			secTime += 1.0;
 		}
 	}
-
-	StateSystem::cleanup();
 }
 
 void Application::destroy()
 {
+    StateSystem::get().destroy();
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }
