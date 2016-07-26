@@ -44,14 +44,14 @@ GLuint ShaderProgram::createShader(const std::string& path, GLenum type, const s
     return shader;
 }
 
-void ShaderProgram::checkError(GLuint element, bool isProgram, GLenum status, const std::string& errorMsg) 
+void ShaderProgram::checkError(GLuint element, bool isProgram, GLenum status, const std::string& errorMsg)
 {
     GLint result;
     if (isProgram)
         glGetProgramiv(element, status, &result);
     else
         glGetShaderiv(element, status, &result);
-    if (result == GL_FALSE) 
+    if (result == GL_FALSE)
     {
         GLint logLen;
         if (isProgram)
@@ -70,16 +70,18 @@ void ShaderProgram::checkError(GLuint element, bool isProgram, GLenum status, co
     }
 }
 
-void ShaderProgram::validateProgram() {
+void ShaderProgram::validateProgram()
+{
     glValidateProgram(this->program);
 }
 
-GLint ShaderProgram::getUniformLoc(const std::string& name) {
+GLint ShaderProgram::getUniformLoc(const std::string& name)
+{
 	std::unordered_map<std::string, GLint>::const_iterator it = uniformLocCache.find(name);
-	if (it != uniformLocCache.end()) 
+	if (it != uniformLocCache.end())
 	{
-		return uniformLocCache[name];
-	} 
+		return uniformLocCache.at(name); // at() does bounds checking
+	}
 	else {
 		GLint loc = glGetUniformLocation(this->program, name.c_str());
 		if (loc == -1) {
@@ -94,7 +96,7 @@ GLint ShaderProgram::getUniformLoc(const std::string& name) {
 	return -1;
 }
 
-void  ShaderProgram::uploadMatrix4f(GLint loc, const glm::mat4& matrix) 
+void  ShaderProgram::uploadMatrix4f(GLint loc, const glm::mat4& matrix)
 {
 	glUniformMatrix4fv(loc, 1, GL_FALSE, &(matrix[0][0]));
 }

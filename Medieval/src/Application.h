@@ -13,13 +13,11 @@ public:
 
 private:
 	GLFWwindow* window;
-	ShaderProgram* shader;
-	ShaderProgram* uiShader;
 	
     void init();
 	void mainLoop();
 	void destroy();
-	
+
 	~Application();
 
 };

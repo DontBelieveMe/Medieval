@@ -1,8 +1,8 @@
 #version 330
 
 out vec4 out_Col;
-
+in vec3 passCol;
 void main()
 {
-	out_Col = vec4(1.0, 0.0, 0.0, 1.0);
+	out_Col = vec4(passCol, 1.0);
 }

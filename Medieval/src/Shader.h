@@ -12,10 +12,11 @@
 #include <unordered_map>
 #include "includes.h"
 
-class ShaderProgram {
+class ShaderProgram
+{
 public:
     ShaderProgram(const std::string& vertPath, const std::string& fragPath);
-    
+
     GLuint load(const std::string& vertPath, const std::string& fragPath);
     inline void use() { glUseProgram(this->program); }
     inline void halt() { glUseProgram(0); }
