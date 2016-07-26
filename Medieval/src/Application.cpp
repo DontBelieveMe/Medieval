@@ -52,16 +52,12 @@ void Application::mainLoop()
 
 		while (delta > 0)
 		{
-			glfwPollEvents();
-            //StateSystem::tick();
 		    Input::tick(); // PollEvents(); has been moved here.
-			//StateSystem::tick(); // State system is done, use it. No code here plz.
             StateSystem::get().tick();
 			ticks++;
 			delta -= 1.0;
 		}
 
-		//StateSystem::render(); // State system is done, use it. No code here plz.
         StateSystem::get().render();
 
         glfwSwapBuffers(window);
