@@ -12,7 +12,7 @@ Renderer2D::Renderer2D(ShaderProgram *shader)
 	: shaderRef(shader)
 {
 	shader->use();
-	shader->uploadMatrix4f("ortho", defaultOrtho);
+	shader->uploadMatrix4f("ortho", glm::ortho(0.f, (float)WIDTH, 0.f, (float)HEIGHT));
 	shader->halt();
 }
 

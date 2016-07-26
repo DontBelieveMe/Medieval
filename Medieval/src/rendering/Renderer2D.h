@@ -17,10 +17,20 @@ public:
 	void draw();
 	void destroy();
 
+	static std::pair<GLfloat*, int> triangle(float x, float y, float w, float h)
+	{
+		GLfloat data[] = {
+			x, y, 0.f,	0.f, 0.f, 0.f, 0.f, 1.f,
+			x + w, y, 0.f, 0.f, 0.f, 0.f, 1.f, 1.f,
+			x + (w / 2), y + h, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f
+		};
+		
+		return std::make_pair(data, sizeof(data));
+	}
+
 private:
 	GLuint vao;
 	GLuint vbo;
 	int    count;
 	ShaderProgram *shaderRef;
-	glm::mat4 defaultOrtho = glm::ortho(0, WIDTH, 0, HEIGHT);
 };

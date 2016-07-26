@@ -9,9 +9,10 @@ Texture::Texture(const std::string& path)
 	error = lodepng::decode(data, width, height, path);
 	if (error) {
 		std::string errorMsg = lodepng_error_text(error);
-		std::cout << "LodePNG Error: (" << path  << ") " << errorMsg << std::endl;
+		std::cerr << "LodePNG Error: (" << path  << ") " << errorMsg << std::endl;
 		system("pause"); exit(1);
 	}
+
 	glEnable(GL_TEXTURE_2D);
 	glGenTextures(1, &texId);
 	glBindTexture(GL_TEXTURE_2D, texId);

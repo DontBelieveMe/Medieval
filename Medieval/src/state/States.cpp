@@ -21,6 +21,7 @@ namespace States
         vox.setDrawingStage();
 
         static GLfloat rot = 0;
+		static GLfloat rot2 = 0;
 		
 		modelShader.use();
 		modelShader.uploadMatrix4f(0, glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.001f, 10000.0f));
@@ -28,11 +29,11 @@ namespace States
 
 		float vertices[] = {
 			0.f, 0.f,  0.f,			  1.0f, 0.0f, 0.0f,		0.f, 1.f,
-			800, 0,    0.0f,		  0.0f, 1.0f, 0.0f,		1.f, 1.f,
-			0,   600,  0.0f,		  0.0f, 0.0f, 1.0f,		0.f, 0.0f
-    	};
+			WIDTH, 0,    0.0f,		  0.0f, 1.0f, 0.0f,		1.f, 1.f,
+			0,   HEIGHT,  0.0f,		  0.0f, 0.0f, 1.0f,		0.f, 0.0f
+		};
 
-		static Renderer2D r2d(&uiShader, glm::ortho(0.f, 800.f, 0.f, 600.f));
+		static Renderer2D r2d(&uiShader);
 		r2d.createVertexArray(vertices, sizeof(vertices));
 
 		static Texture test2dtexture("res/images/texture.png");
@@ -42,6 +43,7 @@ namespace States
         {
             []{ // Tick
                 rot += 1;
+				rot2 -= 1;
             },
 
             []{ // Render
@@ -52,7 +54,7 @@ namespace States
                 vox.bind();
 				modelShader.uploadMatrix4f(1, glm::rotate(glm::translate(glm::mat4(1.0), glm::vec3(-6, -2, -15)), glm::radians(rot), glm::vec3(0, 1, 0)));
                 drawModel(ruu);
-				modelShader.uploadMatrix4f(1, glm::rotate(glm::translate(glm::mat4(1.0), glm::vec3(6, -2, -15)), glm::radians(rot), glm::vec3(0, 1, 0)));
+				modelShader.uploadMatrix4f(1, glm::rotate(glm::translate(glm::mat4(1.0), glm::vec3(6, -2, -15)), glm::radians(rot2), glm::vec3(0, 1, 0)));
                 drawModel(grothar);
 				modelShader.halt();
 				
