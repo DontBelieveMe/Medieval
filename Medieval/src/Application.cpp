@@ -33,11 +33,8 @@ void Application::init()
 	glfwSwapInterval(0);
 #endif
 
-<<<<<<< HEAD
     StateSystem::get().setDefaultState();
-=======
     Input::init();
->>>>>>> 2ad77417d8a4db2f6a04c87f7027634269b8e725
 }
 
 void Application::mainLoop()
@@ -55,14 +52,10 @@ void Application::mainLoop()
 
 		while (delta > 0)
 		{
-<<<<<<< HEAD
 			glfwPollEvents();
 			//StateSystem::tick(); // State system is done, use it. No code here plz.
             StateSystem::get().tick();
-=======
 		    Input::tick(); // PollEvents(); has been moved here.
-			StateSystem::tick(); // State system is done, use it. No code here plz.
->>>>>>> 2ad77417d8a4db2f6a04c87f7027634269b8e725
 			ticks++;
 			delta -= 1.0;
 		}
