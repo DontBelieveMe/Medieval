@@ -10,6 +10,9 @@
 #define TEXTURE_ATTRIB 1
 #define NORMAL_ATTRIB 2
 
+#define dynamic_assert(expression) \
+	{ if(!(expression)) { assert(false); } }
+
 #include <../extern/glad/glad.h>
 #include <GLFW/glfw3.h>
 

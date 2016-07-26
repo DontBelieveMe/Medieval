@@ -1,6 +1,6 @@
 #pragma once
 #include "includes.h"
-#include "Shader.h"
+#include "rendering/Shader.h"
 
 #include <memory>
 
@@ -10,15 +10,14 @@ public:
 	void run();
 
 	static Application& getInstance();
-
+    GLFWwindow *getWindowHandle() const {return window;}
 private:
 	GLFWwindow* window;
-	ShaderProgram* shader;
-	
+
     void init();
 	void mainLoop();
 	void destroy();
-	
+
 	~Application();
 
 };

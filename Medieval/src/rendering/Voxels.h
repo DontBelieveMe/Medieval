@@ -12,11 +12,13 @@ it IS the drawing stage.
 */
 #pragma once
 
-#include "includes.h"
-#include "../extern/lodepng.h"
+#include "../includes.h"
+#include "../../extern/lodepng.h"
+
 #include <vector>
 #include <sstream>
 #include <fstream>
+#include <map>
 
 #define PALETTE_WIDTH 256 //all magica voxel palettes are the same size
 #define drawModel(model) glDrawArrays(GL_TRIANGLES, model.index, model.count);
@@ -26,12 +28,13 @@ struct Model;
 class Voxels
 {
 private:
-    
+    const unsigned int numberOfModels;
+
 	bool loadingStage = true; //starts off true
     int currentIndex = 0;
 	std::vector<GLfloat> data; //only contains data in loading stage
-	std::vector<int>     indices;
-	GLuint vao, vbo, ibo; //this is for drawing stage
+
+	GLuint vao, vbo; //this is for drawing stage
 
 	std::vector<GLuint> pixels;//load stage texture
 	int currentY = 0;
@@ -44,6 +47,7 @@ private:
     std::vector<std::string> splitStr(const std::string & toSplit, char splitter);
 
 public:
+    Voxels(const unsigned int numberOfModels); // due to an issue I ran into, you need to specify the amount of models you are going to load
 
 	Model loadModel(const std::string& objPath, const std::string& pallettePath);
 
@@ -53,10 +57,8 @@ public:
     inline void halt() { glBindVertexArray(0); glBindTexture(GL_TEXTURE_2D, 0); };
 
     void destroy();
-
-	void draw();
-
 };
+
 
 struct Model
 {

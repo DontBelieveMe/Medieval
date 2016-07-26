@@ -1,9 +1,12 @@
 #include "Application.h"
 
-#include "Shader.h"
-#include "States.h"
+#include "rendering/Shader.h"
+//#include "state/States.h"
+#include "state/StateSystem.h"
+#include "Input.h"
 
-#include "Voxels.h"
+#include "rendering/Voxels.h"
+#include "rendering/Renderer2D.h"
 
 void Application::run()
 {
@@ -30,8 +33,8 @@ void Application::init()
 	glfwSwapInterval(0);
 #endif
 
-	shader = new ShaderProgram("res/vert.shader", "res/frag.shader");
-	shader->use();
+    StateSystem::get().setDefaultState();
+    Input::init();
 }
 
 void Application::mainLoop()
@@ -39,14 +42,8 @@ void Application::mainLoop()
 	double lastTime = glfwGetTime(), secTime = lastTime, delta = 0, sPerTick = 1.0 / 60.0;
 	int ticks = 0, frames = 0;
 
-    Voxels vox;
-    Model ent = vox.loadModel("res/models/Ent.obj", "res/models/Ent.png");
-    vox.setDrawingStage();
-    vox.bind();
+	glfwShowWindow(window); // The window becomes visible here
 
-    GLfloat rot = 0;
-
-	glfwShowWindow(window); //window becomes visible here
 	while (!glfwWindowShouldClose(window))
 	{
 		double now = glfwGetTime();
@@ -55,24 +52,23 @@ void Application::mainLoop()
 
 		while (delta > 0)
 		{
+<<<<<<< HEAD
 			glfwPollEvents();
             rot += 0.5f;
 			//StateSystem::tick();
+=======
+		    Input::tick(); // PollEvents(); has been moved here.
+			//StateSystem::tick(); // State system is done, use it. No code here plz.
+            StateSystem::get().tick();
+>>>>>>> 4c83e105a7b6b076534c5aa424769719649ac37f
 			ticks++;
 			delta -= 1.0;
 		}
 
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//StateSystem::render(); // State system is done, use it. No code here plz.
+        StateSystem::get().render();
 
-		shader->uploadMatrix4f(0, glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.001f, 200.0f));
-		shader->uploadMatrix4f(1, glm::rotate(glm::translate(glm::mat4(1.0), glm::vec3(0, -13, -60)), glm::radians(rot), glm::vec3(0, 1, 0)));
-		drawModel(ent);
-
-       // StateSystem::render();
-
-		glfwSwapBuffers(window);
+        glfwSwapBuffers(window);
 		frames++;
 
 		if (glfwGetTime() - secTime >= 1.0)
@@ -83,20 +79,17 @@ void Application::mainLoop()
 			secTime += 1.0;
 		}
 	}
-
-    vox.halt();
-    vox.destroy();
 }
 
 void Application::destroy()
 {
+    StateSystem::get().destroy();
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }
 
 Application::~Application()
 {
-	delete shader;
 }
 
 Application& Application::getInstance()
