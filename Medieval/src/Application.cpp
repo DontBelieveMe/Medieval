@@ -1,10 +1,10 @@
 #include "Application.h"
 
-#include "Shader.h"
-#include "States.h"
+#include "rendering/Shader.h"
+#include "state/States.h"
 
-#include "Voxels.h"
-#include "Renderer2D.h"
+#include "rendering/Voxels.h"
+#include "rendering/Renderer2D.h"
 
 void Application::run()
 {

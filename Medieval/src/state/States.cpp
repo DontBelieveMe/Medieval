@@ -1,17 +1,17 @@
 #include "States.h"
-#include "Voxels.h"
-#include "includes.h"
-#include "application.h"
+#include "../rendering/Voxels.h"
+#include "../includes.h"
+#include "../Application.h"
 
-#include "Renderer2D.h"
-#include "Texture.h"
+#include "../rendering/Renderer2D.h"
+#include "../rendering/Texture.h"
 
 namespace States
 {
     StateSystem::State entryPoint()
     {
-		static ShaderProgram modelShader("res/vert.shader", "res/frag.shader");
-		static ShaderProgram uiShader("res/vert2D.shader", "res/frag2D.shader");
+		static ShaderProgram modelShader("res/shaders/vert.shader", "res/shaders/frag.shader");
+		static ShaderProgram uiShader("res/shaders/vert2D.shader", "res/shaders/frag2D.shader");
 
         static Voxels vox(4);
         static Model ent     = vox.loadModel("res/models/Ent.obj",     "res/models/Ent.png");
@@ -30,13 +30,12 @@ namespace States
 			0.f, 0.f,  0.f,			  1.0f, 0.0f, 0.0f,		0.f, 1.f,
 			800, 0,    0.0f,		  0.0f, 1.0f, 0.0f,		1.f, 1.f,
 			0,   600,  0.0f,		  0.0f, 0.0f, 1.0f,		0.f, 0.0f
-		};
+    	};
 
 		static Renderer2D r2d(&uiShader, glm::ortho(0.f, 800.f, 0.f, 600.f));
 		r2d.createVertexArray(vertices, sizeof(vertices));
 
 		static Texture test2dtexture("res/texture.png");
-	
 		glEnable(GL_DEPTH_TEST);
 		
         return
