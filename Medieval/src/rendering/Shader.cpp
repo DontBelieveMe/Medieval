@@ -105,3 +105,8 @@ void ShaderProgram::uploadMatrix4f(const std::string& name, const glm::mat4& mat
 {
 	uploadMatrix4f(getUniformLoc(name), matrix);
 }
+
+void ShaderProgram::deleteProgram()
+{
+    glDeleteProgram(program);
+}
