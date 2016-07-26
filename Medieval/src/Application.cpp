@@ -2,6 +2,7 @@
 
 #include "rendering/Shader.h"
 #include "state/States.h"
+#include "Input.h"
 
 #include "rendering/Voxels.h"
 #include "rendering/Renderer2D.h"
@@ -30,6 +31,8 @@ void Application::init()
 #else
 	glfwSwapInterval(0);
 #endif
+
+    Input::init();
 }
 
 void Application::mainLoop()
@@ -47,7 +50,7 @@ void Application::mainLoop()
 
 		while (delta > 0)
 		{
-			glfwPollEvents();
+		    Input::tick(); // PollEvents(); has been moved here.
 			StateSystem::tick(); // State system is done, use it. No code here plz.
 			ticks++;
 			delta -= 1.0;

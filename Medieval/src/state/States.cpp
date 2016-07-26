@@ -2,6 +2,8 @@
 #include "../rendering/Voxels.h"
 #include "../includes.h"
 #include "../Application.h"
+#include "../Input.h"
+#include "../Utils.h"
 
 #include "../rendering/Renderer2D.h"
 #include "../rendering/Texture.h"
@@ -21,7 +23,7 @@ namespace States
         vox.setDrawingStage();
 
         static GLfloat rot = 0;
-		
+
 		modelShader.use();
 		modelShader.uploadMatrix4f(0, glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.001f, 10000.0f));
 		modelShader.halt();
@@ -37,7 +39,7 @@ namespace States
 
 		static Texture test2dtexture("res/images/texture.png");
 		glEnable(GL_DEPTH_TEST);
-		
+
         return
         {
             []{ // Tick
@@ -55,7 +57,7 @@ namespace States
 				modelShader.uploadMatrix4f(1, glm::rotate(glm::translate(glm::mat4(1.0), glm::vec3(6, -2, -15)), glm::radians(rot), glm::vec3(0, 1, 0)));
                 drawModel(grothar);
 				modelShader.halt();
-				
+
 				// To disable the temporary 2D rendering on the screen
 				// Comment out these lines
 				glDisable(GL_CULL_FACE);
