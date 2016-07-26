@@ -10,8 +10,8 @@ namespace States
 {
     StateSystem::State entryPoint()
     {
-		static ShaderProgram modelShader("res/vert.shader", "res/frag.shader");
-		static ShaderProgram uiShader("res/vert2D.shader", "res/frag2D.shader");
+		static ShaderProgram modelShader("res/shaders/vert.shader", "res/shaders/frag.shader");
+		static ShaderProgram uiShader("res/shaders/vert2D.shader", "res/shaders/frag2D.shader");
 
         static Voxels vox(4);
         static Model ent     = vox.loadModel("res/models/Ent.obj",     "res/models/Ent.png");
@@ -45,7 +45,7 @@ namespace States
 		
 		r2d.createVertexArray(vertices, sizeof(vertices));
 
-		static Texture texture("res/texture.png");
+		static Texture texture("res/images/texture.png");
 
 		glEnable(GL_DEPTH_TEST);
 		
