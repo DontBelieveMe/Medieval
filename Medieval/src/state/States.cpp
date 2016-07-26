@@ -1,10 +1,10 @@
 #include "States.h"
-#include "Voxels.h"
-#include "includes.h"
-#include "application.h"
+#include "../rendering/Voxels.h"
+#include "../includes.h"
+#include "../Application.h"
 
-#include "Renderer2D.h"
-#include "Texture.h"
+#include "../rendering/Renderer2D.h"
+#include "../rendering/Texture.h"
 
 namespace States
 {

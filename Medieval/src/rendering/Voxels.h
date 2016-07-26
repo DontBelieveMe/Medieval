@@ -12,8 +12,8 @@ it IS the drawing stage.
 */
 #pragma once
 
-#include "includes.h"
-#include "../extern/lodepng.h"
+#include "../includes.h"
+#include "../../extern/lodepng.h"
 
 #include <vector>
 #include <sstream>
