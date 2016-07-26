@@ -121,14 +121,19 @@ void Voxels::setDrawingStage()
 {
 	loadingStage = false;
 
-    glGenBuffers(1, &vbo);
+	glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * data.size(), &data[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    
-    glGenVertexArrays(1, &vao);
+	
+	glGenBuffers(1, &ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLint) * indices.size(), &indices[0], GL_STATIC_DRAW);
+
+	glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vao);
+
     glEnableVertexAttribArray(VERTEX_ATTRIB);
     glEnableVertexAttribArray(TEXTURE_ATTRIB);
     glEnableVertexAttribArray(NORMAL_ATTRIB);
@@ -152,4 +157,10 @@ void Voxels::destroy()
     glDeleteVertexArrays(1, &vao);//releases vbo, to also be deleted
     glDeleteBuffers(1, &vbo);
     glDeleteTextures(1, &texture);
+}
+
+void Voxels::draw()
+{
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void*)0);
 }

@@ -56,7 +56,7 @@ void Application::mainLoop()
 		while (delta > 0)
 		{
 			glfwPollEvents();
-            rot += 1.0;
+            rot += 0.5f;
 			//StateSystem::tick();
 			ticks++;
 			delta -= 1.0;

@@ -19,7 +19,7 @@ it IS the drawing stage.
 #include <fstream>
 
 #define PALETTE_WIDTH 256 //all magica voxel palettes are the same size
-#define drawModel(model) glDrawArrays(GL_TRIANGLES, model.index, model.count)
+#define drawModel(model) glDrawArrays(GL_TRIANGLES, model.index, model.count);
 
 struct Model;
 
@@ -30,7 +30,8 @@ private:
 	bool loadingStage = true; //starts off true
     int currentIndex = 0;
 	std::vector<GLfloat> data; //only contains data in loading stage
-	GLuint vao, vbo; //this is for drawing stage
+	std::vector<int>     indices;
+	GLuint vao, vbo, ibo; //this is for drawing stage
 
 	std::vector<GLuint> pixels;//load stage texture
 	int currentY = 0;
@@ -52,6 +53,8 @@ public:
     inline void halt() { glBindVertexArray(0); glBindTexture(GL_TEXTURE_2D, 0); };
 
     void destroy();
+
+	void draw();
 
 };
 
