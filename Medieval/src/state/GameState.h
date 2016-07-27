@@ -12,7 +12,7 @@ private:
     Voxels* vox;
     Model ent;
 
-    GLfloat rot;
+    GLfloat rot = 0;
 
 public:
 

@@ -25,7 +25,7 @@ void GameState::render()
     modelShader->uploadMatrix4f("projection", glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.001f, 200.0f));
     glm::mat4 model = glm::mat4(1.0);
     model = glm::translate(model, glm::vec3(0, -15, -40));
-    model = model * glm::rotate(model, glm::radians(rot), glm::vec3(0, 1, 0));
+    model = glm::rotate(model, glm::radians(rot), glm::vec3(0, 1, 0));
     modelShader->uploadMatrix4f("model", model);
     drawModel(ent);
     vox->halt();
