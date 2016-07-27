@@ -1,3 +1,5 @@
+// Input system by Egor
+
 #pragma once
 
 #include <set>

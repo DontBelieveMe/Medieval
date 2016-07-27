@@ -1,7 +1,7 @@
 #include "Renderer2D.h"
 
 Renderer2D::Renderer2D(ShaderProgram *shader, const std::string & texPath, glm::ivec2 sizeInTiles, glm::mat4 &ortho)
-    : shaderRef(shader), sizeInTiles(sizeInTiles)
+    : sizeInTiles(sizeInTiles), shaderRef(shader)
 {
     GLint previousShader;
     glGetIntegerv(GL_CURRENT_PROGRAM, &previousShader);
@@ -13,7 +13,7 @@ Renderer2D::Renderer2D(ShaderProgram *shader, const std::string & texPath, glm::
 }
 
 Renderer2D::Renderer2D(ShaderProgram *shader, const std::string& texPath, glm::ivec2 sizeInTiles)
-	: shaderRef(shader), sizeInTiles(sizeInTiles)
+	: sizeInTiles(sizeInTiles), shaderRef(shader)
 {
     GLint previousShader;
     glGetIntegerv(GL_CURRENT_PROGRAM, &previousShader);
@@ -29,9 +29,9 @@ void Renderer2D::createVertexArray()
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
-	GLuint indices[] = 
+	GLuint indices[] =
 	{
-		0, 1, 2, 0, 4, 2 
+		0, 1, 2, 0, 4, 2
 	};
 	glGenBuffers(1, &ibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
@@ -40,7 +40,7 @@ void Renderer2D::createVertexArray()
 
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    float data[] = 
+    float data[] =
     {
         0.0, 0.0, 0.0,      0.0, 0.0,
         1.0, 0.0, 0.0,      1.0, 0.0,
@@ -66,7 +66,7 @@ void Renderer2D::drawTile(int tx, int ty, int tw, int th, int xOff, int yOff, in
 	shaderRef->uploadVector2f("tileWH", sizeInTiles);
 	GLint tileLoc = shaderRef->getUniformLoc("tile");
     glUniform4f(tileLoc, tx, ty, tw, th);
-	
+
 	glm::mat4 model = glm::translate(glm::mat4(1.0), glm::vec3(xOff, yOff, 0.0f));
     model           = glm::scale(model, glm::vec3(width, height, 1.0f));
     shaderRef->uploadMatrix4f("model", model);
