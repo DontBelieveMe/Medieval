@@ -25,6 +25,10 @@ static std::map<std::string, int> config{INPUT_KEYS_LIST};
 #undef STATIC
 #undef KEY
 
+#define KEY(token, name, mode, value) {#token, &Keys::token},
+static const std::map<std::string, Input::Key *> key_addresses{INPUT_KEYS_LIST};
+#undef KEY
+
 void Input::init()
 {
     static bool once;
@@ -56,6 +60,8 @@ void Input::init()
         scroll.y += y;
     });
 
+
+
     // Reading controls from file
     std::ifstream config_file(controls_config_file_name);
     if (config_file)
@@ -68,9 +74,11 @@ void Input::init()
             if (!config_file)
                 break;
             auto it = config.find(a);
-            if (it == config.end())
+            auto ptr_it = key_addresses.find(a);
+            if (it == config.end() || ptr_it == key_addresses.end())
                 continue;
             it->second = b;
+            ptr_it->second->code = b;
         }
         config_file.close();
     }
@@ -159,10 +167,13 @@ int Input::keyAnyReleased()
     return *keys_released.begin();
 }
 
-void Input::Key::setCode(int value)
+void Input::Key::set(int value)
 {
     if (!configurable)
         Error("Attempt to change non-configurable key \"", name, "\".");
+
+    code = value;
+
     config[internal_name] = value;
 
     std::ofstream config_file(controls_config_file_name);

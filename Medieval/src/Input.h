@@ -65,6 +65,8 @@ class Input
     {
         // This class is for internal use. Do not use it directly. Use namespace Keys below;
 
+        friend class Input;
+
         int internal_id, code;
         std::string internal_name, name;
         bool configurable;
@@ -101,7 +103,7 @@ class Input
         }
 
         // This changes the value and updates the config file.
-        void setCode(int value);
+        void set(int value);
 
         bool down() const
         {
@@ -137,17 +139,6 @@ namespace Keys
     #define KEY(token, name, mode, value) extern Input::Key token;
     INPUT_KEYS_LIST
     #undef KEY
-
-    namespace Enum
-    {
-        enum
-        {
-            // Contains the list of tokens.
-            #define KEY(token, name, mode, value) token,
-            INPUT_KEYS_LIST
-            #undef KEY
-        };
-    }
 
     // Amount of keys.
     int keyCount();
