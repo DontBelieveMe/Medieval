@@ -140,17 +140,6 @@ namespace Keys
     INPUT_KEYS_LIST
     #undef KEY
 
-    namespace Enum
-    {
-        enum
-        {
-            // Contains the list of tokens.
-            #define KEY(token, name, mode, value) token,
-            INPUT_KEYS_LIST
-            #undef KEY
-        };
-    }
-
     // Amount of keys.
     int keyCount();
     // Returns a reference to a specific key. Use Key::name instead if possible. Useful for "for" loops.
