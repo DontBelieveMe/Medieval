@@ -3,7 +3,7 @@
 
 using namespace wave;
 
-bool cmpStrArray(char *one, char *two, int size)
+bool cmpStrArray(const char *one, const char *two, int size)
 {
 	for (int i = 0; i <= size; ++i) {
 		if (one[i] != two[i])
@@ -16,7 +16,7 @@ WaveFile::WaveFile(const std::string& path)
 {
 	using namespace wave;
 	using namespace wave::detail;
-	
+
 	FILE *file = fopen(path.c_str(), "rb");
 
 	if (!file) {
@@ -59,24 +59,24 @@ WaveFile::WaveFile(const std::string& path)
 
 	this->size = dataHeader.subChunk2Size;
 	this->frequency = format.sampleRate;
-	
+
 	if (format.numChannels == 1)
 	{
 		if (format.bitsPerSample == 8)
 		{
 			this->format = AL_FORMAT_MONO8;
-		} 
+		}
 		else if(format.bitsPerSample == 16)
 		{
 			this->format = AL_FORMAT_MONO16;
 		}
-	} 
+	}
 	else if (format.numChannels == 2)
 	{
 		if (format.bitsPerSample == 8)
 		{
 			this->format = AL_FORMAT_STEREO8;
-		} 
+		}
 		else if (format.bitsPerSample == 16)
 		{
 			this->format = AL_FORMAT_STEREO16;
