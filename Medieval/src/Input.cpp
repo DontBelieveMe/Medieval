@@ -1,5 +1,7 @@
 #include "Input.h"
 
+#include "Utils.h"
+
 #include <cmath>
 #include <cstdlib>
 #include <GLFW/glfw3.h>
@@ -13,10 +15,7 @@ void Input::init()
 {
     static bool once;
     if (once)
-    {
-        std::cout << "Input::init() called twice!\n";
-        std::exit(0);
-    }
+        Error("Input::init() was called twice!");
     once = 1;
 
     glfwSetKeyCallback(Application::getInstance().getWindowHandle(),
