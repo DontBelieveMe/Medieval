@@ -6,7 +6,7 @@ GLuint AdditionalVAO::vbo = 0;
 
 GLfloat* AdditionalVAO::getData(GLsizei & size)
 {
-    float dataArray[] = 
+    static float dataArray[] =
     {
         //THIS IS WHERE THE DATA MUST BE HAND-CODED
 
