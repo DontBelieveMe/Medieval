@@ -8,5 +8,7 @@ uniform sampler2D textureSampler;
 
 void main()
 {
-	out_Col = texture(textureSampler, passUv);
+	vec4 col = texture(textureSampler, passUv);
+    if (col.w != 1.0) discard;
+    out_Col = col;
 }
