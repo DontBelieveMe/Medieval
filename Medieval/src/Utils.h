@@ -40,7 +40,7 @@ template <typename ...P> const char *Jo(P &&... p)
 }
 
 // Prints error and terminates application. Same syntax as Jo().
-template <typename ...P> void Error(P &&... p)
+template <typename ...P> [[noreturn]] void Error(P &&... p)
 {
 	std::cout << Jo(p...) << std::endl;
 	system("pause");

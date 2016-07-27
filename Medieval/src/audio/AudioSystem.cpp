@@ -5,6 +5,8 @@
 #include "../includes.h"
 
 #include "WaveFile.h"
+#include "Source.h"
+
 #include "OpenAL/al.h"
 #include "OpenAL/alc.h"
 
@@ -16,21 +18,24 @@ AudioSystem::AudioSystem()
 	device = alcOpenDevice(NULL);
 	context = alcCreateContext(device, NULL);
 	alcMakeContextCurrent(context);
-
-	wave::WaveFile file("res/audio/bounce.wav");
+	
+	wave::WaveFile file("res/audio/NoTimeToShine.wav");
 	ALuint buffer;
 	alGenBuffers(1, &buffer);
 	alBufferData(buffer, file.getFormat(), file.data(), file.getSize(), file.getFreq());
 	alListener3f(AL_POSITION, 0, 0, 0);
 	alListener3f(AL_VELOCITY, 0, 0, 0);
-	ALuint source;
+	Source audioSource;
+	audioSource.play(buffer);
+
+	/*ALuint source;
 	alGenSources(1, &source);
 	alSourcef(source, AL_GAIN, 1.f);
 	alSourcef(source, AL_PITCH, 1.f);
 	alSource3f(source, AL_POSITION, 0, 0, 0);
 
 	alSourcei(source, AL_BUFFER, buffer);
-	alSourcePlay(source);
+	alSourcePlay(source)*/;
 
 	/*alDeleteSources(1, &source);
 	alDeleteBuffers(1, &buffer);
