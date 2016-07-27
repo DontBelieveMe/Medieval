@@ -59,30 +59,102 @@ class Input
     static bool wheelLeft () {return scroll.x < 0;}
     static bool wheelRight() {return scroll.x > 0;}
 
+
+
     class Key
     {
-        int code;
+        // This class is for internal use. Do not use it directly. Use namespace Keys below;
+
+        int internal_id, code;
+        std::string internal_name, name;
+        bool configurable;
+
       public:
-        Key()
+        Key(const char *key_name_internal, const char *key_name, bool can_change, int value)
         {
-            code = 0;
-        }
-        Key(int value)
-        {
+            static int counter = 0;
+            internal_id = counter++;
             code = value;
+            internal_name = key_name_internal;
+            name = key_name;
+            configurable = can_change;
         }
+
         int getCode() const
         {
             return code;
         }
-        void setCode(int value)
+
+        bool isConfigurable() const
         {
-            code = value;
+            return configurable;
+        }
+
+        std::string getName() const
+        {
+            return name;
+        }
+
+        std::string getInternalName() const
+        {
+            return internal_name;
+        }
+
+        // This changes the value and updates the config file.
+        void setCode(int value);
+
+        bool down() const
+        {
+            return keyDown(code);
+        }
+        bool pressed() const
+        {
+            return keyPressed(code);
+        }
+        bool released() const
+        {
+            return keyReleased(code);
         }
     };
 };
 
 namespace Keys
 {
+    /* < How to register a new key - noob guide. >
+     * Add following below:
+     *     KEY(name, "Full name", mode, value) \
+     * `name`        - The name you want to use in the code. It is also used in the config file.
+     * `"Full name"` - The name you want to display.
+     * `mode`        - Can be CONFIGURABLE or STATIC. The first is saved to config and can be changed, the second is not.
+     * `value`       - Default value. Use GLFW_KEY_* enum.
+     *
+     * After that Keys::name will represent your new key. See class Input::Key for interface.
+     */
+    #define INPUT_KEYS_LIST \
+        KEY(toggle_ui, "Toggle UI", CONFIGURABLE, GLFW_KEY_U) \
 
+    // Contains Key objects listed above. Tokens are used as names.
+    #define KEY(token, name, mode, value) extern Input::Key token;
+    INPUT_KEYS_LIST
+    #undef KEY
+
+    namespace Enum
+    {
+        enum
+        {
+            // Contains the list of tokens.
+            #define KEY(token, name, mode, value) token,
+            INPUT_KEYS_LIST
+            #undef KEY
+        };
+    }
+
+    // Amount of keys.
+    int keyCount();
+    // Returns a reference to a specific key. Use Key::name instead if possible. Useful for "for" loops.
+    Input::Key &getKey(int pos);
+
+    // Same for configurable keys.
+    int configurableKeyCount();
+    Input::Key &getConfigurableKey(int pos);
 }
