@@ -1,3 +1,11 @@
+/*
+*--------
+*  Note
+*--------
+* - This file is just a temporary test bed for audio 
+*   shananagins. It is not a permanant feature and
+*   was just to let me (Barney) fiddle with my sound system
+*/
 #pragma once
 
 #include "Source.h"

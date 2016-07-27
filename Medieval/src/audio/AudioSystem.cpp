@@ -43,7 +43,7 @@ void AudioSystem::destroy()
 bool right = true;
 void AudioSystem::tick()
 {
-	if (Input::keyPressed(GLFW_KEY_P))
+	if (Keys::toggle_audio.pressed())
 	{
 		if (source->isPlaying())
 			source->pause();
