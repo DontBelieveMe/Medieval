@@ -62,7 +62,6 @@ void AudioSystem::tick()
 			xPos -= 0.3f;
 		else
 			xPos += 0.3f;
-		std::cout << xPos << std::endl;
 		source->setPosition(glm::vec3(xPos, 0, 4));
 	}
 }

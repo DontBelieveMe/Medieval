@@ -8,7 +8,6 @@
  (E.G, if you needed a cube to test a collision etc...)
 
  all models should be written directly into the array, and can be defined, as shown
-
   */
 
 #pragma once
@@ -20,12 +19,13 @@
 class AdditionalVAO
 {
 private:
-    static GLuint vao;
-    static GLuint vbo;
 
-    static GLfloat* getData(GLsizei & size); //this should return a copy, do not change to a ref
+    static GLfloat* getData(GLsizei & size, std::vector<GLushort>& indices); //this should return a copy, do not change to a ref
 
 public:
+    static GLuint vao;
+    static GLuint vbo;
+	static GLuint ibo;
 
     static void init();
 
@@ -34,5 +34,4 @@ public:
     static void halt();
 
     static void destroy();
-
 };
