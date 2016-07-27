@@ -20,44 +20,6 @@ Renderer2D::Renderer2D(ShaderProgram *shader, const std::string& texPath, glm::i
 	shader->uploadMatrix4f("ortho", glm::ortho(0.f, (float)WIDTH, (float)HEIGHT, 0.0f, 1.0f, -1.0f));
     glUseProgram(previousShader);
     tex = new Texture(texPath);
-    createVertexArray();
-}
-
-void Renderer2D::createVertexArray()
-{
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
-	GLuint indices[] =
-	{
-		0, 1, 2, 0, 4, 2
-	};
-	glGenBuffers(1, &ibo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    float data[] =
-    {
-        0.0, 0.0, 0.0,      0.0, 0.0,
-        1.0, 0.0, 0.0,      1.0, 0.0,
-        1.0, 1.0, 0.0,      1.0, 1.0,
-
-        0.0, 0.0, 0.0,      0.0, 0.0,
-        0.0, 1.0, 0.0,      0.0, 1.0,
-        1.0, 1.0, 0.0,      1.0, 1.0,
-    };
-
-	glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, (void*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, (void*)(sizeof(GLfloat) * 3));
-	glEnableVertexAttribArray(1);
-    glBindVertexArray(0);
-
-    count = 6;
 }
 
 void Renderer2D::drawTile(int tx, int ty, int tw, int th, int xOff, int yOff, int width, int height)
