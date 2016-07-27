@@ -1,6 +1,8 @@
 #include "GameState.h"
 
 #include "../Input.h"
+#include "OpenAL/al.h"
+#include "../audio/AudioSystem.h"
 
 GameState::GameState()
 {
@@ -16,9 +18,9 @@ GameState::GameState()
     /*                                                                            |
                                                                                   -------> If these are set to the width, and height of the texture, you can draw from the texture per-pixel!
     */
-
-
+	
 	rot = 0;
+	AudioSystem as;
 }
 
 void GameState::tick()
