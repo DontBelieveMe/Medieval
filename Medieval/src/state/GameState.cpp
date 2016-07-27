@@ -17,13 +17,12 @@ GameState::GameState()
                                                                                   -------> If these are set to the width, and height of the texture, you can draw from the texture per-pixel!
     */
 
-
 	rot = 0;
 }
 
 void GameState::tick()
 {
-	if (Input::keyPressed(GLFW_KEY_U))
+	if (Keys::toggle_ui.pressed())
 		showUI = !showUI;
     rot += 1.0;
 }

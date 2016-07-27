@@ -65,6 +65,8 @@ class Input
     {
         // This class is for internal use. Do not use it directly. Use namespace Keys below;
 
+        friend class Input;
+
         int internal_id, code;
         std::string internal_name, name;
         bool configurable;
@@ -101,7 +103,7 @@ class Input
         }
 
         // This changes the value and updates the config file.
-        void setCode(int value);
+        void set(int value);
 
         bool down() const
         {
