@@ -22,8 +22,11 @@ public:
     inline void halt() { glUseProgram(0); }
 
 	GLint getUniformLoc(const std::string& name);
+
 	void  uploadMatrix4f(GLint loc, const glm::mat4& matrix);
 	void  uploadMatrix4f(const std::string& name, const glm::mat4& matrix);
+	void  uploadVector2f(const std::string& name, const glm::vec2& vec2);
+	void  uploadVector4f(const std::string& name, const glm::vec4& vec4);
 
     void deleteProgram();
 

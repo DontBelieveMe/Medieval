@@ -63,11 +63,11 @@ void Renderer2D::createVertexArray()
 
 void Renderer2D::drawTile(int tx, int ty, int tw, int th, int xOff, int yOff, int width, int height)
 {
-    GLint tileWHLoc = shaderRef->getUniformLoc("tileWH");
-    glUniform2f(tileWHLoc, sizeInTiles.x, sizeInTiles.y);
-    GLint tileLoc = shaderRef->getUniformLoc("tile");
+	shaderRef->uploadVector2f("tileWH", sizeInTiles);
+	GLint tileLoc = shaderRef->getUniformLoc("tile");
     glUniform4f(tileLoc, tx, ty, tw, th);
-    glm::mat4 model = glm::translate(glm::mat4(1.0), glm::vec3(xOff, yOff, 0.0f));
+	
+	glm::mat4 model = glm::translate(glm::mat4(1.0), glm::vec3(xOff, yOff, 0.0f));
     model           = glm::scale(model, glm::vec3(width, height, 1.0f));
     shaderRef->uploadMatrix4f("model", model);
 	glBindVertexArray(vao);

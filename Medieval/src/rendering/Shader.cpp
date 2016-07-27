@@ -96,9 +96,20 @@ GLint ShaderProgram::getUniformLoc(const std::string& name)
 	return -1;
 }
 
+
 void  ShaderProgram::uploadMatrix4f(GLint loc, const glm::mat4& matrix)
 {
 	glUniformMatrix4fv(loc, 1, GL_FALSE, &(matrix[0][0]));
+}
+
+void ShaderProgram::uploadVector2f(const std::string& name, const glm::vec2& vec2)
+{
+	glUniform2f(getUniformLoc(name), vec2.x, vec2.y);
+}
+
+void ShaderProgram::uploadVector4f(const std::string& name, const glm::vec4& vec4)
+{
+	glUniform4f(getUniformLoc(name), vec4.x, vec4.y, vec4.z, vec4.w);
 }
 
 void ShaderProgram::uploadMatrix4f(const std::string& name, const glm::mat4& matrix)
