@@ -5,6 +5,7 @@
 #pragma once
 
 #include "../includes.h"
+#include "AdditionalVAO.h"
 #include "Texture.h"
 #include "Shader.h"
 
@@ -20,27 +21,23 @@ public:
     inline void bind()
     {
         shaderRef->use();
+        AdditionalVAO::bind();
         tex->bind();
-        glBindVertexArray(vao);
     }
 
     inline void halt()
     {
         shaderRef->halt();
+        AdditionalVAO::halt();
         tex->halt();
-        glBindVertexArray(0);
     }
 
     ~Renderer2D();
 
 private:
     const glm::ivec2 sizeInTiles;
-	GLuint vao;
-	GLuint vbo;
-	GLuint ibo;
 	int    count;
     Texture* tex;
 	ShaderProgram *shaderRef;
 
-    void createVertexArray();
 };

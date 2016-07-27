@@ -2,6 +2,7 @@
 
 #include "rendering/Shader.h"
 //#include "state/States.h"
+#include "rendering/AdditionalVAO.h"
 #include "state/StateSystem.h"
 #include "Input.h"
 
@@ -35,6 +36,8 @@ void Application::init()
 
     StateSystem::get().setDefaultState();
     Input::init();
+
+    AdditionalVAO::init();//same for all states, so initialized here, needs to be bound on use.
 }
 
 void Application::mainLoop()
@@ -76,6 +79,7 @@ void Application::mainLoop()
 void Application::destroy()
 {
     StateSystem::get().destroy();
+    AdditionalVAO::destroy();//states don't need to worry about this
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }

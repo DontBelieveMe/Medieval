@@ -9,7 +9,6 @@ Renderer2D::Renderer2D(ShaderProgram *shader, const std::string & texPath, glm::
 	shader->uploadMatrix4f("ortho", ortho);		// Probably shouldn't hardcode this name/location: TODO change
     glUseProgram(previousShader);
     tex = new Texture(texPath);
-    createVertexArray();
 }
 
 Renderer2D::Renderer2D(ShaderProgram *shader, const std::string& texPath, glm::ivec2 sizeInTiles)
@@ -70,11 +69,12 @@ void Renderer2D::drawTile(int tx, int ty, int tw, int th, int xOff, int yOff, in
 	glm::mat4 model = glm::translate(glm::mat4(1.0), glm::vec3(xOff, yOff, 0.0f));
     model           = glm::scale(model, glm::vec3(width, height, 1.0f));
     shaderRef->uploadMatrix4f("model", model);
-	glBindVertexArray(vao);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    DRAW_ADDITIONAL(STANDARD_QUAD);
+	/*glBindVertexArray(vao);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);                     i didn't know this had been changed to elements. The same can be done to AdditionalVAO if necessary :/
 	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, (void*)0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	glBindVertexArray(0);*/
 }
 
 Renderer2D::~Renderer2D()
@@ -84,7 +84,5 @@ Renderer2D::~Renderer2D()
 
 void Renderer2D::destroy()
 {
-	glDeleteBuffers(1, &vbo);
-	glDeleteVertexArrays(1, &vao);
     tex->destroy();
 }
