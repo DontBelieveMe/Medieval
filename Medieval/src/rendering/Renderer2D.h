@@ -37,6 +37,7 @@ private:
     const glm::ivec2 sizeInTiles;
 	GLuint vao;
 	GLuint vbo;
+	GLuint ibo;
 	int    count;
     Texture* tex;
 	ShaderProgram *shaderRef;

@@ -29,6 +29,15 @@ void Renderer2D::createVertexArray()
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
+	GLuint indices[] = 
+	{
+		0, 1, 2, 0, 4, 2 
+	};
+	glGenBuffers(1, &ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
     float data[] = 
@@ -41,6 +50,7 @@ void Renderer2D::createVertexArray()
         0.0, 1.0, 0.0,      0.0, 1.0,
         1.0, 1.0, 0.0,      1.0, 1.0,
     };
+
 	glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, (void*)0);
 	glEnableVertexAttribArray(0);
@@ -60,7 +70,11 @@ void Renderer2D::drawTile(int tx, int ty, int tw, int th, int xOff, int yOff, in
     glm::mat4 model = glm::translate(glm::mat4(1.0), glm::vec3(xOff, yOff, 0.0f));
     model           = glm::scale(model, glm::vec3(width, height, 1.0f));
     shaderRef->uploadMatrix4f("model", model);
-	glDrawArrays(GL_TRIANGLES, 0, count);
+	glBindVertexArray(vao);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, (void*)0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }
 
 Renderer2D::~Renderer2D()
