@@ -2,7 +2,6 @@
 
 #include "../Input.h"
 #include "OpenAL/al.h"
-#include "../audio/AudioSystem.h"
 
 GameState::GameState()
 {
@@ -18,14 +17,15 @@ GameState::GameState()
     /*                                                                            |
                                                                                   -------> If these are set to the width, and height of the texture, you can draw from the texture per-pixel!
     */
+  fontTest = new Font(uiShader, "res/images/font.png");
 
-	fontTest = new Font(uiShader, "res/images/font.png");
 	rot = 0;
-	AudioSystem as;
+	audioSystem = new AudioSystem();
 }
 
 void GameState::tick()
 {
+	audioSystem->tick();
 	if (Keys::toggle_ui.pressed())
 		showUI = !showUI;
     rot += 1.0;
@@ -85,12 +85,14 @@ void GameState::render()
 
 void GameState::destroy()
 {
+	audioSystem->destroy();
     modelShader->halt();
     modelShader->deleteProgram();
 }
 
 GameState::~GameState()
 {
+	delete audioSystem;
     delete vox;
     delete modelShader;
 }
