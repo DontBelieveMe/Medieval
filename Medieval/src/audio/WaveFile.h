@@ -8,19 +8,17 @@
 #include "../includes.h"
 #include "OpenAL/al.h"
 
-typedef unsigned char byte;	// Move this somewhere else
-
 namespace wave 
 {
 	namespace detail {
-		struct RIFF
+		struct RIFF 
 		{
 			char    chunkId[4];
 			int32_t chunkSize;
 			char    format[4];
 		};
 
-		struct FMT
+		struct FMT  
 		{
 			char subChunk1ID[4];
 			int32_t subChunk1Size;
@@ -32,7 +30,7 @@ namespace wave
 			int16_t bitsPerSample;
 		};
 
-		struct DATA
+		struct DATA 
 		{
 			char subChunk2ID[4];
 			int32_t subChunk2Size;
@@ -62,7 +60,8 @@ namespace wave
 		inline ALenum  getFormat() const { return format; }
 
 		inline byte   *data() const { return soundData; }
-		
+
+		inline bool isMono() { return (format == AL_FORMAT_MONO8 || AL_FORMAT_MONO16); }
 	};
 
 }

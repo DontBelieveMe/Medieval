@@ -3,42 +3,66 @@
 #include <stdio.h>
 
 #include "../includes.h"
-
-#include "WaveFile.h"
-#include "Source.h"
-
 #include "OpenAL/al.h"
-#include "OpenAL/alc.h"
+#include "../Input.h"
 
-
+float xPos = 20;
 AudioSystem::AudioSystem()
 {
-	ALCdevice *device;
-	ALCcontext *context;
 	device = alcOpenDevice(NULL);
 	context = alcCreateContext(device, NULL);
 	alcMakeContextCurrent(context);
 	
-	wave::WaveFile file("res/audio/NoTimeToShine.wav");
-	ALuint buffer;
-	alGenBuffers(1, &buffer);
-	alBufferData(buffer, file.getFormat(), file.data(), file.getSize(), file.getFreq());
+	wav = new wave::WaveFile("res/audio/bounce.wav");
+	buffer = new Buffer(*wav);
+	
 	alListener3f(AL_POSITION, 0, 0, 0);
 	alListener3f(AL_VELOCITY, 0, 0, 0);
-	Source audioSource;
-	audioSource.play(buffer);
 
-	/*ALuint source;
-	alGenSources(1, &source);
-	alSourcef(source, AL_GAIN, 1.f);
-	alSourcef(source, AL_PITCH, 1.f);
-	alSource3f(source, AL_POSITION, 0, 0, 0);
+	source = new Source();
+	source->setLooping(true);
+	source->play(buffer);
 
-	alSourcei(source, AL_BUFFER, buffer);
-	alSourcePlay(source)*/;
+	source->setPosition(glm::vec3(xPos, 0, 4));
+}
 
-	/*alDeleteSources(1, &source);
-	alDeleteBuffers(1, &buffer);
+void AudioSystem::destroy()
+{
+	buffer->destroy();
+	delete buffer;
+	
+	source->destroy();
+	delete source;
+
+	wav->destroy();
+	delete wav;
+
 	alcDestroyContext(context);
-	alcCloseDevice(device);*/
+	alcCloseDevice(device);
+}
+bool right = true;
+void AudioSystem::tick()
+{
+	if (Input::keyPressed(GLFW_KEY_P))
+	{
+		if (source->isPlaying())
+			source->pause();
+		else
+			source->play();
+	}
+	if (xPos < -20)
+		right = false;
+	
+	if (xPos > 20)
+		right = true;
+		
+	if (source->isPlaying())
+	{
+		if (right)
+			xPos -= 0.3f;
+		else
+			xPos += 0.3f;
+		std::cout << xPos << std::endl;
+		source->setPosition(glm::vec3(xPos, 0, 4));
+	}
 }

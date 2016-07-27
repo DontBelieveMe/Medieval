@@ -27,3 +27,5 @@ using std::endl;
 
 #include <string>
 #include <vector>
+
+typedef unsigned char byte;

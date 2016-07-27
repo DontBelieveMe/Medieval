@@ -7,6 +7,7 @@
 
 #include "../rendering/Renderer2D.h"
 #include "../rendering/Texture.h"
+#include "../audio/AudioSystem.h"
 
 class GameState : public State
 {
@@ -22,6 +23,7 @@ private:
     Model      ent;
     GLfloat    rot = 0;
 
+	AudioSystem *audioSystem;
 public:
 
     GameState();
