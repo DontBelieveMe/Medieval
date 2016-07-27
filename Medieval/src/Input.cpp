@@ -4,12 +4,30 @@
 
 #include <cmath>
 #include <cstdlib>
+#include <fstream>
+#include <initializer_list>
+#include <map>
+#include <string>
 #include <GLFW/glfw3.h>
+
+static constexpr const char *controls_config_file_name = "controls.config";
 
 glm::ivec2 Input::mouse_pos, Input::prev_mouse_pos;
 std::set<int> Input::keys_down, Input::keys_pressed, Input::keys_released;
 bool Input::mouse_down[max_mouse_buttons], Input::mouse_pressed[max_mouse_buttons], Input::mouse_released[max_mouse_buttons];
 glm::dvec2 Input::scroll;
+
+#define CONFIGURABLE(token, value) {token, value},
+#define STATIC(token, value) /* nothing */
+#define KEY(token, name, mode, value) mode(#token, value)
+static std::map<std::string, int> config{INPUT_KEYS_LIST};
+#undef CONFIGURABLE
+#undef STATIC
+#undef KEY
+
+#define KEY(token, name, mode, value) {#token, &Keys::token},
+static const std::map<std::string, Input::Key *> key_addresses{INPUT_KEYS_LIST};
+#undef KEY
 
 void Input::init()
 {
@@ -41,6 +59,29 @@ void Input::init()
         scroll.x += x;
         scroll.y += y;
     });
+
+
+
+    // Reading controls from file
+    std::ifstream config_file(controls_config_file_name);
+    if (config_file)
+    {
+        while (1)
+        {
+            std::string a;
+            int b;
+            config_file >> a >> b;
+            if (!config_file)
+                break;
+            auto it = config.find(a);
+            auto ptr_it = key_addresses.find(a);
+            if (it == config.end() || ptr_it == key_addresses.end())
+                continue;
+            it->second = b;
+            ptr_it->second->code = b;
+        }
+        config_file.close();
+    }
 }
 
 void Input::tick()
@@ -82,5 +123,114 @@ void Input::tick()
         auto iterator = keys_down.find(it);
         if (iterator != keys_down.end())
             keys_down.erase(iterator);
+    }
+}
+
+int Input::mouseButtonAnyDown()
+{
+    for (int i = 0; i < max_mouse_buttons; i++)
+        if (mouse_down[i])
+            return i + 1;
+    return 0;
+}
+int Input::mouseButtonAnyPressed()
+{
+    for (int i = 0; i < max_mouse_buttons; i++)
+        if (mouse_pressed[i])
+            return i + 1;
+    return 0;
+}
+int Input::mouseButtonAnyReleased()
+{
+    for (int i = 0; i < max_mouse_buttons; i++)
+        if (mouse_released[i])
+            return i + 1;
+    return 0;
+}
+
+int Input::keyAnyDown()
+{
+    if (keys_down.size() == 0)
+        return 0;
+    return *keys_down.begin();
+}
+int Input::keyAnyPressed()
+{
+    if (keys_pressed.size() == 0)
+        return 0;
+    return *keys_pressed.begin();
+}
+int Input::keyAnyReleased()
+{
+    if (keys_released.size() == 0)
+        return 0;
+    return *keys_released.begin();
+}
+
+void Input::Key::set(int value)
+{
+    if (!configurable)
+        Error("Attempt to change non-configurable key \"", name, "\".");
+
+    code = value;
+
+    config[internal_name] = value;
+
+    std::ofstream config_file(controls_config_file_name);
+    if (config_file)
+    {
+        for (const auto &it : config)
+        {
+            config_file << it.first << ' ' << it.second << '\n';
+        }
+        config_file.close();
+    }
+}
+
+namespace Keys
+{
+    #define CONFIGURABLE  1
+    #define STATIC        0
+    #define KEY(token, name, mode, value) Input::Key token(#token, name, mode, value);
+    INPUT_KEYS_LIST
+    #undef CONFIGURABLE
+    #undef STATIC
+    #undef KEY
+
+    int keyCount()
+    {
+        #define KEY(token, name, mode, value) 0,
+        return (int)std::initializer_list<int>{INPUT_KEYS_LIST}.size();
+        #undef KEY
+    }
+
+    Input::Key &getKey(int pos)
+    {
+        #define KEY(token, name, mode, value) if (pos == 0) return token; pos--;
+        INPUT_KEYS_LIST
+        #undef KEY
+        Error("Wrong key id: ", pos);
+    }
+
+    int configurableKeyCount()
+    {
+        #define CONFIGURABLE 0,
+        #define STATIC /* nothing */
+        #define KEY(token, name, mode, value) mode
+        return (int)std::initializer_list<int>{INPUT_KEYS_LIST}.size();
+        #undef CONFIGURABLE
+        #undef STATIC
+        #undef KEY
+    }
+    Input::Key &getConfigurableKey(int pos)
+    {
+        #define CONFIGURABLE(token) if (pos == 0) return token; pos--;
+        #define STATIC(token) /* nothing */
+        #define KEY(token, name, mode, value) mode(token)
+        INPUT_KEYS_LIST
+        #undef CONFIGURABLE
+        #undef STATIC
+        #undef KEY
+        Error("Wrong configurable key id: ", pos);
     }
 }

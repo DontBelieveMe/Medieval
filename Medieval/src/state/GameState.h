@@ -2,6 +2,7 @@
 #include "../includes.h"
 #include "../rendering/Shader.h"
 #include "../rendering/Voxels.h"
+#include "../ui/Font.h"
 #include "State.h"
 
 #include "../rendering/Renderer2D.h"
@@ -14,6 +15,8 @@ private:
 	ShaderProgram* uiShader;
 	Renderer2D*	   renderer2D;
     bool           showUI = true;
+
+    Font* fontTest;
 
     Voxels*    vox;
     Model      ent;

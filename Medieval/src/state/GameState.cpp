@@ -18,14 +18,15 @@ GameState::GameState()
     /*                                                                            |
                                                                                   -------> If these are set to the width, and height of the texture, you can draw from the texture per-pixel!
     */
-	
+
+	fontTest = new Font(uiShader, "res/images/font.png");
 	rot = 0;
 	AudioSystem as;
 }
 
 void GameState::tick()
 {
-	if (Input::keyPressed(GLFW_KEY_U))
+	if (Keys::toggle_ui.pressed())
 		showUI = !showUI;
     rot += 1.0;
 }
@@ -58,7 +59,7 @@ void GameState::render()
         renderer2D->drawTile(1, 0, 1, 2, 100, 200, 64, 128);
 
         unsigned int xOff = 0;
-        
+
         for (int y = 0; y < 2; y++)
         {
             for (int x = 0; x < 2; x++)
@@ -69,6 +70,16 @@ void GameState::render()
         }
 
         renderer2D->halt();
+
+        uiShader->use();
+        fontTest->bind();
+        fontTest->drawString("THE QUICK BROWN FOX JUMPED OVER THE LAZY DOG 0123456789", 50, 100, 1.0);
+        fontTest->drawString("the quick brown fox", 50, 150, 5.0);
+        fontTest->drawString("jumped over the", 50, 250, 5.0);
+        fontTest->drawString("lazy dog,*&@", 50, 350, 5.0);
+
+        fontTest->drawString("Ned Is Cool!!!!!", 50, 550, 2.0);
+        fontTest->halt();
 	}
 }
 
