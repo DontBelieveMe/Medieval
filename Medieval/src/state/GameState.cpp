@@ -48,7 +48,6 @@ void GameState::render()
     vox->halt();
 	modelShader->halt();
 
-
 	if (showUI)
 	{
 		glDisable(GL_CULL_FACE);
@@ -72,15 +71,15 @@ void GameState::render()
         renderer2D->halt();
         uiShader->use();
         fontTest->bind();
-		fontTest->drawString("Press P (default) to stop the iritating sound!", 250, 0, 2.0);
-		fontTest->drawString("Press U (default) to toggle the UI!", 250, 30, 2.0);
+		fontTest->drawString("Press P (def.) to toggle sound!", 220, 0, 2.0);
+		fontTest->drawString("Press U (def.) to toggle the UI!", 220, 30, 2.0);
 
         fontTest->drawString("THE QUICK BROWN FOX JUMPED OVER THE LAZY DOG 0123456789", 50, 100, 1.0);
         fontTest->drawString("the quick brown fox", 50, 150, 5.0);
         fontTest->drawString("jumped over the", 50, 250, 5.0);
         fontTest->drawString("lazy dog,*&@", 50, 350, 5.0);
 
-        fontTest->drawString("Ned Is Cool!!!!!", 50, 550, 2.0);
+        fontTest->drawString("Ned Is Cool!!!!! (But I'm cooler)", 50, 550, 2.0);
         fontTest->halt();
 
 	}

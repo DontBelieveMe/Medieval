@@ -5,8 +5,8 @@
 #include "../includes.h"
 #include "OpenAL/al.h"
 #include "../Input.h"
-
-float xPos = -20;
+const float f = 40;
+float xPos = -f;
 AudioSystem::AudioSystem()
 {
 	device = alcOpenDevice(NULL);
@@ -23,7 +23,7 @@ AudioSystem::AudioSystem()
 	source->setLooping(true);
 	source->play(buffer);
 
-	source->setPosition(glm::vec3(xPos, 0, 4));
+	source->setPosition(glm::vec3(xPos, 0, 2));
 }
 
 void AudioSystem::destroy()
@@ -40,6 +40,7 @@ void AudioSystem::destroy()
 	alcDestroyContext(context);
 	alcCloseDevice(device);
 }
+
 bool right = true;
 void AudioSystem::tick()
 {
@@ -50,10 +51,10 @@ void AudioSystem::tick()
 		else
 			source->play();
 	}
-	if (xPos < -20)
+	if (xPos < -f)
 		right = false;
 	
-	if (xPos > 20)
+	if (xPos > f)
 		right = true;
 		
 	if (source->isPlaying())
@@ -62,6 +63,6 @@ void AudioSystem::tick()
 			xPos -= 0.3f;
 		else
 			xPos += 0.3f;
-		source->setPosition(glm::vec3(xPos, 0, 4));
+		source->setPosition(glm::vec3(xPos, 0, 2));
 	}
 }
