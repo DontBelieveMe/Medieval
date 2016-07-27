@@ -6,7 +6,7 @@
 #include "OpenAL/al.h"
 #include "../Input.h"
 
-float xPos = 20;
+float xPos = -20;
 AudioSystem::AudioSystem()
 {
 	device = alcOpenDevice(NULL);
@@ -28,13 +28,13 @@ AudioSystem::AudioSystem()
 
 void AudioSystem::destroy()
 {
+	source->stop();
 	buffer->destroy();
 	delete buffer;
 	
 	source->destroy();
 	delete source;
 
-	wav->destroy();
 	delete wav;
 
 	alcDestroyContext(context);

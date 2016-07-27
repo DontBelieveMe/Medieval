@@ -42,5 +42,5 @@ public:
 	inline bool isLooping() const { return looping; }
 	bool isPlaying() const;
 	void setLooping(bool loop);
-	
+	void stop();
 };

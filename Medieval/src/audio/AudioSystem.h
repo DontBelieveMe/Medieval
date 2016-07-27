@@ -4,6 +4,7 @@
 #include "OpenAL/alc.h"
 #include "Buffer.h"
 #include "WaveFile.h"
+
 class AudioSystem
 {
 private:

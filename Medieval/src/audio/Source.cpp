@@ -77,3 +77,8 @@ void Source::play()
 		alSourcePlay(id);
 	}
 }
+
+void Source::stop()
+{
+	alSourceStop(id);
+}
