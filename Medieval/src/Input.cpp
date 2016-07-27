@@ -84,3 +84,44 @@ void Input::tick()
             keys_down.erase(iterator);
     }
 }
+
+int Input::mouseButtonAnyDown()
+{
+    for (int i = 0; i < max_mouse_buttons; i++)
+        if (mouse_down[i])
+            return i + 1;
+    return 0;
+}
+int Input::mouseButtonAnyPressed()
+{
+    for (int i = 0; i < max_mouse_buttons; i++)
+        if (mouse_pressed[i])
+            return i + 1;
+    return 0;
+}
+int Input::mouseButtonAnyReleased()
+{
+    for (int i = 0; i < max_mouse_buttons; i++)
+        if (mouse_released[i])
+            return i + 1;
+    return 0;
+}
+
+int Input::keyAnyDown()
+{
+    if (keys_down.size() == 0)
+        return 0;
+    return *keys_down.begin();
+}
+int Input::keyAnyPressed()
+{
+    if (keys_pressed.size() == 0)
+        return 0;
+    return *keys_pressed.begin();
+}
+int Input::keyAnyReleased()
+{
+    if (keys_released.size() == 0)
+        return 0;
+    return *keys_released.begin();
+}

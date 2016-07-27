@@ -38,13 +38,51 @@ class Input
     static bool mouseButtonDown    (int code) {return (code != 0 && code <= max_mouse_buttons) && mouse_down    [code-1];}
     static bool mouseButtonPressed (int code) {return (code != 0 && code <= max_mouse_buttons) && mouse_pressed [code-1];}
     static bool mouseButtonReleased(int code) {return (code != 0 && code <= max_mouse_buttons) && mouse_released[code-1];}
+
+    // These return a button number or 0 if there is none.
+    static int mouseButtonAnyDown();
+    static int mouseButtonAnyPressed();
+    static int mouseButtonAnyReleased();
+
     // Use GLFW_KEY_* enum.
     static bool keyDown    (int code) {return keys_down    .find(code) != keys_down    .end();}
     static bool keyPressed (int code) {return keys_pressed .find(code) != keys_pressed .end();}
     static bool keyReleased(int code) {return keys_released.find(code) != keys_released.end();}
 
+    // These return a button number or 0 if there is none.
+    static int keyAnyDown();
+    static int keyAnyPressed();
+    static int keyAnyReleased();
+
     static bool wheelUp   () {return scroll.y > 0;}
     static bool wheelDown () {return scroll.y < 0;}
     static bool wheelLeft () {return scroll.x < 0;}
     static bool wheelRight() {return scroll.x > 0;}
+
+    class Key
+    {
+        int code;
+      public:
+        Key()
+        {
+            code = 0;
+        }
+        Key(int value)
+        {
+            code = value;
+        }
+        int getCode() const
+        {
+            return code;
+        }
+        void setCode(int value)
+        {
+            code = value;
+        }
+    };
 };
+
+namespace Keys
+{
+
+}

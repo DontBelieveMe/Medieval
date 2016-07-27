@@ -56,7 +56,7 @@ void GameState::render()
         renderer2D->drawTile(1, 0, 1, 2, 100, 200, 64, 128);
 
         unsigned int xOff = 0;
-        
+
         for (int y = 0; y < 2; y++)
         {
             for (int x = 0; x < 2; x++)
