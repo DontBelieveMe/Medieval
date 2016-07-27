@@ -12,14 +12,11 @@ GameState::GameState()
     vox->setDrawingStage();
 
 	uiShader = new ShaderProgram("res/shaders/vert2D.shader", "res/shaders/frag2D.shader");
-	renderer2D = new Renderer2D(uiShader);
-	float vertices[] = {
-		0.f, 0.f,  0.f,			  1.0f, 0.0f, 0.0f,		0.f, 1.f,
-		WIDTH, 0.f,    0.0f,		  0.0f, 1.0f, 0.0f,		1.f, 1.f,
-		0,   HEIGHT,  0.0f,		  0.0f, 0.0f, 1.0f,		0.f, 0.0f
-	};
-	renderer2D->createVertexArray(vertices, sizeof(vertices));
-	texture2D = new Texture("res/images/texture.png");
+	renderer2D = new Renderer2D(uiShader, "res/images/tileTest.png", glm::ivec2(2, 2)); //renderer2D will only use 1 texture, if multiple are needed, you need to stitch them together.
+    /*                                                                            |
+                                                                                  -------> If these are set to the width, and height of the texture, you can draw from the texture per-pixel!
+    */
+
 
 	rot = 0;
 }
@@ -47,12 +44,29 @@ void GameState::render()
     drawModel(ent);
     vox->halt();
 	modelShader->halt();
+
+
 	if (showUI)
 	{
 		glDisable(GL_CULL_FACE);
-		texture2D->bind();
-		renderer2D->draw();
-		texture2D->halt();
+        renderer2D->bind();
+        renderer2D->drawTile(0, 0, 1, 1, 10, 10, 64, 64);
+        renderer2D->drawTile(0, 0, 1, 1, 84, 10, 128, 64);
+        renderer2D->drawTile(0, 0, 2, 2, 10, 200, 64, 64);
+        renderer2D->drawTile(1, 0, 1, 2, 100, 200, 64, 128);
+
+        unsigned int xOff = 0;
+        
+        for (int y = 0; y < 2; y++)
+        {
+            for (int x = 0; x < 2; x++)
+            {
+                renderer2D->drawTile(x, y, 1, 1, (GLfloat)xOff * 70.0f, 400, 64, 64);
+                xOff += 1;
+            }
+        }
+
+        renderer2D->halt();
 	}
 }
 

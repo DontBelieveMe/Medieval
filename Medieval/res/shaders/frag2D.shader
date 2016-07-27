@@ -2,7 +2,6 @@
 
 out vec4 out_Col;
 
-in vec3 passCol;
 in vec2 passUv;
 
 uniform sampler2D textureSampler;

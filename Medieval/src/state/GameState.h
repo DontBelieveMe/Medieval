@@ -13,14 +13,11 @@ private:
     ShaderProgram* modelShader;
 	ShaderProgram* uiShader;
 	Renderer2D*	   renderer2D;
-	Texture*	   texture2D;
+    bool           showUI = true;
 
-    Voxels* vox;
-    Model ent;
-
-    GLfloat rot = 0;
-
-	bool	showUI = false;
+    Voxels*    vox;
+    Model      ent;
+    GLfloat    rot = 0;
 
 public:
 
