@@ -8,5 +8,7 @@ public:
     virtual void render() = 0;
 
     virtual void destroy() = 0;
+
+    virtual ~State() {}
 };
 
