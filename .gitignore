@@ -7,12 +7,14 @@
 /Medieval/Debug
 /Medieval/Release
 /.vs
+/Medieval/.vs
 /Medieval.VC.db
 
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
 *.sln
+
 *.cbp
 *.depend
 *.layout
