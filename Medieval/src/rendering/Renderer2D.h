@@ -20,6 +20,14 @@ public:
 
     inline void bind()
     {
+		static GLint result;
+		glGetIntegerv(GL_CULL_FACE, &result);
+		if (result == GL_TRUE)
+			glDisable(GL_CULL_FACE);
+		glGetIntegerv(GL_DEPTH_TEST, &result);
+		if (result == GL_TRUE)
+			glDisable(GL_DEPTH_TEST);
+
         shaderRef->use();
         AdditionalVAO::bind();
         tex->bind();

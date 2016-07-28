@@ -1,3 +1,4 @@
+#pragma once
 // Utility stuff by Egor
 
 #include <iostream>
@@ -28,9 +29,9 @@ template <typename ...P> const char *Jo(P &&... p)
     static constexpr int ret_buffers_c = 32;
     static std::string ret_buffers[ret_buffers_c];
     static int ret_pos = 0;
-    Internal::ss.clear();
-    Internal::ss.flags(Internal::stdfmt);
-    Internal::ss.str("");
+	Internal::ss.clear();
+	Internal::ss.flags(Internal::stdfmt);
+	Internal::ss.str("");
     int dummy[] {(Internal::ss << p, 0)...};
     (void)dummy;
     ret_buffers[ret_pos] = Internal::ss.str();
@@ -45,4 +46,18 @@ template <typename ...P> [[noreturn]] void Error(P &&... p)
 	std::cout << Jo(p...) << std::endl;
 	system("pause");
 	std::exit(0);
+}
+
+namespace str
+{
+	inline bool strcmp(const char *one, const char *two, int len) 
+	{
+		if (one[0] != two[0])
+			return false;
+
+		for (int i = 1; i <= len; ++i)
+			if (one[i] != two[i]) return false;
+
+		return true;
+	}
 }

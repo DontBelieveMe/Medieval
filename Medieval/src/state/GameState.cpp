@@ -3,6 +3,9 @@
 #include "../Input.h"
 #include "OpenAL/al.h"
 
+#include "../Utils.h"
+#include <chrono>
+
 GameState::GameState()
 {
     modelShader = new ShaderProgram("res/shaders/vert.shader", "res/shaders/frag.shader");
@@ -17,10 +20,17 @@ GameState::GameState()
     /*                                                                            |
                                                                                   -------> If these are set to the width, and height of the texture, you can draw from the texture per-pixel!
     */
-  fontTest = new Font(uiShader, "res/images/font.png");
+    fontTest = new Font(uiShader, "res/images/font.png");
 
 	rot = 0;
 	audioSystem = new AudioSystem();
+	using namespace std;
+	using namespace std::chrono;
+	high_resolution_clock::time_point t1 = high_resolution_clock::now();
+	high_resolution_clock::time_point t2 = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "MS " << duration << std::endl;
+
 }
 
 void GameState::tick()
@@ -50,7 +60,6 @@ void GameState::render()
 
 	if (showUI)
 	{
-		glDisable(GL_CULL_FACE);
         renderer2D->bind();
         renderer2D->drawTile(0, 0, 1, 1, 10, 10, 64, 64);
         renderer2D->drawTile(0, 0, 1, 1, 84, 10, 128, 64);

@@ -7,15 +7,6 @@
 
 using namespace wave;
 
-bool cmpStrArray(const char *one, const char *two, int size)
-{
-	for (int i = 0; i <= size; ++i) {
-		if (one[i] != two[i])
-			return false;
-	}
-	return true;
-}
-
 WaveFile::WaveFile(const std::string& path)
 {
 	using namespace wave;
@@ -30,14 +21,14 @@ WaveFile::WaveFile(const std::string& path)
 	RIFF riff;
 	fread(&riff, sizeof(RIFF), 1, file);
 
-	if (!cmpStrArray(riff.chunkId, "RIFF", 3) || !cmpStrArray(riff.format, "WAVE", 3))
+	if (!str::strcmp(riff.chunkId, "RIFF", 3) || !str::strcmp(riff.format, "WAVE", 3))
 	{
 		Error("Invalid RIFF or Wave header!");
 	}
 
 	FMT format;
 	fread(&format, sizeof(FMT), 1, file);
-	if (!cmpStrArray(format.subChunk1ID, "fmt ", 3))
+	if (!str::strcmp(format.subChunk1ID, "fmt ", 3))
 	{
 		Error("Invalid Wave format!");
 	}
@@ -50,7 +41,7 @@ WaveFile::WaveFile(const std::string& path)
 	DATA dataHeader;
 	fread(&dataHeader, sizeof(DATA), 1, file);
 
-	if (!cmpStrArray(dataHeader.subChunk2ID, "data", 3))
+	if (!str::strcmp(dataHeader.subChunk2ID, "data", 3))
 	{
 		Error("Invalid data header!");
 	}
