@@ -1,4 +1,5 @@
 /*
+* Will load a .WAV file 
 * @author Barney Wilks
 */
 

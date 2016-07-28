@@ -9,7 +9,7 @@ GameState::GameState()
     modelShader->use();
 
     vox = new Voxels(1);
-    ent = vox->loadModel("res/models/Ent.obj", "res/models/Ent.png");
+    ent = vox->loadModel("res/models/Wilk.obj", "res/models/Wilk.png");
     vox->setDrawingStage();
 
 	uiShader = new ShaderProgram("res/shaders/vert2D.shader", "res/shaders/frag2D.shader");
