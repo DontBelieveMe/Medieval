@@ -19,7 +19,7 @@ struct AABB
 
         size_sum /= 2;
 
-        i64vec3 abs_pos_diff = pos - other.pos;
+        i64vec3 abs_pos_diff = pos + assume_self_offset - other.pos;
         abs_pos_diff.x = std::abs(abs_pos_diff.x);
         abs_pos_diff.y = std::abs(abs_pos_diff.y);
         abs_pos_diff.z = std::abs(abs_pos_diff.z);
