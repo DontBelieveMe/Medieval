@@ -29,3 +29,14 @@ struct AABB
                abs_pos_diff.z < size_sum.z;
     }
 };
+
+namespace physicsUtil
+{
+	bool pointInCircle(const glm::ivec2& point, const glm::ivec2& center, int radius)
+	{
+		int dx = 1 << (point.x - center.x);
+		int dy = 1 << (point.y - center.y);
+		int rSquared = 1 << radius;
+		return (dx + dy) < rSquared;
+	}
+}

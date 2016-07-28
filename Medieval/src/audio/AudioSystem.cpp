@@ -5,8 +5,10 @@
 #include "../includes.h"
 #include "OpenAL/al.h"
 #include "../Input.h"
+
 const float f = 40;
 float xPos = -f;
+
 AudioSystem::AudioSystem()
 {
 	device = alcOpenDevice(NULL);
@@ -21,7 +23,7 @@ AudioSystem::AudioSystem()
 
 	source = new Source();
 	source->setLooping(true);
-	source->play(buffer);
+//	source->play(buffer);
 
 	source->setPosition(glm::vec3(xPos, 0, 2));
 }

@@ -28,6 +28,7 @@ GameState::GameState()
 }
 int x = 0;
 int index = 0;
+int fps = 0;
 void GameState::tick()
 {
 	x++;
@@ -36,6 +37,8 @@ void GameState::tick()
 		index++;
 		if (index == 5)
 			index = 0;
+		fps = Application::getInstance().FPS();
+		std::cout << fps << std::endl;
 		x = 0;
 	}
 
@@ -74,28 +77,16 @@ void GameState::render()
 		renderer2D->drawTile(0, 0, 2, 1, 10, 10, 64 * 3, 32 * 3);
 		renderer2D->drawTile(index, 1, 1, 1, 34.7*3, 12.5*3, 32 * 3, 32 * 3);
 		renderer2D->drawTile(2, 0, 1, 1, 64*3 + 30, 10, 32*3, 32*3);
-		//renderer2D->drawTile(0, 0, 2, 1, WIDTH - 265, HEIGHT - 60, 256, 128);
-		//renderer2D->drawTile(index, 1, 1, 1, 10, 10, 32*4, 32*4);
-    //    renderer2D->drawTile(0, 0, 1, 1, 10, 10, 64, 64);
-  //      renderer2D->drawTile(0, 0, 1, 1, 84, 10, 128, 64);
-  //      renderer2D->drawTile(0, 0, 2, 2, 10, 200, 64, 64);
- //       renderer2D->drawTile(1, 0, 1, 2, 100, 200, 64, 128);
+		std::stringstream ss;
+		ss << fps;
 
         renderer2D->halt();
         uiShader->use();
         fontTest->bind();
-		
-		fontTest->drawString("Press P (def.) to toggle sound!", 220, 0, 2.0);
-		fontTest->drawString("Press U (def.) to toggle the UI!", 220, 30, 2.0);
-
-        fontTest->drawString("THE QUICK BROWN FOX JUMPED OVER THE LAZY DOG 0123456789", 50, 100, 1.0);
-        fontTest->drawString("the quick brown fox", 50, 150, 5.0);
-        fontTest->drawString("jumped over the", 50, 250, 5.0);
-        fontTest->drawString("lazy dog,*&@", 50, 350, 5.0);
-
-        fontTest->drawString("Ned Is Cool!!!!! (But I'm cooler)", 50, 550, 2.0);
+		fontTest->drawString(ss.str() + " fps", WIDTH - 135, -35, 2);
+		fontTest->drawString("Press P (def.) to toggle sound!", 220, HEIGHT - 170, 2.0);
+		fontTest->drawString("Press U (def.) to toggle the UI!", 220, HEIGHT - 120, 2.0);
         fontTest->halt();
-
 	}
 }
 

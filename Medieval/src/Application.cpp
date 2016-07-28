@@ -57,7 +57,7 @@ void Application::mainLoop()
 		{
 		    Input::tick(); // PollEvents(); has been moved here.
             StateSystem::get().tick();
-			ticks++;
+			ups++;
 			delta -= 1.0;
 		}
 
@@ -68,8 +68,8 @@ void Application::mainLoop()
 
 		if (glfwGetTime() - secTime >= 1.0)
 		{
-			cout << ticks << " ticks, " << frames << " frames" << endl;
-			ticks = 0;
+			fps = frames;
+			ups = 0;
 			frames = 0;
 			secTime += 1.0;
 		}
