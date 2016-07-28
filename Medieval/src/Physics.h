@@ -17,6 +17,8 @@ struct AABB
                          std::max(size.y,0ll) + std::max(other.size.y,0ll),
                          std::max(size.z,0ll) + std::max(other.size.z,0ll)};
 
+        size_sum /= 2;
+
         i64vec3 abs_pos_diff = pos - other.pos;
         abs_pos_diff.x = std::abs(abs_pos_diff.x);
         abs_pos_diff.y = std::abs(abs_pos_diff.y);
