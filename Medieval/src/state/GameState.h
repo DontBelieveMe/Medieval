@@ -8,6 +8,7 @@
 #include "../rendering/Renderer2D.h"
 #include "../rendering/Texture.h"
 #include "../audio/AudioSystem.h"
+#include "../FreeCamera.h"
 
 class GameState : public State
 {
@@ -22,7 +23,7 @@ private:
     Voxels*    vox;
     Model      ent;
     GLfloat    rot = 0;
-
+	FreeCamera *camera;
 	AudioSystem *audioSystem;
 public:
 

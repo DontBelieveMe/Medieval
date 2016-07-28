@@ -24,21 +24,18 @@ GameState::GameState()
 
 	rot = 0;
 	audioSystem = new AudioSystem();
-	using namespace std;
-	using namespace std::chrono;
-	high_resolution_clock::time_point t1 = high_resolution_clock::now();
-	high_resolution_clock::time_point t2 = high_resolution_clock::now();
-	auto duration = duration_cast<microseconds>(t2 - t1).count();
-	std::cout << "MS " << duration << std::endl;
-
+	camera = new FreeCamera();
 }
 
 void GameState::tick()
 {
 	audioSystem->tick();
+	
 	if (Keys::toggle_ui.pressed())
 		showUI = !showUI;
+
     rot += 1.0;
+	camera->tick();
 }
 
 void GameState::render()
@@ -50,9 +47,11 @@ void GameState::render()
     vox->bind();
 	modelShader->use();
     modelShader->uploadMatrix4f("projection", glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.001f, 200.0f));
-    glm::mat4 model = glm::mat4(1.0);
+	glm::mat4 view = camera->createView();
+	modelShader->uploadMatrix4f("view", view);
+	glm::mat4 model = glm::mat4(1.0);
     model = glm::translate(model, glm::vec3(0, -15, -40));
-	model = glm::rotate(model, glm::radians(rot), glm::vec3(0, 1, 0));
+	//model = glm::rotate(model, glm::radians(rot), glm::vec3(0, 1, 0));
     modelShader->uploadMatrix4f("model", model);
     drawModel(ent);
     vox->halt();
@@ -103,6 +102,7 @@ void GameState::destroy()
 
 GameState::~GameState()
 {
+	delete camera;
 	delete audioSystem;
     delete vox;
     delete modelShader;
