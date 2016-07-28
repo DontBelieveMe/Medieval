@@ -16,7 +16,7 @@ GameState::GameState()
     vox->setDrawingStage();
 
 	uiShader = new ShaderProgram("res/shaders/vert2D.shader", "res/shaders/frag2D.shader");
-	renderer2D = new Renderer2D(uiShader, "res/images/tileTest.png", glm::ivec2(2, 2)); //renderer2D will only use 1 texture, if multiple are needed, you need to stitch them together.
+	renderer2D = new Renderer2D(uiShader, "res/images/hud/sheet.png", glm::ivec2(8, 8)); //renderer2D will only use 1 texture, if multiple are needed, you need to stitch them together.
     /*                                                                            |
                                                                                   -------> If these are set to the width, and height of the texture, you can draw from the texture per-pixel!
     */
@@ -26,9 +26,20 @@ GameState::GameState()
 	audioSystem = new AudioSystem();
 	camera = new FreeCamera();
 }
-
+int x = 0;
+int index = 0;
 void GameState::tick()
 {
+	x++;
+
+	if (x % 60 == 0) {
+		index++;
+		if (index == 5)
+			index = 0;
+		x = 0;
+	}
+
+
 	audioSystem->tick();
 	
 	if (Keys::toggle_ui.pressed())
@@ -59,26 +70,21 @@ void GameState::render()
 
 	if (showUI)
 	{
-        renderer2D->bind();
-        renderer2D->drawTile(0, 0, 1, 1, 10, 10, 64, 64);
-        renderer2D->drawTile(0, 0, 1, 1, 84, 10, 128, 64);
-        renderer2D->drawTile(0, 0, 2, 2, 10, 200, 64, 64);
-        renderer2D->drawTile(1, 0, 1, 2, 100, 200, 64, 128);
-
-        unsigned int xOff = 0;
-
-        for (int y = 0; y < 2; y++)
-        {
-            for (int x = 0; x < 2; x++)
-            {
-                renderer2D->drawTile(x, y, 1, 1, (GLfloat)xOff * 70.0f, 400, 64, 64);
-                xOff += 1;
-            }
-        }
+	    renderer2D->bind();
+		renderer2D->drawTile(0, 0, 2, 1, 10, 10, 64 * 3, 32 * 3);
+		renderer2D->drawTile(index, 1, 1, 1, 34.7*3, 12.5*3, 32 * 3, 32 * 3);
+		renderer2D->drawTile(2, 0, 1, 1, 64*3 + 30, 10, 32*3, 32*3);
+		//renderer2D->drawTile(0, 0, 2, 1, WIDTH - 265, HEIGHT - 60, 256, 128);
+		//renderer2D->drawTile(index, 1, 1, 1, 10, 10, 32*4, 32*4);
+    //    renderer2D->drawTile(0, 0, 1, 1, 10, 10, 64, 64);
+  //      renderer2D->drawTile(0, 0, 1, 1, 84, 10, 128, 64);
+  //      renderer2D->drawTile(0, 0, 2, 2, 10, 200, 64, 64);
+ //       renderer2D->drawTile(1, 0, 1, 2, 100, 200, 64, 128);
 
         renderer2D->halt();
         uiShader->use();
         fontTest->bind();
+		
 		fontTest->drawString("Press P (def.) to toggle sound!", 220, 0, 2.0);
 		fontTest->drawString("Press U (def.) to toggle the UI!", 220, 30, 2.0);
 
