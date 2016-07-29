@@ -14,7 +14,7 @@ public:
 
 	inline int FPS() const { return fps; }
 	inline int UPS() const { return ups; }
-
+	float getDelta() { return this->delta; }
 private:
 	GLFWwindow* window;
 
@@ -23,6 +23,7 @@ private:
 	void destroy();
 	int fps;
 	int ups;
+	float delta;
 
 	~Application();
 

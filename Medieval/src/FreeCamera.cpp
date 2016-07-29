@@ -6,41 +6,35 @@
 FreeCamera::FreeCamera()
 {
 	position = glm::vec3(0, 0, 0);
+	front = glm::vec3(0.0f, 0.0f, -1.0f);
 }
 
 FreeCamera::~FreeCamera()
 {
 }
-const float speed = 0.4f;
 void FreeCamera::tick()
 {
+	const float speed = 0.4f;
 	if (Input::keyDown(GLFW_KEY_W)) {
-		position.z -= speed;
+		position += speed * front;
 	}if (Input::keyDown(GLFW_KEY_S))
-		position.z += speed;
-	if (Input::keyDown(GLFW_KEY_A))
-		position.x -= speed;
-	if (Input::keyDown(GLFW_KEY_D))
-		position.x += speed;
+		position -= speed * front;
+
 	if (Input::keyDown(GLFW_KEY_LEFT_CONTROL))
 		position.y -= speed;
 	if (Input::keyDown(GLFW_KEY_SPACE))
 		position.y += speed;
 
-	glm::vec2 mousePos = Input::mousePos();
-
-	/*float horizontal = std::cos(pitch) * speed;
-	position.x += cos(yaw) * horizontal;
-	position.z += sin(yaw) * horizontal;
-	position.y += sin(pitch) * speed;
-	position.x -= sin(yaw) * speed;
-	position.z += cos(yaw) * speed;
-}*/
+	if (Input::keyDown(GLFW_KEY_A))
+		yaw -= speed*0.1;
+	if (Input::keyDown(GLFW_KEY_D))
+		yaw += speed*0.1;
 }
 glm::mat4 FreeCamera::createView()
 {
-	glm::mat4 out = glm::mat4(1.f);
-//	out = glm::rotate(out, glm::radians(yaw), glm::vec3(0.f, 1.f, 0.f));
+	glm::mat4 out;
 	out = glm::translate(out, -position);
+	out = glm::rotate(out, yaw, up);
+	
 	return out;
 }

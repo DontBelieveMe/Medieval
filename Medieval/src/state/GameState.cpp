@@ -5,6 +5,7 @@
 
 #include "../Utils.h"
 #include <chrono>
+#include "../rendering/Primitives.h"
 
 GameState::GameState()
 {
@@ -12,7 +13,7 @@ GameState::GameState()
     modelShader->use();
 
     vox = new Voxels(1);
-    ent = vox->loadModel("res/models/Wilk.obj", "res/models/Wilk.png");
+    ent = vox->loadModel("res/models/player.obj", "res/models/player.png");
     vox->setDrawingStage();
 
 	uiShader = new ShaderProgram("res/shaders/vert2D.shader", "res/shaders/frag2D.shader");
@@ -51,21 +52,17 @@ void GameState::tick()
 }
 
 bool isWireframe = false;
+int xOffset = 0;
 void GameState::render()
 {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	if (Keys::toggle_wireframe.pressed()) 
 		isWireframe = !isWireframe;
 	
-
-	if (isWireframe)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	else
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
     vox->bind();
 	modelShader->use();
     modelShader->uploadMatrix4f("projection", glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.001f, 200.0f));
@@ -78,6 +75,8 @@ void GameState::render()
     drawModel(ent);
     vox->halt();
 	modelShader->halt();
+	
+	Primitives::drawCube(view, 10, -15, -40, 4, 4, 4);
 
 	if (showUI)
 	{

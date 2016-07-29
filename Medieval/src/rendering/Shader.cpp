@@ -80,10 +80,11 @@ GLint ShaderProgram::getUniformLoc(const std::string& name)
 	std::unordered_map<std::string, GLint>::const_iterator it = uniformLocCache.find(name);
 	if (it != uniformLocCache.end())
 	{
-		return uniformLocCache.at(name); // at() does bounds checking
+		return it->second;
 	}
 	else {
 		GLint loc = glGetUniformLocation(this->program, name.c_str());
+		uniformLocCache[name] = loc;
 		if (loc == -1) {
 			std::cout << "Error: Uniform " << name << " does not exist!" << std::endl;
 			// Goto is evil (but here it is slighly better than multiple return points

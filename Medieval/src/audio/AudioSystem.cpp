@@ -24,8 +24,8 @@ AudioSystem::AudioSystem()
 	source = new Source();
 	source->setVolume(.5f);
 	source->setLooping(true);
-	source->setVolume(.0f);
-	source->play(buffer, false);
+//	source->play(buffer, false);
+//	source->pause();
 	source->setPosition(glm::vec3(0, 0, 0));
 }
 
@@ -46,10 +46,6 @@ void AudioSystem::destroy()
 bool right = false;
 void AudioSystem::tick()
 {
-	if (source->volume < 1.f) {
-		source->setVolume(source->volume + 0.001f);
-	}
-
 	if (Keys::toggle_audio.pressed())
 	{
 		if (source->isPlaying())

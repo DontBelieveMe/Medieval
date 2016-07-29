@@ -30,6 +30,7 @@ public:
 
     void deleteProgram();
 
+    GLuint program;
 private:
     GLuint createShader(const std::string& path, GLenum type, const std::string& errorMsg);
     void   checkError(GLuint element, bool isProgram, GLenum status, const std::string& errorMsg);
@@ -37,5 +38,4 @@ private:
 
 	std::unordered_map<std::string, GLint> uniformLocCache;
 private:
-    GLuint program;
 };

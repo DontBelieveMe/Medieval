@@ -38,21 +38,22 @@ void Application::init()
     Input::init();
 
     AdditionalVAO::init();//same for all states, so initialized here, needs to be bound on use.
+
 }
 
 void Application::mainLoop()
 {
-	double lastTime = glfwGetTime(), secTime = lastTime, delta = 0, sPerTick = 1.0 / 60.0;
+	double lastTime = glfwGetTime(), secTime = lastTime, sPerTick = 1.0 / 60.0;
 	int ticks = 0, frames = 0;
-
+	delta = 0;
 	glfwShowWindow(window); // The window becomes visible here
 
 	while (!glfwWindowShouldClose(window))
 	{
 		double now = glfwGetTime();
-		delta += (now - lastTime) / sPerTick;
+		delta += float((now - lastTime) / sPerTick);
 		lastTime = now;
-
+		
 		while (delta > 0)
 		{
 		    Input::tick(); // PollEvents(); has been moved here.
