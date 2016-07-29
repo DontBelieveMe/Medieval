@@ -15,17 +15,18 @@ AudioSystem::AudioSystem()
 	context = alcCreateContext(device, NULL);
 	alcMakeContextCurrent(context);
 	
-	wav = new wave::WaveFile("res/audio/bounce.wav");
+	wav = new wave::WaveFile("res/audio/NoTimeToShine.wav");
 	buffer = new Buffer(*wav);
 	
 	alListener3f(AL_POSITION, 0, 0, 0);
 	alListener3f(AL_VELOCITY, 0, 0, 0);
 
 	source = new Source();
+	source->setVolume(.5f);
 	source->setLooping(true);
-//	source->play(buffer);
-
-	source->setPosition(glm::vec3(xPos, 0, 2));
+	source->setVolume(.0f);
+	source->play(buffer, false);
+	source->setPosition(glm::vec3(0, 0, 0));
 }
 
 void AudioSystem::destroy()
@@ -42,10 +43,13 @@ void AudioSystem::destroy()
 	alcDestroyContext(context);
 	alcCloseDevice(device);
 }
-
-bool right = true;
+bool right = false;
 void AudioSystem::tick()
 {
+	if (source->volume < 1.f) {
+		source->setVolume(source->volume + 0.001f);
+	}
+
 	if (Keys::toggle_audio.pressed())
 	{
 		if (source->isPlaying())
@@ -65,6 +69,6 @@ void AudioSystem::tick()
 			xPos -= 0.3f;
 		else
 			xPos += 0.3f;
-		source->setPosition(glm::vec3(xPos, 0, 2));
+//		source->setPosition(glm::vec3(xPos, 0, 2));
 	}
 }

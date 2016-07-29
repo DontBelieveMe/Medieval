@@ -13,16 +13,16 @@ void Source::destroy()
 	alDeleteSources(1, &this->id);
 }
 
-void Source::play(const Buffer& buffer)
+void Source::play(const Buffer& buffer, bool fadeIn)
 {
+	setVolume(0.f);
 	alSourcei(id, AL_BUFFER, buffer.id);
 	alSourcePlay(id);
 }
 
-void Source::play(Buffer *buffer)
+void Source::play(Buffer *buffer, bool fadeIn)
 {
-	alSourcei(id, AL_BUFFER, buffer->id);
-	alSourcePlay(id);
+	play(*buffer, fadeIn);
 }
 
 void Source::setPitch(float pitch)

@@ -26,20 +26,18 @@ GameState::GameState()
 	audioSystem = new AudioSystem();
 	camera = new FreeCamera();
 }
-int x = 0;
-int index = 0;
-int fps = 0;
+
+int counter = 0;
+int texIndex = 0;
 void GameState::tick()
 {
-	x++;
+	counter++;
 
-	if (x % 60 == 0) {
-		index++;
-		if (index == 5)
-			index = 0;
-		fps = Application::getInstance().FPS();
-		std::cout << fps << std::endl;
-		x = 0;
+	if (counter % 60 == 0) {
+		texIndex++;
+		if (texIndex == 5)
+			texIndex = 0;
+		counter = 0;
 	}
 
 
@@ -52,11 +50,21 @@ void GameState::tick()
 	camera->tick();
 }
 
+bool isWireframe = false;
 void GameState::render()
 {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	if (Keys::toggle_wireframe.pressed()) 
+		isWireframe = !isWireframe;
+	
+
+	if (isWireframe)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	else
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     vox->bind();
 	modelShader->use();
@@ -73,12 +81,13 @@ void GameState::render()
 
 	if (showUI)
 	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	    renderer2D->bind();
 		renderer2D->drawTile(0, 0, 2, 1, 10, 10, 64 * 3, 32 * 3);
-		renderer2D->drawTile(index, 1, 1, 1, 34.7*3, 12.5*3, 32 * 3, 32 * 3);
-		renderer2D->drawTile(2, 0, 1, 1, 64*3 + 30, 10, 32*3, 32*3);
+		renderer2D->drawTile(texIndex, 1, 1, 1, 34.7 * 3, 12.5 * 3, 32 * 3, 32 * 3);
+		renderer2D->drawTile(2, 0, 1, 1, 64 * 3 + 30, 10, 32 * 3, 32*3);
 		std::stringstream ss;
-		ss << fps;
+		ss << Application::getInstance().FPS();
 
         renderer2D->halt();
         uiShader->use();

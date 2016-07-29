@@ -4,6 +4,12 @@
 * This can be moved around and can basically control the sound
 * For example pitch, volume, looping etc..
 *
+* ------------
+*     Notes
+* ------------
+* - Things like fade in, fade out etc,
+*   are not actually done yet :P
+*
 * @author Barney Wilks
 */
 
@@ -30,9 +36,10 @@ public:
 
 	void destroy();
 
-	void play(const Buffer& buffer);
-	void play(Buffer *buffer);
+	void play(const Buffer& buffer, bool fadeIn);
+	void play(Buffer *buffer, bool fadeIn);
 	void play();
+
 	void pause();
 	void setVolume(float volume);
 	void setPitch(float pitch);
