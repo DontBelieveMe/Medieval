@@ -133,8 +133,14 @@ namespace Keys
      * After that Keys::name will represent your new key. See class Input::Key for interface.
      */
     #define INPUT_KEYS_LIST \
-        KEY(toggle_ui, "Toggle UI", CONFIGURABLE, GLFW_KEY_U) \
+        KEY(toggle_ui,    "Toggle UI", CONFIGURABLE, GLFW_KEY_U) \
 		KEY(toggle_audio, "Toggle Audio", CONFIGURABLE, GLFW_KEY_P) \
+		KEY(forward, "Forward", CONFIGURABLE, GLFW_KEY_W) \
+		KEY(back,    "Back",    CONFIGURABLE, GLFW_KEY_S) \
+		KEY(left,    "Left",    CONFIGURABLE, GLFW_KEY_A) \
+		KEY(right,   "Right",   CONFIGURABLE, GLFW_KEY_D) \
+		KEY(up,      "Up",      CONFIGURABLE, GLFW_KEY_SPACE) \
+		KEY(down,    "Down",    CONFIGURABLE, GLFW_KEY_LEFT_SHIFT) \
 
     // Contains Key objects listed above. Tokens are used as names.
     #define KEY(token, name, mode, value) extern Input::Key token;

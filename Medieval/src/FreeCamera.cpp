@@ -1,7 +1,7 @@
 #include "FreeCamera.h"
 
 #include "Input.h"
-#include <math.h>
+#include <cmath>
 
 FreeCamera::FreeCamera()
 {
@@ -14,27 +14,28 @@ FreeCamera::~FreeCamera()
 }
 void FreeCamera::tick()
 {
-	const float speed = 0.4f;
-	if (Input::keyDown(GLFW_KEY_W)) {
-		position += speed * front;
-	}if (Input::keyDown(GLFW_KEY_S))
-		position -= speed * front;
+	const float speed = 0.8, rot_speed = 0.03;
 
-	if (Input::keyDown(GLFW_KEY_LEFT_CONTROL))
-		position.y -= speed;
-	if (Input::keyDown(GLFW_KEY_SPACE))
-		position.y += speed;
+	yaw += (Keys::right.down() - Keys::left.down()) * rot_speed;
 
-	if (Input::keyDown(GLFW_KEY_A))
-		yaw -= speed*0.1;
-	if (Input::keyDown(GLFW_KEY_D))
-		yaw += speed*0.1;
+    glm::vec3 delta;
+
+    delta.y = Keys::up.down() - Keys::down.down();
+    delta.y = Keys::up.down() - Keys::down.down();
+
+	float yaw_sin = std::sin(yaw),
+	      yaw_cos = std::cos(yaw);
+
+    delta.x =  yaw_sin * (Keys::forward.down() - Keys::back.down());
+    delta.z = -yaw_cos * (Keys::forward.down() - Keys::back.down());
+
+    position += delta * speed;
 }
 glm::mat4 FreeCamera::createView()
 {
 	glm::mat4 out;
-	out = glm::translate(out, -position);
 	out = glm::rotate(out, yaw, up);
-	
+	out = glm::translate(out, -position);
+
 	return out;
 }
