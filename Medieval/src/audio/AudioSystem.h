@@ -2,7 +2,7 @@
 *--------
 *  Note
 *--------
-* - This file is just a temporary test bed for audio 
+* - This file is just a temporary test bed for audio
 *   shananagins. It is not a permanant feature and
 *   was just to let me (Barney) fiddle with my sound system
 */
@@ -27,3 +27,11 @@ public:
 	void destroy();
 	void tick();
 };
+
+namespace AudioUtils
+{
+	inline bool pointInCircle(const glm::vec2& point, const glm::vec2& center, int radius)
+	{
+		return glm::dot(point - center, point - center) <= radius*radius;
+	}
+}
