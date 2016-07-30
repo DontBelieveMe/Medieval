@@ -108,6 +108,11 @@ void ShaderProgram::uploadVector2f(const std::string& name, const glm::vec2& vec
 	glUniform2f(getUniformLoc(name), vec2.x, vec2.y);
 }
 
+void ShaderProgram::uploadVector3f(const std::string& name, const glm::vec3& vec3)
+{
+	glUniform3f(getUniformLoc(name), vec3.x, vec3.y, vec3.z);
+}
+
 void ShaderProgram::uploadVector4f(const std::string& name, const glm::vec4& vec4)
 {
 	glUniform4f(getUniformLoc(name), vec4.x, vec4.y, vec4.z, vec4.w);

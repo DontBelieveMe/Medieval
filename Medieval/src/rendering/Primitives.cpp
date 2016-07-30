@@ -10,16 +10,18 @@ GLuint Primitives::detail::ibo_cube_wf = 0;
 
 static const glm::mat4 projection = glm::perspective(45.f, (float)WIDTH / (float)HEIGHT, 0.001f, 200.0f);
 
-void Primitives::fillCube(const glm::mat4& view, float x, float y, float z, float w, float h, float depth)
+void Primitives::fillCube(const glm::mat4& view, const glm::vec3 &pos, const glm::vec3 &scale, const glm::vec3 &color)
 {
 	detail::tryInit();
 	detail::primShader->use();
 	detail::primShader->uploadMatrix4f("projection", projection);
 	detail::primShader->uploadMatrix4f("view", view);
 	glm::mat4 model;
-	model = glm::translate(model, glm::vec3(x, y, z));
-	model = glm::scale(model, glm::vec3(w, h, depth));
+	model = glm::translate(model, pos);
+	model = glm::scale(model, scale);
 	detail::primShader->uploadMatrix4f("model", model);
+
+	detail::primShader->uploadVector3f("u_color", color);
 
 	glBindVertexArray(detail::vao_cube);
 	glEnableVertexAttribArray(0);
@@ -34,16 +36,18 @@ void Primitives::fillCube(const glm::mat4& view, float x, float y, float z, floa
 
 }
 
-void Primitives::drawCube(const glm::mat4& view, float x, float y, float z, float w, float h, float depth)
+void Primitives::drawCube(const glm::mat4& view, const glm::vec3 &pos, const glm::vec3 &scale, const glm::vec3 &color)
 {
 	detail::tryInit();
 	detail::primShader->use();
 	detail::primShader->uploadMatrix4f("projection", projection);
 	detail::primShader->uploadMatrix4f("view", view);
 	glm::mat4 model;
-	model = glm::translate(model, glm::vec3(x, y, z));
-	model = glm::scale(model, glm::vec3(w, h, depth));
+	model = glm::translate(model, pos);
+	model = glm::scale(model, scale);
 	detail::primShader->uploadMatrix4f("model", model);
+
+	detail::primShader->uploadVector3f("u_color", color);
 
 	glBindVertexArray(detail::vao_cube_wf);
 	glEnableVertexAttribArray(0);
@@ -58,7 +62,6 @@ void Primitives::detail::tryInit()
 {
 	if (!primShader) {
 		primShader = new ShaderProgram("res/shaders/vertPrimitve.shader", "res/shaders/fragPrimitive.shader");
-		std::cout << "Starting" << std::endl;
 		static constexpr GLfloat cube_vertices[] = {
 			// front
 			-1.0, -1.0,  1.0,

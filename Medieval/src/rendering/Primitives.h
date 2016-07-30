@@ -12,6 +12,6 @@ namespace Primitives
 		void tryInit();
 	}
 
-	void fillCube(const glm::mat4& view, float x, float y, float z, float w, float h, float depth);
-	void drawCube(const glm::mat4& view, float x, float y, float z, float w, float h, float depth);
+	void fillCube(const glm::mat4& view, const glm::vec3 &pos, const glm::vec3 &scale, const glm::vec3 &color);
+	void drawCube(const glm::mat4& view, const glm::vec3 &pos, const glm::vec3 &scale, const glm::vec3 &color);
 }

@@ -72,7 +72,7 @@ void GameState::render()
     vox->halt();
 	modelShader->halt();
 
-	Primitives::drawCube(view, 10, -15, -40, 4, 4, 4);
+	Primitives::drawCube(view, {10,-15,-40}, {4,4,4}, Colors::orange);
 
 	if (showUI)
 	{

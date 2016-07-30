@@ -26,6 +26,7 @@ public:
 	void  uploadMatrix4f(GLint loc, const glm::mat4& matrix);
 	void  uploadMatrix4f(const std::string& name, const glm::mat4& matrix);
 	void  uploadVector2f(const std::string& name, const glm::vec2& vec2);
+	void  uploadVector3f(const std::string& name, const glm::vec3& vec3);
 	void  uploadVector4f(const std::string& name, const glm::vec4& vec4);
 
     void deleteProgram();

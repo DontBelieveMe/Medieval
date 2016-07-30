@@ -50,7 +50,7 @@ template <typename ...P> [[noreturn]] void Error(P &&... p)
 
 namespace str
 {
-	inline bool strcmp(const char *one, const char *two, int len) 
+	inline bool strcmp(const char *one, const char *two, int len)
 	{
 		if (one[0] != two[0])
 			return false;
@@ -60,4 +60,25 @@ namespace str
 
 		return true;
 	}
+}
+
+
+namespace Colors
+{
+    const glm::vec3 red       (1 ,0 ,0 ),
+                    orange    (1 ,.5,0 ),
+                    yellow    (1 ,1 ,0 ),
+                    green     (0 ,1 ,0 ),
+                    cyan      (0 ,1 ,1 ),
+                    cerulean  (0 ,.5,1 ),
+                    blue      (0 ,0 ,1 ),
+                    magenta   (1 ,0 ,1 ),
+                    white     (1 ,1 ,1 ),
+                    light_gray(.75,.75,.75),
+                    light_grey = light_gray,
+                    gray      (.5,.5,.5),
+                    grey       = gray,
+                    dark_gray (.25,.25,.25),
+                    dark_grey = dark_gray,
+                    black     (0 ,0 ,0 );
 }
