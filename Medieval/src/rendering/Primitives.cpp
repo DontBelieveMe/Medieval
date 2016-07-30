@@ -1,15 +1,17 @@
 #include "Primitives.h"
 
 ShaderProgram *Primitives::detail::primShader = NULL;
-GLuint Primitives::detail::vao = -1;
-GLuint Primitives::detail::vbo = -1;
-GLuint Primitives::detail::ibo = -1;
+GLuint Primitives::detail::vao_cube = 0;
+GLuint Primitives::detail::vbo_cube = 0;
+GLuint Primitives::detail::ibo_cube = 0;
+GLuint Primitives::detail::vao_cube_wf = 0;
+GLuint Primitives::detail::vbo_cube_wf = 0;
+GLuint Primitives::detail::ibo_cube_wf = 0;
 
 static const glm::mat4 projection = glm::perspective(45.f, (float)WIDTH / (float)HEIGHT, 0.001f, 200.0f);
 
 void Primitives::fillCube(const glm::mat4& view, float x, float y, float z, float w, float h, float depth)
 {
-	static const int numVertices = 12 * 3;
 	detail::tryInit();
 	detail::primShader->use();
 	detail::primShader->uploadMatrix4f("projection", projection);
@@ -18,25 +20,38 @@ void Primitives::fillCube(const glm::mat4& view, float x, float y, float z, floa
 	model = glm::translate(model, glm::vec3(x, y, z));
 	model = glm::scale(model, glm::vec3(w, h, depth));
 	detail::primShader->uploadMatrix4f("model", model);
-	
-	glBindVertexArray(detail::vao);
+
+	glBindVertexArray(detail::vao_cube);
 	glEnableVertexAttribArray(0);
-	
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, detail::ibo);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, detail::ibo_cube);
 	glDrawElements(GL_TRIANGLES, 12*3, GL_UNSIGNED_INT, (void*)0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glDisableVertexAttribArray(0);
 	glBindVertexArray(0);
-	
+
 	detail::primShader->halt();
 
 }
 
 void Primitives::drawCube(const glm::mat4& view, float x, float y, float z, float w, float h, float depth)
 {
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	Primitives::fillCube(view, x, y, z, w, h, depth);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	detail::tryInit();
+	detail::primShader->use();
+	detail::primShader->uploadMatrix4f("projection", projection);
+	detail::primShader->uploadMatrix4f("view", view);
+	glm::mat4 model;
+	model = glm::translate(model, glm::vec3(x, y, z));
+	model = glm::scale(model, glm::vec3(w, h, depth));
+	detail::primShader->uploadMatrix4f("model", model);
+
+	glBindVertexArray(detail::vao_cube_wf);
+	glEnableVertexAttribArray(0);
+	glDrawArrays(GL_LINES, 0, 12*2);
+	glDisableVertexAttribArray(0);
+	glBindVertexArray(0);
+
+	detail::primShader->halt();
 }
 
 void Primitives::detail::tryInit()
@@ -44,7 +59,7 @@ void Primitives::detail::tryInit()
 	if (!primShader) {
 		primShader = new ShaderProgram("res/shaders/vertPrimitve.shader", "res/shaders/fragPrimitive.shader");
 		std::cout << "Starting" << std::endl;
-		static const GLfloat vertices[] = {
+		static constexpr GLfloat cube_vertices[] = {
 			// front
 			-1.0, -1.0,  1.0,
 			1.0, -1.0,  1.0,
@@ -56,7 +71,7 @@ void Primitives::detail::tryInit()
 			1.0,  1.0, -1.0,
 			-1.0,  1.0, -1.0,
 		};
-		static const GLuint indices[] = {
+		static constexpr GLuint cube_indices[] = {
 			0, 1, 2,
 			2, 3, 0,
 			// top
@@ -76,17 +91,49 @@ void Primitives::detail::tryInit()
 			6, 7, 3,
 		};
 
-		glGenVertexArrays(1, &vao);
-		glBindVertexArray(vao);
+		glGenVertexArrays(1, &vao_cube);
+		glBindVertexArray(vao_cube);
 
-		glGenBuffers(1, &ibo);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+		glGenBuffers(1, &ibo_cube);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_cube);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cube_indices), cube_indices, GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-		glGenBuffers(1, &vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+		glGenBuffers(1, &vbo_cube);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo_cube);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(cube_vertices), cube_vertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+		glDisableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+
+
+
+        static constexpr GLfloat cube_wireframe_vertices[]
+        {
+            -1,-1,-1,-1,-1, 1,
+             1,-1,-1, 1,-1, 1,
+            -1, 1,-1,-1, 1, 1,
+             1, 1,-1, 1, 1, 1,
+
+            -1,-1,-1,-1, 1,-1,
+             1,-1,-1, 1, 1,-1,
+            -1,-1, 1,-1, 1, 1,
+             1,-1, 1, 1, 1, 1,
+
+             -1,-1,-1, 1,-1,-1,
+             -1, 1,-1, 1, 1,-1,
+             -1,-1, 1, 1,-1, 1,
+             -1, 1, 1, 1, 1, 1,
+        };
+
+		glGenVertexArrays(1, &vao_cube_wf);
+		glBindVertexArray(vao_cube_wf);
+
+		glGenBuffers(1, &vbo_cube_wf);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo_cube_wf);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(cube_wireframe_vertices), cube_wireframe_vertices, GL_STATIC_DRAW);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 		glDisableVertexAttribArray(0);

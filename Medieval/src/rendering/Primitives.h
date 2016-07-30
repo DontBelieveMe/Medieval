@@ -7,7 +7,8 @@ namespace Primitives
 	namespace detail
 	{
 		extern ShaderProgram *primShader;
-		extern GLuint vao, vbo, ibo;
+		extern GLuint vao_cube, vbo_cube, ibo_cube;
+		extern GLuint vao_cube_wf, vbo_cube_wf, ibo_cube_wf;
 		void tryInit();
 	}
 

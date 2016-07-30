@@ -135,7 +135,6 @@ namespace Keys
     #define INPUT_KEYS_LIST \
         KEY(toggle_ui, "Toggle UI", CONFIGURABLE, GLFW_KEY_U) \
 		KEY(toggle_audio, "Toggle Audio", CONFIGURABLE, GLFW_KEY_P) \
-		KEY(toggle_wireframe, "Toggle Wireframe", CONFIGURABLE, GLFW_KEY_Q)
 
     // Contains Key objects listed above. Tokens are used as names.
     #define KEY(token, name, mode, value) extern Input::Key token;

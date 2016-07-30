@@ -51,7 +51,6 @@ void GameState::tick()
 	camera->tick();
 }
 
-bool isWireframe = false;
 int xOffset = 0;
 void GameState::render()
 {
@@ -59,9 +58,6 @@ void GameState::render()
     glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	if (Keys::toggle_wireframe.pressed())
-		isWireframe = !isWireframe;
 
     vox->bind();
 	modelShader->use();
@@ -80,7 +76,6 @@ void GameState::render()
 
 	if (showUI)
 	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	    renderer2D->bind();
 		renderer2D->drawTile(0, 0, 2, 1, 10, 10, 64 * 3, 32 * 3);
 		renderer2D->drawTile(texIndex, 1, 1, 1, 34.7 * 3, 12.5 * 3, 32 * 3, 32 * 3);
