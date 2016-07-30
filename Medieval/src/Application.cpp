@@ -48,12 +48,14 @@ void Application::mainLoop()
 	delta = 0;
 	glfwShowWindow(window); // The window becomes visible here
 
+	(void)ticks; // ticks is unused. This silences the warning.
+
 	while (!glfwWindowShouldClose(window))
 	{
 		double now = glfwGetTime();
 		delta += float((now - lastTime) / sPerTick);
 		lastTime = now;
-		
+
 		while (delta > 0)
 		{
 		    Input::tick(); // PollEvents(); has been moved here.

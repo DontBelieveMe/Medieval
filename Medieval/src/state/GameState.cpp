@@ -43,7 +43,7 @@ void GameState::tick()
 
 
 	audioSystem->tick();
-	
+
 	if (Keys::toggle_ui.pressed())
 		showUI = !showUI;
 
@@ -60,9 +60,9 @@ void GameState::render()
 	glCullFace(GL_BACK);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if (Keys::toggle_wireframe.pressed()) 
+	if (Keys::toggle_wireframe.pressed())
 		isWireframe = !isWireframe;
-	
+
     vox->bind();
 	modelShader->use();
     modelShader->uploadMatrix4f("projection", glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.001f, 200.0f));
@@ -75,7 +75,7 @@ void GameState::render()
     drawModel(ent);
     vox->halt();
 	modelShader->halt();
-	
+
 	Primitives::drawCube(view, 10, -15, -40, 4, 4, 4);
 
 	if (showUI)
