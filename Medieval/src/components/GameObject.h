@@ -13,23 +13,31 @@
 class GameObject
 {
 private:
-	std::vector<std::unique_ptr<Component>> components;
+	std::vector<Component *> components;
 
+	template <typename T>
+	Component *staticComponent() 
+	{
+		static T t;
+		return &t;
+	}
 public:
-	GameObject();
-
 	void update();
 
 	template <typename T>
 	void addComponent()
 	{
-		auto component = std::make_unique<T>();
-		components.push_back(std::move(component));
+		auto component = staticComponent<T>();
+		components.push_back(component);
 	}
 
 	template <typename T>
-	void hasComponent()
+	bool hasComponent()
 	{
-
+		Component *t = staticComponent<T>();
+		if (std::find(components.begin(), components.end(), t) != components.end()) {
+			return true;
+		}
+		return false;
 	}
 };
