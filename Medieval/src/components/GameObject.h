@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <algorithm>
 #include <vector>
 #include <iostream>
 #include <memory>
@@ -16,7 +17,7 @@ private:
 	std::vector<Component *> components;
 
 	template <typename T>
-	Component *getStaticComponent() 
+	Component *getStaticComponent()
 	{
 		static T t;
 		return &t;
