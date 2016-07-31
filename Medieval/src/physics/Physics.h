@@ -29,6 +29,6 @@ struct AABB
                abs_pos_diff.z < size_sum.z;
     }
 
-	AABB(const glm::vec3& min, const glm::vec3& max)
-		: pos(min), size(max) {}
+	AABB(const glm::vec3& center, const glm::vec3& sz)
+		: pos(center), size(sz) {}
 };
