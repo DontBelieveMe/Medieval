@@ -28,7 +28,4 @@ struct AABB
                abs_pos_diff.y < size_sum.y &&
                abs_pos_diff.z < size_sum.z;
     }
-
-	AABB(const glm::vec3& center, const glm::vec3& sz)
-		: pos(center), size(sz) {}
 };
