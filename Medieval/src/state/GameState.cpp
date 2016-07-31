@@ -30,6 +30,7 @@ GameState::GameState()
 
 int counter = 0;
 int texIndex = 0;
+float xOffset = 10;
 void GameState::tick()
 {
 	counter++;
@@ -46,12 +47,12 @@ void GameState::tick()
 
 	if (Keys::toggle_ui.pressed())
 		showUI = !showUI;
+	xOffset += 0.1;
 
     rot += 1.0;
 	camera->tick();
 }
 
-int xOffset = 0;
 void GameState::render()
 {
     glEnable(GL_DEPTH_TEST);
@@ -72,7 +73,7 @@ void GameState::render()
     vox->halt();
 	modelShader->halt();
 
-	Primitives::drawCube(view, {10,-15,-40}, {4,4,4}, Colors::orange);
+	Primitives::drawCube(view, {xOffset, -15.f,-40.f}, {4,4,4}, Colors::orange);
 
 	if (showUI)
 	{

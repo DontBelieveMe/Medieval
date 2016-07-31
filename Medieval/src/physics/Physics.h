@@ -13,9 +13,9 @@ struct AABB
 
     bool intersects(const AABB &other, const i64vec3 &assume_self_offset = i64vec3(0,0,0)) const
     {
-        i64vec3 size_sum{std::max(size.x,0ll) + std::max(other.size.x,0ll),
-                         std::max(size.y,0ll) + std::max(other.size.y,0ll),
-                         std::max(size.z,0ll) + std::max(other.size.z,0ll)};
+        i64vec3 size_sum{std::max(size.x,0LL) + std::max(other.size.x,0LL),
+                         std::max(size.y,0LL) + std::max(other.size.y,0LL),
+                         std::max(size.z,0LL) + std::max(other.size.z,0LL)};
 
         size_sum /= 2;
 
@@ -28,4 +28,7 @@ struct AABB
                abs_pos_diff.y < size_sum.y &&
                abs_pos_diff.z < size_sum.z;
     }
+
+	AABB(const glm::vec3& min, const glm::vec3& max)
+		: pos(min), size(max) {}
 };
