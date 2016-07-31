@@ -1,14 +1,14 @@
 #pragma once
-#include "../includes.h"
-#include "../rendering/Shader.h"
-#include "../rendering/Voxels.h"
-#include "../ui/Font.h"
-#include "State.h"
+#include <includes.h>
+#include <rendering/Shader.h>
+#include <rendering/Voxels.h>
+#include <ui/Font.h>
+#include <state/State.h>
 
-#include "../rendering/Renderer2D.h"
-#include "../rendering/Texture.h"
-#include "../audio/AudioSystem.h"
-#include "../FreeCamera.h"
+#include <rendering/Renderer2D.h>
+#include <rendering/Texture.h>
+#include <audio/AudioSystem.h>
+#include <FreeCamera.h>
 
 class GameState : public State
 {

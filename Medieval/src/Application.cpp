@@ -38,7 +38,6 @@ void Application::init()
     Input::init();
 
     AdditionalVAO::init();//same for all states, so initialized here, needs to be bound on use.
-
 }
 
 void Application::mainLoop()

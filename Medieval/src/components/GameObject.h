@@ -16,29 +16,32 @@ private:
 	std::vector<Component *> components;
 
 	template <typename T>
-	Component *staticComponent() 
+	Component *getStaticComponent() 
 	{
 		static T t;
 		return &t;
 	}
 public:
+	GameObject();
+
 	void update();
 
 	template <typename T>
 	void addComponent()
 	{
-		auto component = staticComponent<T>();
+		auto component = getStaticComponent<T>();
 		components.push_back(component);
 	}
 
 	template <typename T>
 	bool hasComponent()
 	{
-		Component *t = staticComponent<T>();
+		bool exists = false;
+		Component *t = getStaticComponent<T>();
 		if (std::find(components.begin(), components.end(), t) != components.end()) {
-			return true;
+			exists = true;
 		}
-		return false;
+		return exists;
 	}
 
 	template <typename T>
@@ -47,6 +50,9 @@ public:
 		if (!hasComponent<T>())
 			return NULL;
 		else
-			return staticComponent<T>();
+		{
+			T *component = dynamic_cast<T*>(getStaticComponent<T>());
+			return component;
+		}
 	}
 };

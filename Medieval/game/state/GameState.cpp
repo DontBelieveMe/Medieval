@@ -1,13 +1,14 @@
 #include "GameState.h"
 
-#include "../Input.h"
+#include <Input.h>
 #include "OpenAL/al.h"
 
-#include "../Utils.h"
+#include <Utils.h>
 #include <chrono>
-#include "../rendering/Primitives.h"
-#include "../components/GameObject.h"
-#include "../components/TestComponent.h"
+#include <rendering/Primitives.h>
+#include <components/GameObject.h>
+#include <components/TestComponent.h>
+
 GameState::GameState()
 {
     modelShader = new ShaderProgram("res/shaders/vert.shader", "res/shaders/frag.shader");
@@ -30,7 +31,9 @@ GameState::GameState()
 
 	GameObject object;
 	object.addComponent<TestComponent2>();
-	std::cout << std::boolalpha << object.hasComponent<TestComponent2>();
+	std::cout << std::boolalpha << object.hasComponent<TestComponent>() << std::endl;
+	TestComponent *component = object.getComponent<TestComponent>();
+	
 }
 
 int counter = 0;

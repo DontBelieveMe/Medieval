@@ -1,6 +1,7 @@
 #pragma once
-#include "GameState.h"
+#include "../game/state/GameState.h"
 #include "State.h"
+
 
 /*
     This is my proposal for the new state system.
@@ -22,9 +23,9 @@ private:
 
 public:
 
-    inline void setDefaultState()
+    inline void setDefaultState(State *state = new GameState)
     {
-        currentState = new GameState();//this will be a Menu, at some point
+		currentState = state; //this will be a Menu, at some point
     }
 
     inline void tick()
@@ -50,8 +51,7 @@ public:
 
     inline ~StateSystem()
     {
-        if(currentState)
-            delete currentState;
+		delete currentState;
     }
 
     inline static StateSystem & get()

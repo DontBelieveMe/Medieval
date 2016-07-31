@@ -1,6 +1,7 @@
-#include "Application.h"
 #include <iostream>
 #include <stdexcept>
+
+#include <Application.h>
 
 int main()
 {
