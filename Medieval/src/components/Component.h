@@ -2,5 +2,5 @@
 
 struct Component
 {
-
+	virtual void update() = 0;
 };

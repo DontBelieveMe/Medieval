@@ -6,7 +6,8 @@
 #include "../Utils.h"
 #include <chrono>
 #include "../rendering/Primitives.h"
-
+#include "../components/GameObject.h"
+#include "../components/TestComponent.h"
 GameState::GameState()
 {
     modelShader = new ShaderProgram("res/shaders/vert.shader", "res/shaders/frag.shader");
@@ -26,6 +27,9 @@ GameState::GameState()
 	rot = 0;
 	audioSystem = new AudioSystem();
 	camera = new FreeCamera();
+
+	GameObject object;
+	object.addComponent<TestComponent>();
 }
 
 int counter = 0;
@@ -41,7 +45,6 @@ void GameState::tick()
 			texIndex = 0;
 		counter = 0;
 	}
-
 
 	audioSystem->tick();
 
