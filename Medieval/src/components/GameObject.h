@@ -40,4 +40,13 @@ public:
 		}
 		return false;
 	}
+
+	template <typename T>
+	T *getComponent()
+	{
+		if (!hasComponent<T>())
+			return NULL;
+		else
+			return staticComponent<T>();
+	}
 };
