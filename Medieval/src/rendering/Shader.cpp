@@ -99,7 +99,8 @@ GLint ShaderProgram::getUniformLoc(const std::string& name)
 	{
 		return it->second;
 	}
-	else {
+	else
+    {
 		GLint loc = glGetUniformLocation(this->program, name.c_str());
 		uniformLocCache[name] = loc;
 		if (loc == -1) {
