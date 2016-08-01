@@ -6,6 +6,11 @@
 #include <rendering/Primitives.h>
 #include <glm/glm.hpp>
 
+#ifdef _MSC_VER
+#undef max
+#undef min
+#endif
+
 struct AABB
 {
     i64vec3 pos, size;
