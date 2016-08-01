@@ -131,6 +131,7 @@ void Primitives::detail::tryInit()
              -1, 1, 1, 1, 1, 1,
         };
 
+
 		glGenVertexArrays(1, &vao_cube_wf);
 		glBindVertexArray(vao_cube_wf);
 

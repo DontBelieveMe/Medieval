@@ -44,7 +44,7 @@ class Chunk
             {
                 for (int z = 0; z < width; z++)
                 {
-                    if (bool(At({x,y,z}).type))
+                    if (At({x,y,z}).type != Block::Type::air)
                         AABB(vec3(x,y,z) * float(units_per_voxel), {1,1,1}).debugDraw(view, Colors::light_grey);
                 }
             }

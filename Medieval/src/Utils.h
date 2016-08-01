@@ -1,4 +1,8 @@
 #pragma once
+#ifdef _MSC_VER
+#pragma warning(disable: 4003)
+#endif
+
 // Utility stuff by Egor
 
 #include <iostream>
@@ -38,7 +42,7 @@ using i64vec4 = glm::tvec4<int64_t, glm::highp>;
     inline std::ostream &operator<<(std::ostream &s, prefix##vec2 obj) {s << '[' << obj.x << ',' << obj.y << ']'; return s;} \
     inline std::ostream &operator<<(std::ostream &s, prefix##vec3 obj) {s << '[' << obj.x << ',' << obj.y << ',' << obj.z << ']'; return s;} \
     inline std::ostream &operator<<(std::ostream &s, prefix##vec4 obj) {s << '[' << obj.x << ',' << obj.y << ',' << obj.z << ',' << obj.w << ']'; return s;}
-F(d) F(i) F(u) F(b) F(i64) // Prefixes for types of vectors to print.
+F() F(d) F(i) F(u) F(b) F(i64) // Prefixes for types of vectors to print.
 #undef F
 
 namespace Internal
