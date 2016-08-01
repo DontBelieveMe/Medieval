@@ -79,16 +79,16 @@ void ShaderProgram::validateProgram()
 
 void ShaderProgram::use()
 {
-	if (detail::currentShader != this) 
+	if (detail::currentShader != this)
 	{
-		detail::currentShader = this; 
+		detail::currentShader = this;
 		glUseProgram(this->program);
 	}
 }
 
 void ShaderProgram::halt()
 {
-	detail::currentShader = NULL;  
+	detail::currentShader = NULL;
 	glUseProgram(0);
 }
 
@@ -104,14 +104,10 @@ GLint ShaderProgram::getUniformLoc(const std::string& name)
 		uniformLocCache[name] = loc;
 		if (loc == -1) {
 			std::cout << "Error: Uniform " << name << " does not exist!" << std::endl;
-			// Goto is evil (but here it is slighly better than multiple return points
-			goto errorGettingLoc;
+			return -1;
 		}
 		return loc;
 	}
-
-	errorGettingLoc:
-	return -1;
 }
 
 
