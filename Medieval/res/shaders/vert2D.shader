@@ -9,7 +9,7 @@ out vec2 passUv;
 uniform mat4 ortho;
 uniform mat4 model;
 uniform vec2 tileWH;
-uniform vec4 tile;
+uniform ivec4 tile;
 
 void main()
 {

@@ -26,7 +26,7 @@ void Renderer2D::drawTile(int tx, int ty, int tw, int th, int xOff, int yOff, in
 {
 	shaderRef->uploadVector2f("tileWH", sizeInTiles);
 	GLint tileLoc = shaderRef->getUniformLoc("tile");
-    glUniform4f(tileLoc, tx, ty, tw, th);
+    glUniform4i(tileLoc, tx, ty, tw, th);
 
 	glm::mat4 model = glm::translate(glm::mat4(1.0), glm::vec3(xOff, yOff, 0.0f));
     model           = glm::scale(model, glm::vec3(width, height, 1.0f));

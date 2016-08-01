@@ -15,7 +15,7 @@
 #endif
 
 constexpr int units_per_voxel = 256;
-constexpr float gravity = .1; // This is measured in voxels/ticks^2.
+constexpr double gravity = .1f; // This is measured in voxels/ticks^2.
 
 struct AABB
 {
@@ -49,8 +49,8 @@ struct AABB
     }
 };
 
-enum class Solid             {no, yes};
-enum class AffectedByGravity {no, yes};
+enum class Solid              {no=0, yes=1};
+enum class AffectedByGravity  {no=0, yes=1};
 
 class PhysicalBody : public AABB
 {
@@ -78,7 +78,7 @@ class PhysicalBody : public AABB
     PhysicalBody() {MutableObjectList().insert(this);}
 
     PhysicalBody(const i64vec3 &position, const ivec3 &sz, Solid solid = Solid::no, AffectedByGravity grav = AffectedByGravity::yes)
-        : AABB(position, sz), solid(bool(solid)), affected_by_gravity(bool(grav)) {MutableObjectList().insert(this);}
+		: AABB(position, sz), solid(solid!= Solid::no), affected_by_gravity(grav != AffectedByGravity::no) {MutableObjectList().insert(this);}
 
     // Deleted those for now to make my life easier. :P
     PhysicalBody(const PhysicalBody &o) = delete;
@@ -104,6 +104,6 @@ class PhysicalBody : public AABB
         vel_lag = (sum_vel - vec3(int_vel)) / float(units_per_voxel);
 
         if (affected_by_gravity)
-            pos.y -= gravity;
+            vel.y -= gravity;
     }
 };

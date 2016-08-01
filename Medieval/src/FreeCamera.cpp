@@ -14,19 +14,19 @@ FreeCamera::~FreeCamera()
 }
 void FreeCamera::tick()
 {
-	const float speed = 0.8, rot_speed = 0.003;
+	const float speed = 0.8f, rot_speed = 0.003f;
 
 	yaw += Input::mousePosDelta().x * rot_speed;
-	while (yaw > pi) yaw -= 2*pi;
-	while (yaw < -pi) yaw += 2*pi;
+	while (yaw > pi) yaw -= float(2 * pi);
+	while (yaw < -pi) yaw += float(2 * pi);
 
 	pitch -= Input::mousePosDelta().y * rot_speed;
-	if (pitch < -pi/2) pitch = -pi/2;
-	else if (pitch > pi/2) pitch = pi/2;
+	if (pitch < -pi/2) pitch = (float) -pi/2;
+	else if (pitch > pi/2) pitch = (float) pi/2;
 
     glm::vec3 delta;
 
-    delta.y = Keys::up.down() - Keys::down.down();
+    delta.y = float(Keys::up.down() - Keys::down.down());
 
 	float yaw_sin = std::sin(yaw),
 	      yaw_cos = std::cos(yaw);

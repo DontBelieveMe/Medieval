@@ -28,12 +28,15 @@ using i64vec2 = glm::tvec2<int64_t, glm::highp>;
 using i64vec3 = glm::tvec3<int64_t, glm::highp>;
 using i64vec4 = glm::tvec4<int64_t, glm::highp>;
 
+#define dynamic_assert(expression) \
+	{ if(!(expression)) { assert(false); } }
+
 // Following enables printing glm vectors with stadard streams like cout.
 #define F(prefix) \
     inline std::ostream &operator<<(std::ostream &s, prefix##vec2 obj) {s << '[' << obj.x << ',' << obj.y << ']'; return s;} \
     inline std::ostream &operator<<(std::ostream &s, prefix##vec3 obj) {s << '[' << obj.x << ',' << obj.y << ',' << obj.z << ']'; return s;} \
     inline std::ostream &operator<<(std::ostream &s, prefix##vec4 obj) {s << '[' << obj.x << ',' << obj.y << ',' << obj.z << ',' << obj.w << ']'; return s;}
-F() F(d) F(i) F(u) F(b) F(i64) // Prefixes for types of vectors to print.
+F(d) F(i) F(u) F(b) F(i64) // Prefixes for types of vectors to print.
 #undef F
 
 namespace Internal
@@ -81,7 +84,7 @@ template <typename T> int sign(T val)
 template <typename I, typename F> I iround(F f)
 {
     static_assert(std::is_integral<I>::value, "Non integral template parameter I makes no sense for this function.");
-    return f + .5 * sign(f);
+    return I(f + .5 * sign(f));
 }
 
 extern double pi;

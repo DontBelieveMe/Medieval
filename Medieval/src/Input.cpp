@@ -108,8 +108,8 @@ void Input::tick()
     glfwGetCursorPos(Application::getInstance().getWindowHandle(), &tmpx, &tmpy);
     // +.5 is here to round the values properly.
     prev_mouse_pos = mouse_pos;
-    mouse_pos.x = tmpx + .5;
-    mouse_pos.y = tmpy + .5;
+    mouse_pos.x = int(tmpx + .5);
+    mouse_pos.y = int(tmpy + .5);
 
     // Mouse buttons
     for (int i = 0; i < max_mouse_buttons; i++)

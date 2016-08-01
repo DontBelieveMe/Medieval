@@ -7,4 +7,4 @@ namespace Internal
     const std::stringstream::fmtflags stdfmt = ss.flags();
 }
 
-double pi = std::atan(1)*4;
+double pi = std::atan(1) * 4;

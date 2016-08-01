@@ -46,7 +46,6 @@ bool hidden = true;
 void GameState::tick()
 {
 	counter++;
-
 	if (counter % 60 == 0) {
 		texIndex++;
 		if (texIndex == 5)
@@ -64,7 +63,8 @@ void GameState::tick()
     rot += 1.0;
 	camera->tick();
 
-	if (Keys::toogle_focus.pressed()) {
+	if (Keys::toogle_focus.pressed()) 
+	{
 		if (hidden)
 		{
 			Input::setMouseMode(Input::MouseMode::normal);
