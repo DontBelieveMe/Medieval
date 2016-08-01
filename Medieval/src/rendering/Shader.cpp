@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <iostream>
 
+const ShaderProgram *detail::currentShader = NULL;
+
 ShaderProgram::ShaderProgram(const std::string& vertPath, const std::string& fragPath)
 {
     this->program = load(vertPath, fragPath);
@@ -73,6 +75,21 @@ void ShaderProgram::checkError(GLuint element, bool isProgram, GLenum status, co
 void ShaderProgram::validateProgram()
 {
     glValidateProgram(this->program);
+}
+
+void ShaderProgram::use()
+{
+	if (detail::currentShader != this) 
+	{
+		detail::currentShader = this; 
+		glUseProgram(this->program);
+	}
+}
+
+void ShaderProgram::halt()
+{
+	detail::currentShader = NULL;  
+	glUseProgram(0);
 }
 
 GLint ShaderProgram::getUniformLoc(const std::string& name)

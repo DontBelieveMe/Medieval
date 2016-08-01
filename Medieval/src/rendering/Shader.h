@@ -12,14 +12,21 @@
 #include <unordered_map>
 #include "../includes.h"
 
+class ShaderProgram;
+
+namespace detail
+{
+	extern const ShaderProgram *currentShader;
+}
+
 class ShaderProgram
 {
 public:
     ShaderProgram(const std::string& vertPath, const std::string& fragPath);
 
     GLuint load(const std::string& vertPath, const std::string& fragPath);
-    inline void use() { glUseProgram(this->program); }
-    inline void halt() { glUseProgram(0); }
+	void use(); 
+	void halt(); 
 
 	GLint getUniformLoc(const std::string& name);
 
@@ -31,12 +38,11 @@ public:
 
     void deleteProgram();
 
-    GLuint program;
 private:
+    GLuint program;
     GLuint createShader(const std::string& path, GLenum type, const std::string& errorMsg);
     void   checkError(GLuint element, bool isProgram, GLenum status, const std::string& errorMsg);
     void   validateProgram();
 
 	std::unordered_map<std::string, GLint> uniformLocCache;
-private:
 };
