@@ -7,7 +7,7 @@ struct TestComponent : Component
 {
 	virtual void create()
 	{
-
+		std::cout << "Init!" << std::endl;
 	}
 
 	virtual void update()

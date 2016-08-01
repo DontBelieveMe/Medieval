@@ -39,8 +39,10 @@ GameState::GameState()
 
 	GameObject object;
 	object.addComponent<TestComponent>();
+	object.addComponent<TestComponent>();
 	std::cout << std::boolalpha << object.hasComponent<TestComponent>() << std::endl;
-	TestComponent *component = object.getComponent<TestComponent>();
+	object.removeComponent<TestComponent>();
+	std::cout << std::boolalpha << object.hasComponent<TestComponent>() << std::endl;
 }
 
 int counter = 0;

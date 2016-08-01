@@ -22,14 +22,20 @@ private:
 		static T t;
 		return &t;
 	}
+
 public:
 	GameObject();
 
 	void update();
+	void init();
 
 	template <typename T>
 	void addComponent()
 	{
+		// No need for duplicate components
+		if (hasComponent<T>())
+			return;
+
 		auto component = getStaticComponent<T>();
 		components.push_back(component);
 	}
@@ -55,5 +61,16 @@ public:
 			T *component = dynamic_cast<T*>(getStaticComponent<T>());
 			return component;
 		}
+	}
+
+	template <typename T>
+	void removeComponent()
+	{
+		// Cannot remove component that doesn't exist
+		if (!hasComponent<T>())
+			return;
+
+		Component *component = getStaticComponent<T>();
+		components.erase(std::remove(components.begin(), components.end(), component), components.end());
 	}
 };

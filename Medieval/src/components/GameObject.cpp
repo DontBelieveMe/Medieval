@@ -2,10 +2,6 @@
 
 GameObject::GameObject()
 {
-	for (auto& component : components)
-	{
-		component->create();
-	}
 }
 
 void GameObject::update()
@@ -13,5 +9,13 @@ void GameObject::update()
 	for (auto& component : components)
 	{
 		component->update();
+	}
+}
+
+void GameObject::init()
+{
+	for (auto& component : components)
+	{
+		component->create();
 	}
 }
