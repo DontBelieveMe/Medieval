@@ -46,7 +46,7 @@ GameState::GameState()
 int counter = 0;
 int texIndex = 0;
 
-
+bool hidden = true;
 void GameState::tick()
 {
 	counter++;
@@ -65,6 +65,18 @@ void GameState::tick()
 
     rot += 1.0;
 	camera->tick();
+
+	if (Keys::toogle_focus.pressed()) {
+		if (hidden)
+		{
+			Input::setMouseMode(Input::MouseMode::normal);
+			hidden = false;
+		}
+		else {
+			Input::setMouseMode(Input::MouseMode::locked);
+			hidden = true;
+		}
+	}
 }
 
 void GameState::render()
@@ -93,7 +105,7 @@ void GameState::render()
 	{
 	    renderer2D->bind();
 		renderer2D->drawTile(0, 0, 2, 1, 10, 10, 64 * 3, 32 * 3);
-		renderer2D->drawTile(texIndex, 1, 1, 1, 34.7 * 3, 12.5 * 3, 32 * 3, 32 * 3);
+		renderer2D->drawTile(texIndex, 1, 1, 1, 34 * 3, 12 * 3, 32 * 3, 32 * 3);
 		renderer2D->drawTile(2, 0, 1, 1, 64 * 3 + 30, 10, 32 * 3, 32*3);
 		std::stringstream ss;
 		ss << Application::getInstance().FPS();

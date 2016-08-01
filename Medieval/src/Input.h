@@ -69,7 +69,6 @@ class Input
     };
     static void setMouseMode(MouseMode mode);
 
-
     class Key
     {
         // This class is for internal use. Do not use it directly. Use namespace Keys below;
@@ -150,6 +149,7 @@ namespace Keys
 		KEY(right,   "Right",   CONFIGURABLE, GLFW_KEY_D) \
 		KEY(up,      "Up",      CONFIGURABLE, GLFW_KEY_SPACE) \
 		KEY(down,    "Down",    CONFIGURABLE, GLFW_KEY_LEFT_SHIFT) \
+		KEY(toogle_focus, "Toggle Focus", CONFIGURABLE, GLFW_KEY_ESCAPE) \
 
     // Contains Key objects listed above. Tokens are used as names.
     #define KEY(token, name, mode, value) extern Input::Key token;

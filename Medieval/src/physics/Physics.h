@@ -18,8 +18,6 @@
 constexpr int units_per_voxel = 256;
 constexpr float gravity = .1; // This is measured in voxels/ticks^2.
 
-
-
 struct AABB
 {
     i64vec3 pos;
