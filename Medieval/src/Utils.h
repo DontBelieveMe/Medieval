@@ -2,8 +2,10 @@
 // Utility stuff by Egor
 
 #include <iostream>
+#include <cmath>
 #include <cstdlib>
 #include <sstream>
+#include <type_traits>
 #include <glm/glm.hpp>
 
 using glm::vec2;
@@ -67,6 +69,19 @@ template <typename ...P> [[noreturn]] void Error(P &&... p)
 	system("pause");
 	std::exit(0);
 }
+
+template <typename T> int sign(T val)
+{
+    return (val > 0) - (val < 0);
+}
+
+template <typename I, typename F> I iround(F f)
+{
+    static_assert(std::is_integral<I>::value, "Non integral template parameter I makes no sense for this function.");
+    return f + .5 * sign(f);
+}
+
+extern double pi;
 
 namespace str
 {

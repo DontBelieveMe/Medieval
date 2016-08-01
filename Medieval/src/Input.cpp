@@ -61,6 +61,10 @@ void Input::init()
     });
 
 
+    double x, y;
+    glfwGetCursorPos(Application::getInstance().getWindowHandle(), &x, &y);
+    mouse_pos = prev_mouse_pos = {x,y};
+
 
     // Reading controls from file
     std::ifstream config_file(controls_config_file_name);
@@ -165,6 +169,11 @@ int Input::keyAnyReleased()
     if (keys_released.size() == 0)
         return 0;
     return *keys_released.begin();
+}
+
+void Input::setMouseMode(MouseMode mode)
+{
+    glfwSetInputMode(Application::getInstance().getWindowHandle(), GLFW_CURSOR, (int)mode);
 }
 
 void Input::Key::set(int value)

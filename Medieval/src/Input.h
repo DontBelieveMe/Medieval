@@ -59,6 +59,15 @@ class Input
     static bool wheelLeft () {return scroll.x < 0;}
     static bool wheelRight() {return scroll.x > 0;}
 
+    // `hidden` just hides mouse. Sseful if you want to draw your own cursor.
+    // `locked` hides mouse and prevents it from leaving the window. Useful for 3D camera control.
+    enum class MouseMode
+    {
+        normal = GLFW_CURSOR_NORMAL,
+        hidden = GLFW_CURSOR_HIDDEN,
+        locked = GLFW_CURSOR_DISABLED,
+    };
+    static void setMouseMode(MouseMode mode);
 
 
     class Key
