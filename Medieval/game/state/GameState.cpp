@@ -4,12 +4,14 @@
 #include "OpenAL/al.h"
 
 #include <physics/Physics.h>
-
+#include <Map.h>
 #include <Utils.h>
 #include <chrono>
 #include <rendering/Primitives.h>
 #include <components/GameObject.h>
 #include <components/TestComponent.h>
+
+Chunk chunk;
 
 GameState::GameState()
 {
@@ -33,6 +35,8 @@ GameState::GameState()
 
 	Input::setMouseMode(Input::MouseMode::locked);
 
+	chunk.debugGenerate();
+
 	GameObject object;
 	object.addComponent<TestComponent>();
 	std::cout << std::boolalpha << object.hasComponent<TestComponent>() << std::endl;
@@ -41,7 +45,7 @@ GameState::GameState()
 
 int counter = 0;
 int texIndex = 0;
-PhysicalBody body({0,0,0},{10,15,20});
+
 
 void GameState::tick()
 {
@@ -58,8 +62,6 @@ void GameState::tick()
 
 	if (Keys::toggle_ui.pressed())
 		showUI = !showUI;
-
-    body.tick();
 
     rot += 1.0;
 	camera->tick();
@@ -85,7 +87,7 @@ void GameState::render()
     vox->halt();
 	modelShader->halt();
 
-	body.debugDraw(view);
+	chunk.render(view);
 
 	if (showUI)
 	{
