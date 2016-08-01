@@ -1,0 +1,70 @@
+﻿  glad.c
+  Utils.cpp
+i:\medieval\medievalproject\medieval\src\utils.h(34): warning C4003: not enough actual parameters for macro 'F'
+  Font.cpp
+  Voxels.cpp
+  Texture.cpp
+  Shader.cpp
+  Renderer2D.cpp
+  Primitives.cpp
+  AdditionalVAO.cpp
+  Physics.cpp
+i:\medieval\medievalproject\medieval\src\utils.h(34): warning C4003: not enough actual parameters for macro 'F'
+  main.cpp
+  Input.cpp
+i:\medieval\medievalproject\medieval\src\utils.h(34): warning C4003: not enough actual parameters for macro 'F'
+  WaveFile.cpp
+i:\medieval\medievalproject\medieval\src\utils.h(34): warning C4003: not enough actual parameters for macro 'F'
+  Source.cpp
+  AudioSystem.cpp
+  Application.cpp
+i:\medieval\medievalproject\medieval\src\utils.h(34): warning C4003: not enough actual parameters for macro 'F'
+  FreeCamera.cpp
+i:\medieval\medievalproject\medieval\src\utils.h(34): warning C4003: not enough actual parameters for macro 'F'
+  GameObject.cpp
+  AudioArea.cpp
+  GameState.cpp
+i:\medieval\medievalproject\medieval\src\utils.h(34): warning C4003: not enough actual parameters for macro 'F'
+  lodepng.cpp
+  Generating Code...
+Application.obj : error LNK2019: unresolved external symbol glfwInit referenced in function "private: void __cdecl Application::init(void)" (?init@Application@@AEAAXXZ)
+Application.obj : error LNK2019: unresolved external symbol glfwTerminate referenced in function "private: void __cdecl Application::destroy(void)" (?destroy@Application@@AEAAXXZ)
+Application.obj : error LNK2019: unresolved external symbol glfwGetPrimaryMonitor referenced in function "private: void __cdecl Application::init(void)" (?init@Application@@AEAAXXZ)
+Application.obj : error LNK2019: unresolved external symbol glfwGetVideoMode referenced in function "private: void __cdecl Application::init(void)" (?init@Application@@AEAAXXZ)
+Application.obj : error LNK2019: unresolved external symbol glfwWindowHint referenced in function "private: void __cdecl Application::init(void)" (?init@Application@@AEAAXXZ)
+Application.obj : error LNK2019: unresolved external symbol glfwCreateWindow referenced in function "private: void __cdecl Application::init(void)" (?init@Application@@AEAAXXZ)
+Application.obj : error LNK2019: unresolved external symbol glfwDestroyWindow referenced in function "private: void __cdecl Application::destroy(void)" (?destroy@Application@@AEAAXXZ)
+Application.obj : error LNK2019: unresolved external symbol glfwWindowShouldClose referenced in function "private: void __cdecl Application::mainLoop(void)" (?mainLoop@Application@@AEAAXXZ)
+Application.obj : error LNK2019: unresolved external symbol glfwSetWindowPos referenced in function "private: void __cdecl Application::init(void)" (?init@Application@@AEAAXXZ)
+Application.obj : error LNK2019: unresolved external symbol glfwShowWindow referenced in function "private: void __cdecl Application::mainLoop(void)" (?mainLoop@Application@@AEAAXXZ)
+Application.obj : error LNK2019: unresolved external symbol glfwGetTime referenced in function "private: void __cdecl Application::mainLoop(void)" (?mainLoop@Application@@AEAAXXZ)
+Application.obj : error LNK2019: unresolved external symbol glfwMakeContextCurrent referenced in function "private: void __cdecl Application::init(void)" (?init@Application@@AEAAXXZ)
+Application.obj : error LNK2019: unresolved external symbol glfwSwapBuffers referenced in function "private: void __cdecl Application::mainLoop(void)" (?mainLoop@Application@@AEAAXXZ)
+Application.obj : error LNK2019: unresolved external symbol glfwSwapInterval referenced in function "private: void __cdecl Application::init(void)" (?init@Application@@AEAAXXZ)
+Application.obj : error LNK2019: unresolved external symbol glfwGetProcAddress referenced in function "private: void __cdecl Application::init(void)" (?init@Application@@AEAAXXZ)
+AudioSystem.obj : error LNK2019: unresolved external symbol __imp_alListener3f referenced in function "public: __cdecl AudioSystem::AudioSystem(void)" (??0AudioSystem@@QEAA@XZ)
+AudioSystem.obj : error LNK2019: unresolved external symbol __imp_alGenBuffers referenced in function "public: __cdecl Buffer::Buffer(class wave::WaveFile &)" (??0Buffer@@QEAA@AEAVWaveFile@wave@@@Z)
+AudioSystem.obj : error LNK2019: unresolved external symbol __imp_alDeleteBuffers referenced in function "public: void __cdecl Buffer::destroy(void)" (?destroy@Buffer@@QEAAXXZ)
+AudioSystem.obj : error LNK2019: unresolved external symbol __imp_alBufferData referenced in function "public: __cdecl Buffer::Buffer(class wave::WaveFile &)" (??0Buffer@@QEAA@AEAVWaveFile@wave@@@Z)
+AudioSystem.obj : error LNK2019: unresolved external symbol __imp_alcCreateContext referenced in function "public: __cdecl AudioSystem::AudioSystem(void)" (??0AudioSystem@@QEAA@XZ)
+AudioSystem.obj : error LNK2019: unresolved external symbol __imp_alcMakeContextCurrent referenced in function "public: __cdecl AudioSystem::AudioSystem(void)" (??0AudioSystem@@QEAA@XZ)
+AudioSystem.obj : error LNK2019: unresolved external symbol __imp_alcDestroyContext referenced in function "public: void __cdecl AudioSystem::destroy(void)" (?destroy@AudioSystem@@QEAAXXZ)
+AudioSystem.obj : error LNK2019: unresolved external symbol __imp_alcOpenDevice referenced in function "public: __cdecl AudioSystem::AudioSystem(void)" (??0AudioSystem@@QEAA@XZ)
+AudioSystem.obj : error LNK2019: unresolved external symbol __imp_alcCloseDevice referenced in function "public: void __cdecl AudioSystem::destroy(void)" (?destroy@AudioSystem@@QEAAXXZ)
+Source.obj : error LNK2019: unresolved external symbol __imp_alGenSources referenced in function "public: __cdecl Source::Source(void)" (??0Source@@QEAA@XZ)
+Source.obj : error LNK2019: unresolved external symbol __imp_alDeleteSources referenced in function "public: void __cdecl Source::destroy(void)" (?destroy@Source@@QEAAXXZ)
+Source.obj : error LNK2019: unresolved external symbol __imp_alSourcef referenced in function "public: __cdecl Source::Source(void)" (??0Source@@QEAA@XZ)
+Source.obj : error LNK2019: unresolved external symbol __imp_alSource3f referenced in function "public: __cdecl Source::Source(void)" (??0Source@@QEAA@XZ)
+Source.obj : error LNK2019: unresolved external symbol __imp_alSourcei referenced in function "public: void __cdecl Source::play(struct Buffer const &,bool)" (?play@Source@@QEAAXAEBUBuffer@@_N@Z)
+Source.obj : error LNK2019: unresolved external symbol __imp_alGetSourcei referenced in function "public: bool __cdecl Source::isPlaying(void)const " (?isPlaying@Source@@QEBA_NXZ)
+Source.obj : error LNK2019: unresolved external symbol __imp_alSourcePlay referenced in function "public: void __cdecl Source::play(struct Buffer const &,bool)" (?play@Source@@QEAAXAEBUBuffer@@_N@Z)
+Source.obj : error LNK2019: unresolved external symbol __imp_alSourceStop referenced in function "public: void __cdecl Source::stop(void)" (?stop@Source@@QEAAXXZ)
+Source.obj : error LNK2019: unresolved external symbol __imp_alSourcePause referenced in function "public: void __cdecl Source::pause(void)" (?pause@Source@@QEAAXXZ)
+Input.obj : error LNK2019: unresolved external symbol glfwPollEvents referenced in function "private: static void __cdecl Input::tick(void)" (?tick@Input@@CAXXZ)
+Input.obj : error LNK2019: unresolved external symbol glfwGetCursorPos referenced in function "private: static void __cdecl Input::tick(void)" (?tick@Input@@CAXXZ)
+Input.obj : error LNK2019: unresolved external symbol glfwSetKeyCallback referenced in function "private: static void __cdecl Input::init(void)" (?init@Input@@CAXXZ)
+Input.obj : error LNK2019: unresolved external symbol glfwSetMouseButtonCallback referenced in function "private: static void __cdecl Input::init(void)" (?init@Input@@CAXXZ)
+Input.obj : error LNK2019: unresolved external symbol glfwSetScrollCallback referenced in function "private: static void __cdecl Input::init(void)" (?init@Input@@CAXXZ)
+lib/\glfw3.lib : warning LNK4272: library machine type 'X86' conflicts with target machine type 'x64'
+lib/\OpenAL32.lib : warning LNK4272: library machine type 'X86' conflicts with target machine type 'x64'
+I:\Medieval\MedievalProject\Medieval\x64\Debug\Medieval-Core.exe : fatal error LNK1120: 38 unresolved externals

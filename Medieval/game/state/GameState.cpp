@@ -32,7 +32,7 @@ GameState::GameState()
 	camera = new FreeCamera();
 
 	GameObject object;
-	object.addComponent<TestComponent2>();
+	object.addComponent<TestComponent>();
 	std::cout << std::boolalpha << object.hasComponent<TestComponent>() << std::endl;
 	TestComponent *component = object.getComponent<TestComponent>();
 

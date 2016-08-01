@@ -6,7 +6,9 @@
 #include <rendering/Primitives.h>
 #include <glm/glm.hpp>
 
-#ifdef _MSC_VER
+// Some weird MSVC thing where it defines min & max
+// macros which conflict with std::max and std::min.
+#ifdef _MSC_VER 
 #undef max
 #undef min
 #endif

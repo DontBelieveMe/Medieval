@@ -44,7 +44,8 @@ namespace Internal
 // Convenient string joiner.
 // Works like std::cout, but uses commas to separate arguments.
 // Example:  Jo("1 + 2 == ", 1+2) == "1 + 2 == 3"
-template <typename ...P> const char *Jo(P &&... p)
+template <typename ...P> 
+const char *Jo(P &&... p)
 {
     static constexpr int ret_buffers_c = 32;
     static std::string ret_buffers[ret_buffers_c];
@@ -61,7 +62,9 @@ template <typename ...P> const char *Jo(P &&... p)
 }
 
 // Prints error and terminates application. Same syntax as Jo().
-template <typename ...P> [[noreturn]] void Error(P &&... p)
+template <typename ...P> 
+[[noreturn]] 
+void Error(P &&... p)
 {
 	std::cout << Jo(p...) << std::endl;
 	system("pause");
