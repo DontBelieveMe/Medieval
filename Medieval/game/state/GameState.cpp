@@ -40,7 +40,7 @@ GameState::GameState()
 
 int counter = 0;
 int texIndex = 0;
-PhysicalBody body{};
+PhysicalBody body;
 
 void GameState::tick()
 {
@@ -82,7 +82,7 @@ void GameState::render()
     vox->halt();
 	modelShader->halt();
 
-	body.debugDraw();
+	body.debugDraw(view);
 
 	if (showUI)
 	{

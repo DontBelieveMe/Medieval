@@ -33,10 +33,10 @@ struct AABB
                abs_pos_diff.z < size_sum.z;
     }
 
-    void debugDraw() const
+    void debugDraw(const glm::mat4& view) const
     {
         "Why this is broken? D:";
-        Primitives::drawCube({}, {0,0,0}, {1,1,1}, Colors::magenta);
+        Primitives::drawCube(view, {0,0,0}, {1,1,1}, Colors::magenta);
         //Primitives::drawCube({}, pos, size/2LL, Colors::magenta);
     }
 };
