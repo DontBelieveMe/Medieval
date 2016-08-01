@@ -3,6 +3,8 @@
 #include <Input.h>
 #include "OpenAL/al.h"
 
+#include <physics/Physics.h>
+
 #include <Utils.h>
 #include <chrono>
 #include <rendering/Primitives.h>
@@ -33,12 +35,13 @@ GameState::GameState()
 	object.addComponent<TestComponent2>();
 	std::cout << std::boolalpha << object.hasComponent<TestComponent>() << std::endl;
 	TestComponent *component = object.getComponent<TestComponent>();
-	
+
 }
 
 int counter = 0;
 int texIndex = 0;
-float xOffset = 10;
+PhysicalBody body{};
+
 void GameState::tick()
 {
 	counter++;
@@ -54,7 +57,6 @@ void GameState::tick()
 
 	if (Keys::toggle_ui.pressed())
 		showUI = !showUI;
-	xOffset += 0.1;
 
     rot += 1.0;
 	camera->tick();
@@ -80,7 +82,7 @@ void GameState::render()
     vox->halt();
 	modelShader->halt();
 
-	Primitives::drawCube(view, {xOffset, -15.f,-40.f}, {4,4,4}, Colors::orange);
+	body.debugDraw();
 
 	if (showUI)
 	{

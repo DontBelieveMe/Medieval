@@ -2,6 +2,7 @@
 
 #include "../includes.h"
 #include "Shader.h"
+
 namespace Primitives
 {
 	namespace detail

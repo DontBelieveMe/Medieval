@@ -6,12 +6,32 @@
 #include <sstream>
 #include <glm/glm.hpp>
 
+using glm::vec2;
+using glm::vec3;
+using glm::vec4;
+using glm::ivec2;
+using glm::ivec3;
+using glm::ivec4;
+using glm::dvec2;
+using glm::dvec3;
+using glm::dvec4;
+using glm::uvec2;
+using glm::uvec3;
+using glm::uvec4;
+using glm::bvec2;
+using glm::bvec3;
+using glm::bvec4;
+
+using i64vec2 = glm::tvec2<int64_t, glm::highp>;
+using i64vec3 = glm::tvec3<int64_t, glm::highp>;
+using i64vec4 = glm::tvec4<int64_t, glm::highp>;
+
 // Following enables printing glm vectors with stadard streams like cout.
 #define F(prefix) \
-    inline std::ostream &operator<<(std::ostream &s, glm::prefix##vec2 obj) {s << '[' << obj.x << ',' << obj.y << ']'; return s;} \
-    inline std::ostream &operator<<(std::ostream &s, glm::prefix##vec3 obj) {s << '[' << obj.x << ',' << obj.y << ',' << obj.z << ']'; return s;} \
-    inline std::ostream &operator<<(std::ostream &s, glm::prefix##vec4 obj) {s << '[' << obj.x << ',' << obj.y << ',' << obj.z << ',' << obj.w << ']'; return s;}
-F() F(d) F(i) F(u) F(b) // Prefixes for types of vectors to print.
+    inline std::ostream &operator<<(std::ostream &s, prefix##vec2 obj) {s << '[' << obj.x << ',' << obj.y << ']'; return s;} \
+    inline std::ostream &operator<<(std::ostream &s, prefix##vec3 obj) {s << '[' << obj.x << ',' << obj.y << ',' << obj.z << ']'; return s;} \
+    inline std::ostream &operator<<(std::ostream &s, prefix##vec4 obj) {s << '[' << obj.x << ',' << obj.y << ',' << obj.z << ',' << obj.w << ']'; return s;}
+F() F(d) F(i) F(u) F(b) F(i64) // Prefixes for types of vectors to print.
 #undef F
 
 namespace Internal
@@ -61,7 +81,6 @@ namespace str
 		return true;
 	}
 }
-
 
 namespace Colors
 {

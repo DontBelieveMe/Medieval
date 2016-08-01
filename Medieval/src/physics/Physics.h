@@ -1,11 +1,10 @@
 #pragma once
 
 #include <algorithm>
+#include <cmath>
+#include <Utils.h>
+#include <rendering/Primitives.h>
 #include <glm/glm.hpp>
-
-using i64vec2 = glm::tvec2<int64_t, glm::highp>;
-using i64vec3 = glm::tvec3<int64_t, glm::highp>;
-using i64vec4 = glm::tvec4<int64_t, glm::highp>;
 
 struct AABB
 {
@@ -27,5 +26,28 @@ struct AABB
         return abs_pos_diff.x < size_sum.x &&
                abs_pos_diff.y < size_sum.y &&
                abs_pos_diff.z < size_sum.z;
+    }
+
+    void debugDraw() const
+    {
+        "Why this is broken? D:";
+        Primitives::drawCube({}, {0,0,0}, {1,1,1}, Colors::magenta);
+        //Primitives::drawCube({}, pos, size/2LL, Colors::magenta);
+    }
+};
+
+class PhysicalBody : public AABB
+{
+  public:
+    vec3 vel, vel_lag;
+
+    void tick()
+    {
+        vec3 sum_vel = vel + vel_lag;
+        ivec3 int_vel(std::round(sum_vel.x),
+                      std::round(sum_vel.y),
+                      std::round(sum_vel.z));
+        vel_lag = sum_vel - vec3(int_vel);
+        pos += int_vel;
     }
 };
