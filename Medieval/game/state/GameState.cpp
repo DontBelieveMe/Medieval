@@ -31,16 +31,17 @@ GameState::GameState()
 	audioSystem = new AudioSystem();
 	camera = new FreeCamera();
 
+	Input::setMouseMode(Input::MouseMode::locked);
+
 	GameObject object;
 	object.addComponent<TestComponent>();
 	std::cout << std::boolalpha << object.hasComponent<TestComponent>() << std::endl;
 	TestComponent *component = object.getComponent<TestComponent>();
-
 }
 
 int counter = 0;
 int texIndex = 0;
-PhysicalBody body;
+PhysicalBody body({0,0,0},{10,15,20});
 
 void GameState::tick()
 {
@@ -57,6 +58,8 @@ void GameState::tick()
 
 	if (Keys::toggle_ui.pressed())
 		showUI = !showUI;
+
+    body.tick();
 
     rot += 1.0;
 	camera->tick();
