@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <unordered_set>
 #include <Utils.h>
 #include <rendering/Primitives.h>
@@ -9,7 +10,7 @@
 
 // Some weird MSVC thing where it defines min & max
 // macros which conflict with std::max and std::min.
-#ifdef _MSC_VER 
+#ifdef _MSC_VER
 #undef max
 #undef min
 #endif
@@ -43,9 +44,9 @@ struct AABB
                abs_pos_diff.z < size_sum.z;
     }
 
-    void debugDraw(const glm::mat4 &view, const i64vec3 &camera_pos = {0,0,0}) const
+    void debugDraw(const glm::mat4 &view, const vec3 &color, const i64vec3 &camera_pos = {0,0,0}) const
     {
-        Primitives::drawCube(view, vec3(pos - camera_pos) / float(units_per_voxel), vec3(size) / 2.f, Colors::magenta);
+        Primitives::drawCube(view, vec3(pos - camera_pos) / float(units_per_voxel), vec3(size) / 2.f, color);
     }
 };
 
@@ -90,7 +91,7 @@ class PhysicalBody : public AABB
     {
         auto it = MutableObjectList().find(this);
         if (it == MutableObjectList().end())
-            Error("No such object in physical objects list.");
+            Error("PhysicalBody can't find itself in objects list when executing the destructor.");
         MutableObjectList().erase(it);
     }
 

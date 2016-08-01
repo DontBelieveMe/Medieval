@@ -68,7 +68,6 @@ class Input
         locked = GLFW_CURSOR_DISABLED,
     };
     static void setMouseMode(MouseMode mode);
-	static MouseMode getMouseMode();
 
     class Key
     {

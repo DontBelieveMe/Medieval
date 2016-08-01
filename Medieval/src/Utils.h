@@ -3,9 +3,11 @@
 
 #include <iostream>
 #include <cmath>
+#include <cstdint>
 #include <cstdlib>
 #include <sstream>
 #include <type_traits>
+#include <random>
 #include <glm/glm.hpp>
 
 using glm::vec2;
@@ -49,7 +51,7 @@ namespace Internal
 // Convenient string joiner.
 // Works like std::cout, but uses commas to separate arguments.
 // Example:  Jo("1 + 2 == ", 1+2) == "1 + 2 == 3"
-template <typename ...P> 
+template <typename ...P>
 const char *Jo(P &&... p)
 {
     static constexpr int ret_buffers_c = 32;
@@ -67,8 +69,8 @@ const char *Jo(P &&... p)
 }
 
 // Prints error and terminates application. Same syntax as Jo().
-template <typename ...P> 
-[[noreturn]] 
+template <typename ...P>
+[[noreturn]]
 void Error(P &&... p)
 {
 	std::cout << Jo(p...) << std::endl;
@@ -86,6 +88,24 @@ template <typename I, typename F> I iround(F f)
     static_assert(std::is_integral<I>::value, "Non integral template parameter I makes no sense for this function.");
     return I(f + .5 * sign(f));
 }
+
+
+inline std::mt19937 &Rng()
+{
+    static std::mt19937 gen(std::random_device{}());
+    return gen;
+}
+
+inline void setRngSeed(uint32_t val = std::random_device()())
+{
+    Rng().seed(val);
+}
+
+inline uint32_t Random()
+{
+    return Rng()();
+}
+
 
 extern double pi;
 
