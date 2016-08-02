@@ -14,10 +14,10 @@ AudioSystem::AudioSystem()
 	device = alcOpenDevice(NULL);
 	context = alcCreateContext(device, NULL);
 	alcMakeContextCurrent(context);
-	
+
 	wav = new wave::WaveFile("res/audio/NoTimeToShine.wav");
 	buffer = new Buffer(*wav);
-	
+
 	alListener3f(AL_POSITION, 0, 0, 0);
 	alListener3f(AL_VELOCITY, 0, 0, 0);
 
@@ -34,7 +34,7 @@ void AudioSystem::destroy()
 	source->stop();
 	buffer->destroy();
 	delete buffer;
-	
+
 	source->destroy();
 	delete source;
 
@@ -46,7 +46,7 @@ void AudioSystem::destroy()
 bool right = false;
 void AudioSystem::tick()
 {
-	if (Keys::toggle_audio.pressed())
+	if (Keys::toggle_audio.Pressed())
 	{
 		if (source->isPlaying())
 			source->pause();
@@ -55,10 +55,10 @@ void AudioSystem::tick()
 	}
 	if (xPos < -f)
 		right = false;
-	
+
 	if (xPos > f)
 		right = true;
-		
+
 	if (source->isPlaying())
 	{
 		if (right)
