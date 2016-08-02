@@ -29,7 +29,7 @@ static std::map<std::string, int> config{INPUT_KEYS_LIST};
 static const std::map<std::string, Input::Key *> key_addresses{INPUT_KEYS_LIST};
 #undef KEY
 
-void Input::init()
+void Input::Init()
 {
     static bool once;
     if (once)
@@ -88,7 +88,7 @@ void Input::init()
     }
 }
 
-void Input::tick()
+void Input::Tick()
 {
     // Clear mouse buttons
     for (int i = 0; i < max_mouse_buttons; i++)
@@ -130,21 +130,21 @@ void Input::tick()
     }
 }
 
-int Input::mouseButtonAnyDown()
+int Input::AnyMouseButtonDown()
 {
     for (int i = 0; i < max_mouse_buttons; i++)
         if (mouse_down[i])
             return i + 1;
     return 0;
 }
-int Input::mouseButtonAnyPressed()
+int Input::AnyMouseButtonPressed()
 {
     for (int i = 0; i < max_mouse_buttons; i++)
         if (mouse_pressed[i])
             return i + 1;
     return 0;
 }
-int Input::mouseButtonAnyReleased()
+int Input::AnyMouseButtonReleased()
 {
     for (int i = 0; i < max_mouse_buttons; i++)
         if (mouse_released[i])
@@ -152,31 +152,31 @@ int Input::mouseButtonAnyReleased()
     return 0;
 }
 
-int Input::keyAnyDown()
+int Input::AnyKeyDown()
 {
     if (keys_down.size() == 0)
         return 0;
     return *keys_down.begin();
 }
-int Input::keyAnyPressed()
+int Input::AnyKeyPressed()
 {
     if (keys_pressed.size() == 0)
         return 0;
     return *keys_pressed.begin();
 }
-int Input::keyAnyReleased()
+int Input::AnyKeyReleased()
 {
     if (keys_released.size() == 0)
         return 0;
     return *keys_released.begin();
 }
 
-void Input::setMouseMode(MouseMode mode)
+void Input::SetMouseMode(MouseMode mode)
 {
     glfwSetInputMode(Application::getInstance().getWindowHandle(), GLFW_CURSOR, (int)mode);
 }
 
-void Input::Key::set(int value)
+void Input::Key::Set(int value)
 {
     if (!configurable)
         Error("Attempt to change non-configurable key \"", name, "\".");

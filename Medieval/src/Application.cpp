@@ -35,7 +35,7 @@ void Application::init()
 #endif
 
     StateSystem::get().setDefaultState();
-    Input::init();
+    Input::Init();
 
     AdditionalVAO::init();//same for all states, so initialized here, needs to be bound on use.
 }
@@ -57,7 +57,7 @@ void Application::mainLoop()
 
 		while (delta > 0)
 		{
-		    Input::tick(); // PollEvents(); has been moved here.
+		    Input::Tick(); // PollEvents(); has been moved here.
             StateSystem::get().tick();
 			ups++;
 			delta -= 1.0;

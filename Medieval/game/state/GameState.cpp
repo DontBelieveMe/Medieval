@@ -33,7 +33,7 @@ GameState::GameState()
 	audioSystem = new AudioSystem();
 	camera = new FreeCamera();
 
-	Input::setMouseMode(Input::MouseMode::locked);
+	Input::SetMouseMode(Input::MouseMode::locked);
 
 	map.addChunk({0,0});
 	map.chunks[{0,0}].debugGenerate();
@@ -62,21 +62,21 @@ void GameState::tick()
 
 	audioSystem->tick();
 
-	if (Keys::toggle_ui.pressed())
+	if (Keys::toggle_ui.Pressed())
 		showUI = !showUI;
 
     rot += 1.0;
 	camera->tick();
 
-	if (Keys::toogle_focus.pressed())
+	if (Keys::toogle_focus.Pressed())
 	{
 		if (hidden)
 		{
-			Input::setMouseMode(Input::MouseMode::normal);
+			Input::SetMouseMode(Input::MouseMode::normal);
 			hidden = false;
 		}
 		else {
-			Input::setMouseMode(Input::MouseMode::locked);
+			Input::SetMouseMode(Input::MouseMode::locked);
 			hidden = true;
 		}
 	}

@@ -18,12 +18,12 @@ class Input
     static glm::dvec2 scroll;
 
     friend class Application;
-    static void init();
-    static void tick();
+    static void Init();
+    static void Tick();
 
   public:
-    static glm::ivec2 mousePos()      {return mouse_pos;}
-    static glm::ivec2 mousePosDelta() {return mouse_pos - prev_mouse_pos;}
+    static glm::ivec2 MousePos()      {return mouse_pos;}
+    static glm::ivec2 MousePosDelta() {return mouse_pos - prev_mouse_pos;}
 
     /* < Key and button functions noob guide >
      * When you press a key following happens:
@@ -35,29 +35,29 @@ class Input
      */
 
     // Left = 1, Right = 2, Middle = 3.
-    static bool mouseButtonDown    (int code) {return (code != 0 && code <= max_mouse_buttons) && mouse_down    [code-1];}
-    static bool mouseButtonPressed (int code) {return (code != 0 && code <= max_mouse_buttons) && mouse_pressed [code-1];}
-    static bool mouseButtonReleased(int code) {return (code != 0 && code <= max_mouse_buttons) && mouse_released[code-1];}
+    static bool MouseButtonDown    (int code) {return (code != 0 && code <= max_mouse_buttons) && mouse_down    [code-1];}
+    static bool MouseButtonPressed (int code) {return (code != 0 && code <= max_mouse_buttons) && mouse_pressed [code-1];}
+    static bool MouseButtonReleased(int code) {return (code != 0 && code <= max_mouse_buttons) && mouse_released[code-1];}
 
     // These return a button number or 0 if there is none.
-    static int mouseButtonAnyDown();
-    static int mouseButtonAnyPressed();
-    static int mouseButtonAnyReleased();
+    static int AnyMouseButtonDown();
+    static int AnyMouseButtonPressed();
+    static int AnyMouseButtonReleased();
 
     // Use GLFW_KEY_* enum.
-    static bool keyDown    (int code) {return keys_down    .find(code) != keys_down    .end();}
-    static bool keyPressed (int code) {return keys_pressed .find(code) != keys_pressed .end();}
-    static bool keyReleased(int code) {return keys_released.find(code) != keys_released.end();}
+    static bool KeyDown    (int code) {return keys_down    .find(code) != keys_down    .end();}
+    static bool KeyPressed (int code) {return keys_pressed .find(code) != keys_pressed .end();}
+    static bool KeyReleased(int code) {return keys_released.find(code) != keys_released.end();}
 
     // These return a button number or 0 if there is none.
-    static int keyAnyDown();
-    static int keyAnyPressed();
-    static int keyAnyReleased();
+    static int AnyKeyDown();
+    static int AnyKeyPressed();
+    static int AnyKeyReleased();
 
-    static bool wheelUp   () {return scroll.y > 0;}
-    static bool wheelDown () {return scroll.y < 0;}
-    static bool wheelLeft () {return scroll.x < 0;}
-    static bool wheelRight() {return scroll.x > 0;}
+    static bool WheelUp   () {return scroll.y > 0;}
+    static bool WheelDown () {return scroll.y < 0;}
+    static bool WheelLeft () {return scroll.x < 0;}
+    static bool WheelRight() {return scroll.x > 0;}
 
     // `hidden` just hides mouse. Sseful if you want to draw your own cursor.
     // `locked` hides mouse and prevents it from leaving the window. Useful for 3D camera control.
@@ -67,7 +67,7 @@ class Input
         hidden = GLFW_CURSOR_HIDDEN,
         locked = GLFW_CURSOR_DISABLED,
     };
-    static void setMouseMode(MouseMode mode);
+    static void SetMouseMode(MouseMode mode);
 
     class Key
     {
@@ -90,40 +90,40 @@ class Input
             configurable = can_change;
         }
 
-        int getCode() const
+        int GetCode() const
         {
             return code;
         }
 
-        bool isConfigurable() const
+        bool Configurable() const
         {
             return configurable;
         }
 
-        std::string getName() const
+        std::string Name() const
         {
             return name;
         }
 
-        std::string getInternalName() const
+        std::string InternalName() const
         {
             return internal_name;
         }
 
         // This changes the value and updates the config file.
-        void set(int value);
+        void Set(int value);
 
-        bool down() const
+        bool Down() const
         {
-            return keyDown(code);
+            return KeyDown(code);
         }
-        bool pressed() const
+        bool Pressed() const
         {
-            return keyPressed(code);
+            return KeyPressed(code);
         }
-        bool released() const
+        bool Released() const
         {
-            return keyReleased(code);
+            return KeyReleased(code);
         }
     };
 };
@@ -157,11 +157,11 @@ namespace Keys
     #undef KEY
 
     // Amount of keys.
-    int keyCount();
+    int KeyCount();
     // Returns a reference to a specific key. Use Key::name instead if possible. Useful for "for" loops.
-    Input::Key &getKey(int pos);
+    Input::Key &GetKey(int pos);
 
     // Same for configurable keys.
-    int configurableKeyCount();
-    Input::Key &getConfigurableKey(int pos);
+    int ConfigurableKeyCount();
+    Input::Key &GetConfigurableKey(int pos);
 }

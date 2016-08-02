@@ -16,23 +16,23 @@ void FreeCamera::tick()
 {
 	const float speed = 0.8f, rot_speed = 0.003f;
 
-	yaw += Input::mousePosDelta().x * rot_speed;
+	yaw += Input::MousePosDelta().x * rot_speed;
 	while (yaw > pi) yaw -= float(2 * pi);
 	while (yaw < -pi) yaw += float(2 * pi);
 
-	pitch -= Input::mousePosDelta().y * rot_speed;
+	pitch -= Input::MousePosDelta().y * rot_speed;
 	if (pitch < -pi/2) pitch = (float) -pi/2;
 	else if (pitch > pi/2) pitch = (float) pi/2;
 
     glm::vec3 delta;
 
-    delta.y = float(Keys::up.down() - Keys::down.down());
+    delta.y = float(Keys::up.Down() - Keys::down.Down());
 
 	float yaw_sin = std::sin(yaw),
 	      yaw_cos = std::cos(yaw);
 
-    delta.x =  yaw_sin * (Keys::forward.down() - Keys::back.down()) + yaw_cos * (Keys::right.down() - Keys::left.down());
-    delta.z = -yaw_cos * (Keys::forward.down() - Keys::back.down()) + yaw_sin * (Keys::right.down() - Keys::left.down());
+    delta.x =  yaw_sin * (Keys::forward.Down() - Keys::back.Down()) + yaw_cos * (Keys::right.Down() - Keys::left.Down());
+    delta.z = -yaw_cos * (Keys::forward.Down() - Keys::back.Down()) + yaw_sin * (Keys::right.Down() - Keys::left.Down());
 
     position += delta * speed;
 }
