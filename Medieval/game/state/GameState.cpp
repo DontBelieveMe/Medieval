@@ -34,8 +34,9 @@ GameState::GameState()
 
 	Input::SetMouseMode(Input::MouseMode::locked);
 
-	map.addChunk({0,0});
-	map.chunks[{0,0}].debugGenerate();
+	map.AddChunk({0,0});
+	map.chunks[{0,0}].DebugGenerate();
+	map.UpdateChunkMesh({0,0});
 
 	ObjectFactory *factory = ObjectFactory::Get();
 	GameObject *player = factory->CreateGameObject<TestComponent, TestComponent2>("player");
@@ -94,7 +95,7 @@ void GameState::render()
 
     vox->bind();
 	modelShader->Use();
-    modelShader->UploadMatrix4f("projection", glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.001f, 200.0f));
+    modelShader->UploadMatrix4f("projection", perspective_matrix);
 	glm::mat4 view = camera->createView();
 	modelShader->UploadMatrix4f("view", view);
 	glm::mat4 model = glm::mat4(1.0);
@@ -103,7 +104,8 @@ void GameState::render()
     modelShader->UploadMatrix4f("model", model);
     DrawModel(ent);
 
-	map.chunks[{0,0}].debugRender(view);
+	map.chunks[{0,0}].DebugRender(view);
+	map.Render(view, {0,0,0});
 
 	if (showUI)
 	{

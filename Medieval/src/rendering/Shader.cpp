@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <iostream>
 
+glm::mat4 perspective_matrix = glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.005f, 200.0f);
+
 const ShaderProgram *detail::current_shader = NULL;
 
 ShaderProgram::ShaderProgram(const std::string& vert_path, const std::string& frag_path)

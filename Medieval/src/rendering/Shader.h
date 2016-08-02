@@ -12,6 +12,8 @@
 #include <unordered_map>
 #include "../includes.h"
 
+extern glm::mat4 perspective_matrix;
+
 class ShaderProgram;
 
 namespace detail
@@ -25,8 +27,8 @@ public:
     ShaderProgram(const std::string& vert_path, const std::string& frag_path);
 
     GLuint Load(const std::string& vert_path, const std::string& frag_path);
-	void Use(); 
-	void Halt(); 
+	void Use();
+	void Halt();
 
 	GLint GetUniformLoc(const std::string& name);
 
