@@ -1,19 +1,18 @@
 #pragma once
 
-#include <algorithm>
+// Some weird MSVC thing where it defines min & max
+// macros which conflict with std::max and std::min.
+#ifdef _MSC_VER
+#define NOMINMAX
+#endif
+
 #include <cmath>
 #include <cstdint>
 #include <unordered_set>
 #include <Utils.h>
 #include <rendering/Primitives.h>
 #include <glm/glm.hpp>
-
-// Some weird MSVC thing where it defines min & max
-// macros which conflict with std::max and std::min.
-#ifdef _MSC_VER
-#undef max
-#undef min
-#endif
+#include <algorithm>
 
 constexpr int units_per_voxel = 256;
 constexpr double gravity = .1f; // This is measured in voxels/ticks^2.
@@ -28,9 +27,9 @@ struct AABB
 
     bool intersects(const AABB &other, const i64vec3 &assume_self_offset = i64vec3(0,0,0)) const
     {
-        ivec3 size_sum{std::max(size.x,0) + std::max(other.size.x,0),
-                       std::max(size.y,0) + std::max(other.size.y,0),
-                       std::max(size.z,0) + std::max(other.size.z,0)};
+        ivec3 size_sum{std::max(size.x, 0) + std::max(other.size.x, 0),
+                       std::max(size.y, 0) + std::max(other.size.y, 0),
+                       std::max(size.z, 0) + std::max(other.size.z, 0)};
 
         size_sum /= 2;
 
@@ -79,7 +78,7 @@ class PhysicalBody : public AABB
     PhysicalBody() {MutableObjectList().insert(this);}
 
     PhysicalBody(const i64vec3 &position, const ivec3 &sz, Solid solid = Solid::no, AffectedByGravity grav = AffectedByGravity::yes)
-		: AABB(position, sz), solid(solid!= Solid::no), affected_by_gravity(grav != AffectedByGravity::no) {MutableObjectList().insert(this);}
+		: AABB(position, sz), solid(solid != Solid::no), affected_by_gravity(grav != AffectedByGravity::no) {MutableObjectList().insert(this);}
 
     // Deleted those for now to make my life easier. :P
     PhysicalBody(const PhysicalBody &o) = delete;

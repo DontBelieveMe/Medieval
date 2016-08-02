@@ -98,7 +98,7 @@ void GameState::render()
     model = glm::translate(model, glm::vec3(0, -15, -40));
 	model = glm::rotate(model, glm::radians(rot), glm::vec3(0, 1, 0));
     modelShader->UploadMatrix4f("model", model);
-    drawModel(ent);
+    DrawModel(ent);
 
 	map.chunks[{0,0}].debugRender(view);
 
