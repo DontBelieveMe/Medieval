@@ -7,11 +7,14 @@
 
 #include <iostream>
 #include <cmath>
+#include <cstddef>
 #include <cstdint>
 #include <cstdlib>
 #include <sstream>
 #include <type_traits>
 #include <random>
+
+#include <../extern/glad/glad.h>
 #include <glm/glm.hpp>
 
 using glm::vec2;
@@ -94,6 +97,23 @@ template <typename I, typename F> I iround(F f)
 }
 
 
+template <typename T> T proper_div(T a, T b)
+{
+	if (a >= 0)
+		return a / b;
+	else
+		return (a + 1 - std::abs(b)) / b;
+}
+
+template <typename T> T proper_mod(T a, T b)
+{
+	if (a >= 0)
+		return a % b;
+	else
+		return std::abs(b) - 1 + (a + 1) % b;
+}
+
+
 inline std::mt19937 &Rng()
 {
     static std::mt19937 gen(std::random_device{}());
@@ -145,4 +165,23 @@ namespace Colors
                     dark_gray (.25,.25,.25),
                     dark_grey = dark_gray,
                     black     (0 ,0 ,0 );
+}
+
+
+
+namespace std
+{
+    template <> struct hash<glm::ivec2>
+    {
+        std::size_t operator()(const glm::ivec2 &ref) const
+        {
+            GLuint tmp = ref.x, ret = 0;
+            while (tmp)
+            {
+                ret = ret * 2 + tmp % 2;
+                tmp /= 2;
+            }
+            return std::size_t(tmp + GLuint(ref.y));
+        }
+    };
 }

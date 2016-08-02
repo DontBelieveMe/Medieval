@@ -14,7 +14,7 @@ class Renderer2D
 public:
 	Renderer2D(ShaderProgram *shader, const std::string & texPath, glm::ivec2 sizeInTiles, glm::mat4 &ortho);
 	Renderer2D(ShaderProgram *shader, const std::string & texPath, glm::ivec2 sizeInTiles);
-    
+
     void drawTile(int tx, int ty, int tw, int th, int xOff, int yOff, int width, int height);
 	void destroy();
 
@@ -35,9 +35,9 @@ public:
 
     inline void halt()
     {
-        shaderRef->halt();
-        AdditionalVAO::halt();
-        tex->halt();
+        //shaderRef->halt();
+        //AdditionalVAO::halt();
+        //tex->halt();
     }
 
     ~Renderer2D();

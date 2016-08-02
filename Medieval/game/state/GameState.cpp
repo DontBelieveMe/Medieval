@@ -11,7 +11,7 @@
 #include <components/GameObject.h>
 #include <components/TestComponent.h>
 
-Chunk chunk;
+Map map;
 
 GameState::GameState()
 {
@@ -35,7 +35,8 @@ GameState::GameState()
 
 	Input::setMouseMode(Input::MouseMode::locked);
 
-	chunk.debugGenerate();
+	map.addChunk({0,0});
+	map.chunks[{0,0}].debugGenerate();
 
 	GameObject object;
 	object.addComponent<TestComponent>();
@@ -67,7 +68,7 @@ void GameState::tick()
     rot += 1.0;
 	camera->tick();
 
-	if (Keys::toogle_focus.pressed()) 
+	if (Keys::toogle_focus.pressed())
 	{
 		if (hidden)
 		{
@@ -98,10 +99,8 @@ void GameState::render()
 	model = glm::rotate(model, glm::radians(rot), glm::vec3(0, 1, 0));
     modelShader->uploadMatrix4f("model", model);
     drawModel(ent);
-    vox->halt();
-	modelShader->halt();
 
-	chunk.render(view);
+	map.chunks[{0,0}].debugRender(view);
 
 	if (showUI)
 	{
@@ -112,20 +111,17 @@ void GameState::render()
 		std::stringstream ss;
 		ss << Application::getInstance().FPS();
 
-        renderer2D->halt();
         uiShader->use();
         fontTest->bind();
 		fontTest->drawString(ss.str() + " fps", WIDTH - 135, -35, 2);
 		fontTest->drawString("Press P (def.) to toggle sound!", 220, HEIGHT - 170, 2.0);
 		fontTest->drawString("Press U (def.) to toggle the UI!", 220, HEIGHT - 120, 2.0);
-        fontTest->halt();
 	}
 }
 
 void GameState::destroy()
 {
 	audioSystem->destroy();
-    modelShader->halt();
     modelShader->deleteProgram();
 }
 

@@ -32,7 +32,7 @@ void Primitives::fillCube(const glm::mat4& view, const glm::vec3 &pos, const glm
 	glDisableVertexAttribArray(0);
 	glBindVertexArray(0);
 
-	detail::primShader->halt();
+
 
 }
 
@@ -55,7 +55,7 @@ void Primitives::drawCube(const glm::mat4& view, const glm::vec3 &pos, const glm
 	glDisableVertexAttribArray(0);
 	glBindVertexArray(0);
 
-	detail::primShader->halt();
+
 }
 
 void Primitives::detail::tryInit()
