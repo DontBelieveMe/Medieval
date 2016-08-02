@@ -1,5 +1,5 @@
 #include "GameState.h"
-
+#include "components/TestComponent.h"
 #include <Input.h>
 #include "OpenAL/al.h"
 
@@ -9,8 +9,7 @@
 #include <chrono>
 #include <rendering/Primitives.h>
 #include <components/GameObject.h>
-#include <components/TestComponent.h>
-
+#include <components/ObjectFactory.h>
 Map map;
 
 GameState::GameState()
@@ -38,12 +37,16 @@ GameState::GameState()
 	map.addChunk({0,0});
 	map.chunks[{0,0}].debugGenerate();
 
-	GameObject object;
-	object.addComponent<TestComponent>();
-	object.addComponent<TestComponent>();
-	std::cout << std::boolalpha << object.hasComponent<TestComponent>() << std::endl;
-	object.removeComponent<TestComponent>();
-	std::cout << std::boolalpha << object.hasComponent<TestComponent>() << std::endl;
+	ObjectFactory *factory = ObjectFactory::Get();
+	GameObject *player = factory->CreateGameObject<TestComponent, TestComponent2>("player");
+	std::cout << player->NumComponents() << std::endl;
+	TestComponent *t = player->GetComponent<TestComponent>();
+	t->value = 200;
+	player->RemoveComponent<TestComponent>();
+	std::cout << player->NumComponents() << std::endl;
+	player->RemoveComponent<TestComponent>();
+	std::cout << player->NumComponents() << std::endl;
+
 }
 
 int counter = 0;

@@ -17,7 +17,7 @@ private:
 	std::vector<Component *> components;
 
 	template <typename T>
-	Component *getStaticComponent()
+	Component *GetStaticComponent()
 	{
 		static T t;
 		return &t;
@@ -26,25 +26,25 @@ private:
 public:
 	GameObject();
 
-	void update();
-	void init();
+	void Update();
+	void Init();
 
 	template <typename T>
-	void addComponent()
+	void AddComponent()
 	{
 		// No need for duplicate components
-		if (hasComponent<T>())
+		if (HasComponent<T>())
 			return;
 
-		auto component = getStaticComponent<T>();
+		auto component = GetStaticComponent<T>();
 		components.push_back(component);
 	}
 
 	template <typename T>
-	bool hasComponent()
+	bool HasComponent()
 	{
 		bool exists = false;
-		Component *t = getStaticComponent<T>();
+		Component *t = GetStaticComponent<T>();
 		if (std::find(components.begin(), components.end(), t) != components.end()) {
 			exists = true;
 		}
@@ -52,25 +52,30 @@ public:
 	}
 
 	template <typename T>
-	T *getComponent()
+	T *GetComponent()
 	{
-		if (!hasComponent<T>())
+		if (!HasComponent<T>())
 			return NULL;
 		else
 		{
-			T *component = dynamic_cast<T*>(getStaticComponent<T>());
+			T *component = dynamic_cast<T*>(GetStaticComponent<T>());
 			return component;
 		}
 	}
 
 	template <typename T>
-	void removeComponent()
+	void RemoveComponent()
 	{
 		// Cannot remove component that doesn't exist
-		if (!hasComponent<T>())
+		if (!HasComponent<T>())
 			return;
 
-		Component *component = getStaticComponent<T>();
+		Component *component = GetStaticComponent<T>();
 		components.erase(std::remove(components.begin(), components.end(), component), components.end());
+	}
+
+	int NumComponents() const 
+	{
+		return components.size();
 	}
 };

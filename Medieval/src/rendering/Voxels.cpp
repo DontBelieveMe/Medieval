@@ -38,7 +38,6 @@ Model Voxels::loadObjData(const std::string& objPath, int yPos)
             faces.push_back(splitString);
     }
     file.close();
-	std::vector<detail::Vertex> packedVertices;
     int count = 0;
     for (unsigned int i = 0; i < faces.size(); i++)
     {

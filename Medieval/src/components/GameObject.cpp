@@ -4,7 +4,7 @@ GameObject::GameObject()
 {
 }
 
-void GameObject::update()
+void GameObject::Update()
 {
 	for (auto& component : components)
 	{
@@ -12,7 +12,7 @@ void GameObject::update()
 	}
 }
 
-void GameObject::init()
+void GameObject::Init()
 {
 	for (auto& component : components)
 	{
