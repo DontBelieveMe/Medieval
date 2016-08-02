@@ -8,13 +8,11 @@ GLuint Primitives::detail::vao_cube_wf = 0;
 GLuint Primitives::detail::vbo_cube_wf = 0;
 GLuint Primitives::detail::ibo_cube_wf = 0;
 
-static const glm::mat4 projection = glm::perspective(45.f, (float)WIDTH / (float)HEIGHT, 0.001f, 200.0f);
-
 void Primitives::FillCube(const glm::mat4& view, const glm::vec3 &pos, const glm::vec3 &scale, const glm::vec3 &color)
 {
 	detail::TryInit();
 	detail::primitive_shader->Use();
-	detail::primitive_shader->UploadMatrix4f("projection", projection);
+	detail::primitive_shader->UploadMatrix4f("projection", perspective_matrix);
 	detail::primitive_shader->UploadMatrix4f("view", view);
 	glm::mat4 model;
 	model = glm::translate(model, pos);
@@ -37,7 +35,7 @@ void Primitives::DrawCube(const glm::mat4& view, const glm::vec3 &pos, const glm
 	// and not cause undefined/strange behaviour with other draw calls.
 	// [Note]: Do this with fillCube also.
 	detail::primitive_shader->Use();
-	detail::primitive_shader->UploadMatrix4f("projection", projection);
+	detail::primitive_shader->UploadMatrix4f("projection", perspective_matrix);
 	detail::primitive_shader->UploadMatrix4f("view", view);
 
 	glm::mat4 model;
