@@ -3,22 +3,22 @@
 #include <stdio.h>
 #include <iostream>
 
-const ShaderProgram *detail::currentShader = NULL;
+const ShaderProgram *detail::current_shader = NULL;
 
-ShaderProgram::ShaderProgram(const std::string& vertPath, const std::string& fragPath)
+ShaderProgram::ShaderProgram(const std::string& vert_path, const std::string& frag_path)
 {
-    this->program = load(vertPath, fragPath);
+	this->program = Load(vert_path, frag_path);
 }
 
-GLuint ShaderProgram::load(const std::string& vertPath, const std::string& fragPath)
+GLuint ShaderProgram::Load(const std::string& vert_path, const std::string& frag_path)
 {
     GLuint program = glCreateProgram();
-    GLuint vert = createShader(vertPath, GL_VERTEX_SHADER, "Error in vert shader: ");
-    GLuint frag = createShader(fragPath, GL_FRAGMENT_SHADER, "Error in frag shader: ");
+    GLuint vert = CreateShader(vert_path, GL_VERTEX_SHADER, "Error in vert shader: ");
+    GLuint frag = CreateShader(frag_path, GL_FRAGMENT_SHADER, "Error in frag shader: ");
     glAttachShader(program, vert);
     glAttachShader(program, frag);
     glLinkProgram(program);
-    checkError(program, true, GL_LINK_STATUS, "Error while linking program: ");
+    CheckError(program, true, GL_LINK_STATUS, "Error while linking program: ");
     glDetachShader(program, vert);
     glDetachShader(program, frag);
     glDeleteShader(vert);
@@ -26,7 +26,7 @@ GLuint ShaderProgram::load(const std::string& vertPath, const std::string& fragP
     return program;
 }
 
-GLuint ShaderProgram::createShader(const std::string& path, GLenum type, const std::string& errorMsg)
+GLuint ShaderProgram::CreateShader(const std::string& path, GLenum type, const std::string& error_msg)
 {
     GLuint shader = glCreateShader(type);
     FILE *file = fopen(path.c_str(), "rb");
@@ -40,69 +40,69 @@ GLuint ShaderProgram::createShader(const std::string& path, GLenum type, const s
     const char *source [] = { string };
     glShaderSource(shader, 1, source, NULL);
     glCompileShader(shader);
-    this->checkError(shader, false, GL_COMPILE_STATUS, errorMsg);
+    this->CheckError(shader, false, GL_COMPILE_STATUS, error_msg);
     delete [] string;
     string = NULL;
     return shader;
 }
 
-void ShaderProgram::checkError(GLuint element, bool isProgram, GLenum status, const std::string& errorMsg)
+void ShaderProgram::CheckError(GLuint element, bool is_program, GLenum status, const std::string& error_msg)
 {
     GLint result;
-    if (isProgram)
+    if (is_program)
         glGetProgramiv(element, status, &result);
     else
         glGetShaderiv(element, status, &result);
     if (result == GL_FALSE)
     {
-        GLint logLen;
-        if (isProgram)
-            glGetProgramiv(element, GL_INFO_LOG_LENGTH, &logLen);
+        GLint log_len;
+        if (is_program)
+            glGetProgramiv(element, GL_INFO_LOG_LENGTH, &log_len);
         else
-            glGetShaderiv(element, GL_INFO_LOG_LENGTH, &logLen);
-        char *log = new char[logLen];
-        if (isProgram)
-            glGetProgramInfoLog(element, logLen, NULL, log);
+            glGetShaderiv(element, GL_INFO_LOG_LENGTH, &log_len);
+        char *log = new char[log_len];
+        if (is_program)
+            glGetProgramInfoLog(element, log_len, NULL, log);
         else
-            glGetShaderInfoLog(element, logLen, NULL, log);
-        std::cout << errorMsg << log << std::endl;
+            glGetShaderInfoLog(element, log_len, NULL, log);
+        std::cout << error_msg << log << std::endl;
         delete[] log;
         system("pause");
         exit(1);
     }
 }
 
-void ShaderProgram::validateProgram()
+void ShaderProgram::ValidateProgram()
 {
     glValidateProgram(this->program);
 }
 
-void ShaderProgram::use()
+void ShaderProgram::Use()
 {
-	if (detail::currentShader != this)
+	if (detail::current_shader != this)
 	{
-		detail::currentShader = this;
+		detail::current_shader = this;
 		glUseProgram(this->program);
 	}
 }
 
-void ShaderProgram::halt()
+void ShaderProgram::Halt()
 {
-	detail::currentShader = NULL;
+	detail::current_shader = NULL;
 	glUseProgram(0);
 }
 
-GLint ShaderProgram::getUniformLoc(const std::string& name)
+GLint ShaderProgram::GetUniformLoc(const std::string& name)
 {
-	std::unordered_map<std::string, GLint>::const_iterator it = uniformLocCache.find(name);
-	if (it != uniformLocCache.end())
+	std::unordered_map<std::string, GLint>::const_iterator it = uniform_loc_cache.find(name);
+	if (it != uniform_loc_cache.end())
 	{
 		return it->second;
 	}
 	else
     {
 		GLint loc = glGetUniformLocation(this->program, name.c_str());
-		uniformLocCache[name] = loc;
+		uniform_loc_cache[name] = loc;
 		if (loc == -1) {
 			std::cout << "Error: Uniform " << name << " does not exist!" << std::endl;
 			return -1;
@@ -112,32 +112,32 @@ GLint ShaderProgram::getUniformLoc(const std::string& name)
 }
 
 
-void  ShaderProgram::uploadMatrix4f(GLint loc, const glm::mat4& matrix)
+void  ShaderProgram::UploadMatrix4f(GLint loc, const glm::mat4& matrix)
 {
 	glUniformMatrix4fv(loc, 1, GL_FALSE, &(matrix[0][0]));
 }
 
-void ShaderProgram::uploadVector2f(const std::string& name, const glm::vec2& vec2)
+void ShaderProgram::UploadVector2f(const std::string& name, const glm::vec2& vec2)
 {
-	glUniform2f(getUniformLoc(name), vec2.x, vec2.y);
+	glUniform2f(GetUniformLoc(name), vec2.x, vec2.y);
 }
 
-void ShaderProgram::uploadVector3f(const std::string& name, const glm::vec3& vec3)
+void ShaderProgram::UploadVector3f(const std::string& name, const glm::vec3& vec3)
 {
-	glUniform3f(getUniformLoc(name), vec3.x, vec3.y, vec3.z);
+	glUniform3f(GetUniformLoc(name), vec3.x, vec3.y, vec3.z);
 }
 
-void ShaderProgram::uploadVector4f(const std::string& name, const glm::vec4& vec4)
+void ShaderProgram::UploadVector4f(const std::string& name, const glm::vec4& vec4)
 {
-	glUniform4f(getUniformLoc(name), vec4.x, vec4.y, vec4.z, vec4.w);
+	glUniform4f(GetUniformLoc(name), vec4.x, vec4.y, vec4.z, vec4.w);
 }
 
-void ShaderProgram::uploadMatrix4f(const std::string& name, const glm::mat4& matrix)
+void ShaderProgram::UploadMatrix4f(const std::string& name, const glm::mat4& matrix)
 {
-	uploadMatrix4f(getUniformLoc(name), matrix);
+	UploadMatrix4f(GetUniformLoc(name), matrix);
 }
 
-void ShaderProgram::deleteProgram()
+void ShaderProgram::DeleteProgram()
 {
     glDeleteProgram(program);
 }

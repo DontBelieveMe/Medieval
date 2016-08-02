@@ -16,7 +16,7 @@ Map map;
 GameState::GameState()
 {
     modelShader = new ShaderProgram("res/shaders/vert.shader", "res/shaders/frag.shader");
-    modelShader->use();
+    modelShader->Use();
 
     vox = new Voxels(1);
     ent = vox->loadModel("res/models/player.obj", "res/models/player.png");
@@ -90,14 +90,14 @@ void GameState::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     vox->bind();
-	modelShader->use();
-    modelShader->uploadMatrix4f("projection", glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.001f, 200.0f));
+	modelShader->Use();
+    modelShader->UploadMatrix4f("projection", glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.001f, 200.0f));
 	glm::mat4 view = camera->createView();
-	modelShader->uploadMatrix4f("view", view);
+	modelShader->UploadMatrix4f("view", view);
 	glm::mat4 model = glm::mat4(1.0);
     model = glm::translate(model, glm::vec3(0, -15, -40));
 	model = glm::rotate(model, glm::radians(rot), glm::vec3(0, 1, 0));
-    modelShader->uploadMatrix4f("model", model);
+    modelShader->UploadMatrix4f("model", model);
     drawModel(ent);
 
 	map.chunks[{0,0}].debugRender(view);
@@ -111,7 +111,7 @@ void GameState::render()
 		std::stringstream ss;
 		ss << Application::getInstance().FPS();
 
-        uiShader->use();
+        uiShader->Use();
         fontTest->bind();
 		fontTest->drawString(ss.str() + " fps", WIDTH - 135, -35, 2);
 		fontTest->drawString("Press P (def.) to toggle sound!", 220, HEIGHT - 170, 2.0);
@@ -122,7 +122,7 @@ void GameState::render()
 void GameState::destroy()
 {
 	audioSystem->destroy();
-    modelShader->deleteProgram();
+    modelShader->DeleteProgram();
 }
 
 GameState::~GameState()

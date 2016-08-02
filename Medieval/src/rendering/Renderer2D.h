@@ -12,10 +12,10 @@
 class Renderer2D
 {
 public:
-	Renderer2D(ShaderProgram *shader, const std::string & texPath, glm::ivec2 sizeInTiles, glm::mat4 &ortho);
-	Renderer2D(ShaderProgram *shader, const std::string & texPath, glm::ivec2 sizeInTiles);
+	Renderer2D(ShaderProgram *shader, const std::string & tex_path, glm::ivec2 size_in_tiles, glm::mat4 &ortho);
+	Renderer2D(ShaderProgram *shader, const std::string & tex_path, glm::ivec2 size_in_tiles);
 
-    void drawTile(int tx, int ty, int tw, int th, int xOff, int yOff, int width, int height);
+    void drawTile(int uv_x, int uv_y, int uv_w, int uv_h, int x_offset, int y_offset, int width, int height);
 	void destroy();
 
     inline void bind()
@@ -28,7 +28,7 @@ public:
 		if (result == GL_TRUE)
 			glDisable(GL_DEPTH_TEST);
 
-        shaderRef->use();
+        shader_ptr->Use();
         AdditionalVAO::bind();
         tex->bind();
     }
@@ -43,9 +43,9 @@ public:
     ~Renderer2D();
 
 private:
-    const glm::ivec2 sizeInTiles;
+    const glm::ivec2 size_in_tiles;
 	int    count;
     Texture* tex;
-	ShaderProgram *shaderRef;
+	ShaderProgram *shader_ptr;
 
 };

@@ -46,7 +46,7 @@ struct AABB
 
     void debugDraw(const glm::mat4 &view, const vec3 &color, const i64vec3 &camera_pos = {0,0,0}) const
     {
-        Primitives::drawCube(view, vec3(pos - camera_pos) / float(units_per_voxel), vec3(size) / 2.f, color);
+        Primitives::DrawCube(view, vec3(pos - camera_pos) / float(units_per_voxel), vec3(size) / 2.f, color);
     }
 };
 

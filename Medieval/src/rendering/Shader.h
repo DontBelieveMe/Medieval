@@ -16,33 +16,33 @@ class ShaderProgram;
 
 namespace detail
 {
-	extern const ShaderProgram *currentShader;
+	extern const ShaderProgram *current_shader;
 }
 
 class ShaderProgram
 {
 public:
-    ShaderProgram(const std::string& vertPath, const std::string& fragPath);
+    ShaderProgram(const std::string& vert_path, const std::string& frag_path);
 
-    GLuint load(const std::string& vertPath, const std::string& fragPath);
-	void use(); 
-	void halt(); 
+    GLuint Load(const std::string& vert_path, const std::string& frag_path);
+	void Use(); 
+	void Halt(); 
 
-	GLint getUniformLoc(const std::string& name);
+	GLint GetUniformLoc(const std::string& name);
 
-	void  uploadMatrix4f(GLint loc, const glm::mat4& matrix);
-	void  uploadMatrix4f(const std::string& name, const glm::mat4& matrix);
-	void  uploadVector2f(const std::string& name, const glm::vec2& vec2);
-	void  uploadVector3f(const std::string& name, const glm::vec3& vec3);
-	void  uploadVector4f(const std::string& name, const glm::vec4& vec4);
+	void  UploadMatrix4f(GLint loc, const glm::mat4& matrix);
+	void  UploadMatrix4f(const std::string& name, const glm::mat4& matrix);
+	void  UploadVector2f(const std::string& name, const glm::vec2& vec2);
+	void  UploadVector3f(const std::string& name, const glm::vec3& vec3);
+	void  UploadVector4f(const std::string& name, const glm::vec4& vec4);
 
-    void deleteProgram();
+    void  DeleteProgram();
 
 private:
     GLuint program;
-    GLuint createShader(const std::string& path, GLenum type, const std::string& errorMsg);
-    void   checkError(GLuint element, bool isProgram, GLenum status, const std::string& errorMsg);
-    void   validateProgram();
+    GLuint CreateShader(const std::string& path, GLenum type, const std::string& error_msg);
+    void   CheckError(GLuint element, bool is_program, GLenum status, const std::string& error_msg);
+    void   ValidateProgram();
 
-	std::unordered_map<std::string, GLint> uniformLocCache;
+	std::unordered_map<std::string, GLint> uniform_loc_cache;
 };
