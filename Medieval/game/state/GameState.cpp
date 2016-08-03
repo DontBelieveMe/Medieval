@@ -34,19 +34,19 @@ GameState::GameState()
 
 	Input::SetMouseMode(Input::MouseMode::locked);
 
-	for (int i = -2; i <= 2; i++)
-	    for (int j = -2; j <= 2; j++)
-	        map.chunks[{j,i}].DebugGenerate();
+    //map.chunks[{0,0}].DebugGenerate();
+    //map.chunks[{0,1}].DebugGenerate();
+    map.chunks[{2,-2}].DebugGenerate();
 
 	ObjectFactory *factory = ObjectFactory::Get();
 	GameObject *player = factory->CreateGameObject<TestComponent, TestComponent2>("player");
-	std::cout << player->NumComponents() << std::endl;
+	//std::cout << player->NumComponents() << std::endl;
 	TestComponent *t = player->GetComponent<TestComponent>();
 	t->value = 200;
 	player->RemoveComponent<TestComponent>();
-	std::cout << player->NumComponents() << std::endl;
+	//std::cout << player->NumComponents() << std::endl;
 	player->RemoveComponent<TestComponent>();
-	std::cout << player->NumComponents() << std::endl;
+	//std::cout << player->NumComponents() << std::endl;
 
 }
 

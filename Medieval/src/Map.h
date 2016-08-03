@@ -146,9 +146,9 @@ class Map
     }
 
   private:
-    void UpdateChunkMesh(ivec2 pos)
+    void UpdateChunkMesh(ivec2 chunk_pos)
     {
-        auto it = chunks.find(pos);
+        auto it = chunks.find(chunk_pos);
         if (it == chunks.end())
             return; // No such chunk.
 
@@ -230,27 +230,28 @@ class Map
         {
             if (GetBlock(pos + dir11[up]).type == Block::Type::air)
             {
-                PushQuad({pos+dir01[up]+dir01[a]+dir01[b], dir11[up], {0,.5,1}},
-                         {pos+dir01[up]+dir01[b]+dir01[c], dir11[up], {0,.5,1}},
-                         {pos+dir01[up]+dir01[c]+dir01[d], dir11[up], {0,.5,1}},
-                         {pos+dir01[up]+dir01[d]+dir01[a], dir11[up], {0,.5,1}});
+                PushQuad({chunk_pos+pos+dir01[up]+dir01[a]+dir01[b], dir11[up], {0,.5,1}},
+                         {chunk_pos+pos+dir01[up]+dir01[b]+dir01[c], dir11[up], {0,.5,1}},
+                         {chunk_pos+pos+dir01[up]+dir01[c]+dir01[d], dir11[up], {0,.5,1}},
+                         {chunk_pos+pos+dir01[up]+dir01[d]+dir01[a], dir11[up], {0,.5,1}});
             }
+            std::cout << pos << '\n';
         };
 
-        for (int y = 0; y < Chunk::depth; y++)
+        for (int yy = 0; yy < Chunk::depth; yy++)
         {
-            for (int x = 0; x < Chunk::width; x++)
+            for (int xx = 0; xx < Chunk::width; xx++)
             {
-                for (int z = 0; z < Chunk::width; z++)
+                for (int zz = 0; zz < Chunk::width; zz++)
                 {
-                    if (GetBlock({x,y,z}).type != Block::Type::air)
+                    if (GetBlock({xx,yy,zz}).type != Block::Type::air)
                     {
-                        GenSide({x,y,z}, Dir::x, Dir::y, Dir::z, Dir::_y, Dir::_z);
-                        GenSide({x,y,z}, Dir::_x, Dir::y, Dir::_z, Dir::_y, Dir::z);
-                        GenSide({x,y,z}, Dir::y, Dir::x, Dir::_z, Dir::_x, Dir::z);
-                        GenSide({x,y,z}, Dir::_y, Dir::x, Dir::z, Dir::_x, Dir::_z);
-                        GenSide({x,y,z}, Dir::z, Dir::x, Dir::y, Dir::_x, Dir::_y);
-                        GenSide({x,y,z}, Dir::_z, Dir::x, Dir::_y, Dir::_x, Dir::y);
+                        GenSide({xx,yy,zz}, Dir::x, Dir::y, Dir::z, Dir::_y, Dir::_z);
+                        GenSide({xx,yy,zz}, Dir::_x, Dir::y, Dir::_z, Dir::_y, Dir::z);
+                        GenSide({xx,yy,zz}, Dir::y, Dir::x, Dir::_z, Dir::_x, Dir::z);
+                        GenSide({xx,yy,zz}, Dir::_y, Dir::x, Dir::z, Dir::_x, Dir::_z);
+                        GenSide({xx,yy,zz}, Dir::z, Dir::x, Dir::y, Dir::_x, Dir::_y);
+                        GenSide({xx,yy,zz}, Dir::_z, Dir::x, Dir::_y, Dir::_x, Dir::y);
                     }
                 }
             }
