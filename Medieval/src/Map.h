@@ -32,14 +32,12 @@ class Chunk
 
     void Render(const glm::mat4 &view, vec3 pos) const
     {
-        "Ffs, why this does not work?";
-        /*
         Shader().Use();
         Shader().UploadMatrix4f("u_proj", perspective_matrix);
         Shader().UploadMatrix4f("u_view", view);
         Shader().UploadMatrix4f("u_model", glm::translate({}, pos));
         glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, triangles*3);*/
+        glDrawArrays(GL_TRIANGLES, 0, triangles*3);
     }
 
   public:
@@ -135,7 +133,7 @@ class Chunk
                 for (int z = 0; z < width; z++)
                 {
                     if (get({x,y,z}).type != Block::Type::air)
-                        AABB(vec3(x,y,z) * float(units_per_voxel), {1,1,1}).debugDraw(view, Colors::light_grey);
+                        AABB((vec3(x,y,z)+.5f) * float(units_per_voxel), {1,1,1}).debugDraw(view, Colors::light_grey);
                 }
             }
         }
@@ -169,32 +167,45 @@ class Map
         auto it = chunks.find(pos);
         if (it == chunks.end())
             return; // No such chunk.
-        std::vector<vec3> vec(3 * 3 * Chunk::width * Chunk::width * Chunk::depth);
+
         it->second.triangles = 0;
+        /*
+        std::vector<vec3> vec(3 * 3 * 2 * Chunk::width * Chunk::width * Chunk::depth);
         for (int y = 0; y < Chunk::depth; y++)
         {
             for (int x = 0; x < Chunk::width; x++)
             {
                 for (int z = 0; z < Chunk::width; z++)
                 {
-                    vec[it->second.triangles*9+0] = {x,y,z};
-                    vec[it->second.triangles*9+1] = {1,0,0};
-                    vec[it->second.triangles*9+2] = {1,0,0};
-                    vec[it->second.triangles*9+3] = {x+1,y,z};
-                    vec[it->second.triangles*9+4] = {1,0,0};
-                    vec[it->second.triangles*9+5] = {0,1,0};
-                    vec[it->second.triangles*9+6] = {x,y+1,z};
-                    vec[it->second.triangles*9+7] = {1,0,0};
-                    vec[it->second.triangles*9+8] = {0,0,1};
+                    if (GetBlock({x,y,z}).type != Block::Type::air && GetBlock({x,y+1,z}).type == Block::Type::air)
+                    {
+                        vec[it->second.triangles*9+0] = {x,y+1,z};
+                        vec[it->second.triangles*9+1] = {0,1,0};
+                        vec[it->second.triangles*9+2] = {0,.5,1};
+                        vec[it->second.triangles*9+3] = {x,y+1,z+1};
+                        vec[it->second.triangles*9+4] = {0,1,0};
+                        vec[it->second.triangles*9+5] = {0,.5,1};
+                        vec[it->second.triangles*9+6] = {x+1,y+1,z};
+                        vec[it->second.triangles*9+7] = {0,1,0};
+                        vec[it->second.triangles*9+8] = {0,.5,1};
+                        it->second.triangles++;
 
-                    it->second.triangles++;
-                    return;
+                        vec[it->second.triangles*9+0] = {x+1,y+1,z+1};
+                        vec[it->second.triangles*9+1] = {0,1,0};
+                        vec[it->second.triangles*9+2] = {0,.5,1};
+                        vec[it->second.triangles*9+3] = {x+1,y+1,z};
+                        vec[it->second.triangles*9+4] = {0,1,0};
+                        vec[it->second.triangles*9+5] = {0,.5,1};
+                        vec[it->second.triangles*9+6] = {x,y+1,z+1};
+                        vec[it->second.triangles*9+7] = {0,1,0};
+                        vec[it->second.triangles*9+8] = {0,.5,1};
+                        it->second.triangles++;
+                    }
                 }
             }
-        }
-        glBindVertexArray(0); // Don't remove this.
-        glBindBuffer(GL_ARRAY_BUFFER, it->second.vbo);
+        }*/
         glBufferData(GL_ARRAY_BUFFER, it->second.triangles * 3 * 3 * 3 * sizeof (float), &vec[0], GL_STATIC_DRAW);
+
     }
 
     void SetBlock(ivec3 pos, Block block)

@@ -107,6 +107,7 @@ void GameState::render()
 	map.chunks[{0,0}].DebugRender(view);
 	map.Render(view, {0,0,0});
 
+
 	if (showUI)
 	{
 	    renderer2D->bind();
