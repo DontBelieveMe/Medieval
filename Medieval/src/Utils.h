@@ -168,6 +168,20 @@ namespace Colors
 }
 
 
+class Bounds2D
+{
+  public:
+	glm::vec2 top_left, bottom_right;
+
+	Bounds2D(const glm::vec2 &top_left, const glm::vec2 &bottom_right)
+		: top_left(top_left), bottom_right(bottom_right) {}
+
+	bool Contains(const glm::vec2 &point) const
+	{
+		return (top_left.x < point.x && top_left.y < point.y && bottom_right.x > point.x && bottom_right.y > point.y);
+	}
+};
+
 
 namespace std
 {
