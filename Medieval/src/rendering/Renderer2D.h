@@ -30,7 +30,7 @@ public:
 
         shader_ptr->Use();
         AdditionalVAO::bind();
-        tex->bind();
+        tex->Bind();
     }
 
     inline void halt()

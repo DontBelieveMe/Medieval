@@ -21,10 +21,10 @@ UIButton::~UIButton()
 
 void UIButton::Tick()
 {
-	glm::vec2 mousePos = Input::mousePos();
+	glm::vec2 mousePos = Input::MousePos();
 	if (bounds->Contains(mousePos))
 	{
-		if (Input::mouseButtonDown(1))		
+		if (Input::MouseButtonDown(1))
 			_state = PRESSED;
 		else
 			_state = HOVER;

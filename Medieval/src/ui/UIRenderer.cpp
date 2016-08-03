@@ -9,12 +9,12 @@ UIRenderer::UIRenderer(const float &width, const float &height, const glm::vec2 
 {
 	_topLeftPosition = glm::vec3((topLeftPos.x) * SCREENSPACE_INCREMENT.x, -topLeftPos.y * SCREENSPACE_INCREMENT.y, 0);
 	_scale = glm::vec3(width * SCREENSPACE_INCREMENT.x, height * SCREENSPACE_INCREMENT.y, 0);
-	
+
 	if (shader == nullptr)
 		_uiShader = new ShaderProgram("res/shaders/UIVert.shader", "res/shaders/UIFrag.shader");
 	else
 		_uiShader = shader;
-	transScaleLocation = _uiShader->getUniformLoc("translationScale");
+	transScaleLocation = _uiShader->GetUniformLoc("translationScale");
 }
 
 UIRenderer::UIRenderer(const glm::vec2 &topLeftPos, const glm::vec2 &bottomRightPos, ShaderProgram *shader)
@@ -28,7 +28,7 @@ UIRenderer::UIRenderer(const glm::vec2 &topLeftPos, const glm::vec2 &bottomRight
 		_uiShader = new ShaderProgram("res/shaders/UIVert.shader", "res/shaders/UIFrag.shader");
 	else
 		_uiShader = shader;
-	transScaleLocation = _uiShader->getUniformLoc("translationScale");
+	transScaleLocation = _uiShader->GetUniformLoc("translationScale");
 }
 
 UIRenderer::UIRenderer(const Texture &UITexture, const glm::vec2 &topLeftPos, const float &scaleValue, ShaderProgram *shader)
@@ -38,11 +38,11 @@ UIRenderer::UIRenderer(const Texture &UITexture, const glm::vec2 &topLeftPos, co
 	_topLeftPosition = glm::vec3((topLeftPos.x) * SCREENSPACE_INCREMENT.x, -topLeftPos.y * SCREENSPACE_INCREMENT.y, 0);
 	_scale = glm::vec3(width * SCREENSPACE_INCREMENT.x * scaleValue, height * SCREENSPACE_INCREMENT.y * scaleValue, 0);
 
-	if (shader == nullptr)	
-		_uiShader = new ShaderProgram("res/shaders/UIVert.shader", "res/shaders/UIFrag.shader");	
+	if (shader == nullptr)
+		_uiShader = new ShaderProgram("res/shaders/UIVert.shader", "res/shaders/UIFrag.shader");
 	else
 		_uiShader = shader;
-	transScaleLocation = _uiShader->getUniformLoc("translationScale");
+	transScaleLocation = _uiShader->GetUniformLoc("translationScale");
 }
 
 UIRenderer::~UIRenderer()
@@ -52,8 +52,8 @@ UIRenderer::~UIRenderer()
 
 void UIRenderer::Render()
 {
-	_uiShader->use();
-	_uiShader->uploadMatrix4f(transScaleLocation, GetMatrix());
+	_uiShader->Use();
+	_uiShader->UploadMatrix4f(transScaleLocation, GetMatrix());
 
 	uiQuad.Render();
 }

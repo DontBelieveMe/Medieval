@@ -42,11 +42,6 @@ struct AABB
                abs_pos_diff.y < size_sum.y &&
                abs_pos_diff.z < size_sum.z;
     }
-
-    void debugDraw(const glm::mat4 &view, const vec3 &color, const i64vec3 &camera_pos = {0,0,0}) const
-    {
-        Primitives::DrawCube(view, vec3(pos - camera_pos) / float(units_per_voxel), vec3(size) / 2.f, color);
-    }
 };
 
 enum class Solid              {no=0, yes=1};

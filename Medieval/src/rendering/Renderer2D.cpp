@@ -45,5 +45,5 @@ Renderer2D::~Renderer2D()
 
 void Renderer2D::destroy()
 {
-    tex->destroy();
+    //tex->Destroy();
 }
