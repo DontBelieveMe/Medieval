@@ -34,9 +34,9 @@ GameState::GameState()
 
 	Input::SetMouseMode(Input::MouseMode::locked);
 
-    //map.chunks[{0,0}].DebugGenerate();
-    //map.chunks[{0,1}].DebugGenerate();
-    map.chunks[{2,-2}].DebugGenerate();
+	for (int i = -1; i <= 1; i++)
+	    for (int j = -1; j <= 1; j++)
+            map.chunks[{i,j}].DebugGenerate();
 
 	ObjectFactory *factory = ObjectFactory::Get();
 	GameObject *player = factory->CreateGameObject<TestComponent, TestComponent2>("player");

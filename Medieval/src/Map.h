@@ -225,17 +225,17 @@ class Map
                                    {0,0,0},
                                    {0,0,0}};
 
+        ivec3 chunk_offset(chunk_pos.x * Chunk::width, 0, chunk_pos.y * Chunk::width);
 
         auto GenSide = [&](ivec3 pos, Dir up, Dir a, Dir b, Dir c, Dir d)
         {
-            if (GetBlock(pos + dir11[up]).type == Block::Type::air)
+            if (GetBlock(chunk_offset + pos + dir11[up]).type == Block::Type::air)
             {
-                PushQuad({chunk_pos+pos+dir01[up]+dir01[a]+dir01[b], dir11[up], {0,.5,1}},
-                         {chunk_pos+pos+dir01[up]+dir01[b]+dir01[c], dir11[up], {0,.5,1}},
-                         {chunk_pos+pos+dir01[up]+dir01[c]+dir01[d], dir11[up], {0,.5,1}},
-                         {chunk_pos+pos+dir01[up]+dir01[d]+dir01[a], dir11[up], {0,.5,1}});
+                PushQuad({pos+dir01[up]+dir01[a]+dir01[b], dir11[up], {0,.5,1}},
+                         {pos+dir01[up]+dir01[b]+dir01[c], dir11[up], {0,.5,1}},
+                         {pos+dir01[up]+dir01[c]+dir01[d], dir11[up], {0,.5,1}},
+                         {pos+dir01[up]+dir01[d]+dir01[a], dir11[up], {0,.5,1}});
             }
-            std::cout << pos << '\n';
         };
 
         for (int yy = 0; yy < Chunk::depth; yy++)
@@ -244,14 +244,14 @@ class Map
             {
                 for (int zz = 0; zz < Chunk::width; zz++)
                 {
-                    if (GetBlock({xx,yy,zz}).type != Block::Type::air)
+                    if (GetBlock(chunk_offset+ivec3(xx,yy,zz)).type != Block::Type::air)
                     {
-                        GenSide({xx,yy,zz}, Dir::x, Dir::y, Dir::z, Dir::_y, Dir::_z);
-                        GenSide({xx,yy,zz}, Dir::_x, Dir::y, Dir::_z, Dir::_y, Dir::z);
-                        GenSide({xx,yy,zz}, Dir::y, Dir::x, Dir::_z, Dir::_x, Dir::z);
-                        GenSide({xx,yy,zz}, Dir::_y, Dir::x, Dir::z, Dir::_x, Dir::_z);
-                        GenSide({xx,yy,zz}, Dir::z, Dir::x, Dir::y, Dir::_x, Dir::_y);
-                        GenSide({xx,yy,zz}, Dir::_z, Dir::x, Dir::_y, Dir::_x, Dir::y);
+                        GenSide(ivec3(xx,yy,zz), Dir::x, Dir::y, Dir::z, Dir::_y, Dir::_z);
+                        GenSide(ivec3(xx,yy,zz), Dir::_x, Dir::y, Dir::_z, Dir::_y, Dir::z);
+                        GenSide(ivec3(xx,yy,zz), Dir::y, Dir::x, Dir::_z, Dir::_x, Dir::z);
+                        GenSide(ivec3(xx,yy,zz), Dir::_y, Dir::x, Dir::z, Dir::_x, Dir::_z);
+                        GenSide(ivec3(xx,yy,zz), Dir::z, Dir::x, Dir::y, Dir::_x, Dir::_y);
+                        GenSide(ivec3(xx,yy,zz), Dir::_z, Dir::x, Dir::_y, Dir::_x, Dir::y);
                     }
                 }
             }
