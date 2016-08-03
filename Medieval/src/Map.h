@@ -23,9 +23,10 @@ class Chunk
 
   public:
     static constexpr int width = 16, depth = 64;
-    Block (*data)[width][width];
 
   private:
+    //       y      x      z
+    Block (*data)[width][width];
     bool dirty_mesh = 0;
     GLuint vbo, vao;
     int triangles = 0;
@@ -63,9 +64,6 @@ class Chunk
         glVertexAttribPointer(2, 3, GL_FLOAT, 0, sizeof (float) * 9, (void *) (sizeof (float) * 6));
     }
 
-    Chunk(const Chunk &) = delete;
-    Chunk &operator=(const Chunk &) = delete;
-
     Chunk(Chunk &&o)
     {
         vao = o.vao;
@@ -80,7 +78,7 @@ class Chunk
     Chunk &operator=(Chunk &&o)
     {
         this->~Chunk();
-        new(this) Chunk((Chunk &&)o);
+        new (this) Chunk((Chunk &&)o);
         return *this;
     }
 
@@ -118,22 +116,7 @@ class Chunk
             {
                 for (int z = 0; z < width; z++)
                 {
-                    Set({x,y,z}, Block{Block::Type(int(Random() % depth) > y*2)});
-                }
-            }
-        }
-    }
-
-    void DebugRender(const glm::mat4 &view) const
-    {
-        for (int y = 0; y < depth; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                for (int z = 0; z < width; z++)
-                {
-                    if (get({x,y,z}).type != Block::Type::air)
-                        AABB((vec3(x,y,z)+.5f) * float(units_per_voxel), {1,1,1}).debugDraw(view, Colors::light_grey);
+                    Set({x,y,z}, Block{Block::Type(int(Random() % depth + 20) > y + 10)});
                 }
             }
         }
@@ -162,52 +145,134 @@ class Map
         chunks.erase(it);
     }
 
+  private:
     void UpdateChunkMesh(ivec2 pos)
     {
         auto it = chunks.find(pos);
         if (it == chunks.end())
             return; // No such chunk.
 
-        it->second.triangles = 0;
-        /*
-        std::vector<vec3> vec(3 * 3 * 2 * Chunk::width * Chunk::width * Chunk::depth);
+        struct Vertex
+        {
+            vec3 pos, normal, color;
+        };
+
+        static constexpr int vertices_per_buffer = 4096 / sizeof (Vertex);
+
+        class VertexArray
+        {
+            Vertex *arr;
+          public:
+            operator       Vertex *()       {return arr;}
+            operator const Vertex *() const {return arr;}
+            VertexArray()
+            {
+                arr = new Vertex[vertices_per_buffer];
+            }
+            VertexArray(VertexArray &&o)
+            {
+                arr = o.arr;
+                o.arr = 0;
+            }
+            VertexArray &operator=(VertexArray &&o)
+            {
+                this->~VertexArray();
+                new (this) VertexArray((VertexArray &&) o);
+                return *this;
+            }
+            ~VertexArray()
+            {
+                if (arr)
+                    delete [] arr;
+            }
+        };
+
+        int vertices = 0;
+
+        std::vector<VertexArray> buffer;
+
+        auto PushVertex = [&](const Vertex &vertex)
+        {
+            if (vertices % vertices_per_buffer == 0)
+                buffer.push_back({});
+            buffer[vertices/vertices_per_buffer][vertices%vertices_per_buffer] = vertex;
+
+            vertices++;
+        };
+
+        auto PushQuad = [&](const Vertex &a, const Vertex &b, const Vertex &c, const Vertex &d)
+        {
+            PushVertex(a);
+            PushVertex(b);
+            PushVertex(d);
+            PushVertex(b);
+            PushVertex(c);
+            PushVertex(d);
+        };
+        enum Dir {x,y,z,_x,_y,_z};
+
+        static const ivec3 dir11[]{{1,0,0},
+                                   {0,1,0},
+                                   {0,0,1},
+                                   {-1,0,0},
+                                   {0,-1,0},
+                                   {0,0,-1}};
+
+        static const ivec3 dir01[]{{1,0,0},
+                                   {0,1,0},
+                                   {0,0,1},
+                                   {0,0,0},
+                                   {0,0,0},
+                                   {0,0,0}};
+
+
+        auto GenSide = [&](ivec3 pos, Dir up, Dir a, Dir b, Dir c, Dir d)
+        {
+            if (GetBlock(pos + dir11[up]).type == Block::Type::air)
+            {
+                PushQuad({pos+dir01[up]+dir01[a]+dir01[b], dir11[up], {0,.5,1}},
+                         {pos+dir01[up]+dir01[b]+dir01[c], dir11[up], {0,.5,1}},
+                         {pos+dir01[up]+dir01[c]+dir01[d], dir11[up], {0,.5,1}},
+                         {pos+dir01[up]+dir01[d]+dir01[a], dir11[up], {0,.5,1}});
+            }
+        };
+
         for (int y = 0; y < Chunk::depth; y++)
         {
             for (int x = 0; x < Chunk::width; x++)
             {
                 for (int z = 0; z < Chunk::width; z++)
                 {
-                    if (GetBlock({x,y,z}).type != Block::Type::air && GetBlock({x,y+1,z}).type == Block::Type::air)
+                    if (GetBlock({x,y,z}).type != Block::Type::air)
                     {
-                        vec[it->second.triangles*9+0] = {x,y+1,z};
-                        vec[it->second.triangles*9+1] = {0,1,0};
-                        vec[it->second.triangles*9+2] = {0,.5,1};
-                        vec[it->second.triangles*9+3] = {x,y+1,z+1};
-                        vec[it->second.triangles*9+4] = {0,1,0};
-                        vec[it->second.triangles*9+5] = {0,.5,1};
-                        vec[it->second.triangles*9+6] = {x+1,y+1,z};
-                        vec[it->second.triangles*9+7] = {0,1,0};
-                        vec[it->second.triangles*9+8] = {0,.5,1};
-                        it->second.triangles++;
-
-                        vec[it->second.triangles*9+0] = {x+1,y+1,z+1};
-                        vec[it->second.triangles*9+1] = {0,1,0};
-                        vec[it->second.triangles*9+2] = {0,.5,1};
-                        vec[it->second.triangles*9+3] = {x+1,y+1,z};
-                        vec[it->second.triangles*9+4] = {0,1,0};
-                        vec[it->second.triangles*9+5] = {0,.5,1};
-                        vec[it->second.triangles*9+6] = {x,y+1,z+1};
-                        vec[it->second.triangles*9+7] = {0,1,0};
-                        vec[it->second.triangles*9+8] = {0,.5,1};
-                        it->second.triangles++;
+                        GenSide({x,y,z}, Dir::x, Dir::y, Dir::z, Dir::_y, Dir::_z);
+                        GenSide({x,y,z}, Dir::_x, Dir::y, Dir::_z, Dir::_y, Dir::z);
+                        GenSide({x,y,z}, Dir::y, Dir::x, Dir::_z, Dir::_x, Dir::z);
+                        GenSide({x,y,z}, Dir::_y, Dir::x, Dir::z, Dir::_x, Dir::_z);
+                        GenSide({x,y,z}, Dir::z, Dir::x, Dir::y, Dir::_x, Dir::_y);
+                        GenSide({x,y,z}, Dir::_z, Dir::x, Dir::_y, Dir::_x, Dir::y);
                     }
                 }
             }
-        }*/
-        glBufferData(GL_ARRAY_BUFFER, it->second.triangles * 3 * 3 * 3 * sizeof (float), &vec[0], GL_STATIC_DRAW);
+        }
 
+        if (vertices % 3)
+            Error("Chunk mesh generator provided an amount of vertices which is not a multiply of 3.");
+
+        it->second.triangles = vertices / 3;
+
+        glBindBuffer(GL_ARRAY_BUFFER, it->second.vbo);
+        glBufferData(GL_ARRAY_BUFFER, vertices * sizeof (Vertex), 0, GL_DYNAMIC_DRAW);
+        for (unsigned int i = 0; i < buffer.size(); i++)
+        {
+            if (i != buffer.size() - 1)
+                glBufferSubData(GL_ARRAY_BUFFER, vertices_per_buffer * sizeof (Vertex) * i, vertices_per_buffer * sizeof (Vertex), buffer[i]);
+            else
+                glBufferSubData(GL_ARRAY_BUFFER, vertices_per_buffer * sizeof (Vertex) * i, (vertices % vertices_per_buffer) * sizeof (Vertex), buffer[i]);
+        }
     }
 
+  public:
     void SetBlock(ivec3 pos, Block block)
     {
         if (pos.y < 0 || pos.y >= Chunk::depth)
@@ -240,8 +305,13 @@ class Map
 
     void Render(const glm::mat4 &view, vec3 pos)
     {
-        for (const auto &it : chunks)
+        for (auto &it : chunks)
         {
+            if (it.second.dirty_mesh)
+            {
+                it.second.dirty_mesh = 0;
+                UpdateChunkMesh(it.first);
+            }
             it.second.Render(view, pos + vec3(it.first.x * Chunk::width, 0, it.first.y * Chunk::width));
         }
     }

@@ -34,9 +34,9 @@ GameState::GameState()
 
 	Input::SetMouseMode(Input::MouseMode::locked);
 
-	map.AddChunk({0,0});
-	map.chunks[{0,0}].DebugGenerate();
-	map.UpdateChunkMesh({0,0});
+	for (int i = -2; i <= 2; i++)
+	    for (int j = -2; j <= 2; j++)
+	        map.chunks[{j,i}].DebugGenerate();
 
 	ObjectFactory *factory = ObjectFactory::Get();
 	GameObject *player = factory->CreateGameObject<TestComponent, TestComponent2>("player");
@@ -104,7 +104,6 @@ void GameState::render()
     modelShader->UploadMatrix4f("model", model);
     DrawModel(ent);
 
-	map.chunks[{0,0}].DebugRender(view);
 	map.Render(view, {0,0,0});
 
 
