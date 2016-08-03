@@ -1,18 +1,43 @@
 #pragma once
+#include <../extern/glad/glad.h>
+#include <glm\glm.hpp>
 
-#include "../includes.h"
-#include "Shader.h"
+//Someone needs to write up the cube data stuff - it's not that difficult, I'm just a bit lazy :P
+//It WILL use GL_TRIANGLE_FAN so don't even think about trying to use the element buffer
+//
 
-namespace Primitives
+struct Primitive
 {
-	namespace detail
-	{
-		extern ShaderProgram *primitive_shader;
-		extern GLuint vao_cube, vbo_cube, ibo_cube;
-		extern GLuint vao_cube_wf, vbo_cube_wf, ibo_cube_wf;
-		void TryInit();
-	}
+public:
+	Primitive(GLuint VBO, GLuint VAO, unsigned int numIndicies)
+		: _VBO(VBO), _VAO(VAO), numIndicies(numIndicies) {}
+	
+	void Render() { glBindVertexArray(_VAO); glDrawArrays(GL_TRIANGLE_FAN, 0, numIndicies); }
+protected:
+	GLuint _VBO, _VAO;
+	unsigned int numIndicies;
+};
 
-	void FillCube(const glm::mat4& view, const glm::vec3 &pos, const glm::vec3 &scale, const glm::vec3 &color);
-	void DrawCube(const glm::mat4& view, const glm::vec3 &pos, const glm::vec3 &scale, const glm::vec3 &color);
-}
+class Primitives
+{
+public:
+	static void Init(); //Generates the Primitives
+
+	static Primitive &GetQuad() { return *quad; }
+	static Primitive &GetUIQuad() { return *uiQuad; }
+	//static Primitive &GetCube() { return *cube; }	
+
+private:
+	static Primitive *quad;
+	static Primitive *uiQuad;
+	//static Primitive *cube;
+
+	struct Vertex
+	{
+		glm::vec3 position;
+		glm::vec2 uv;
+
+		Vertex(glm::vec3 position, glm::vec2 uv)
+			: position(position), uv(uv) {}
+	};
+};

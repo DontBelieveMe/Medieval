@@ -12,16 +12,16 @@ class Texture
 {
 public:
 	Texture(const std::string& path);
+	Texture(const std::vector<GLubyte> &data);
 	~Texture();
 
-	void destroy();
-	inline void bind() { glBindTexture(GL_TEXTURE_2D, texId); }
-	inline void halt() { glBindTexture(GL_TEXTURE_2D, 0); }
+	inline void Bind() const { glBindTexture(GL_TEXTURE_2D, _texId); }
+	inline void Halt() const { glBindTexture(GL_TEXTURE_2D, 0); }
 
-	inline unsigned int getWidth() { return width; }
-	inline unsigned int getHeight() { return height; }
+	inline unsigned int GetWidth() const { return _width; }
+	inline unsigned int GetHeight() const { return _height; }
 private:
-	GLuint texId;
-	unsigned int width, height;
+	GLuint _texId;
+	unsigned int _width, _height;
 };
 
