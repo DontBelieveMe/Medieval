@@ -39,9 +39,11 @@ GameState::GameState()
 
 	Input::SetMouseMode(Input::MouseMode::locked);
 
+	/*
 	for (int i = -1; i <= 1; i++)
 	    for (int j = -1; j <= 1; j++)
-            map.chunks[{i,j}].DebugGenerate();
+            map.chunks[{i,j}].DebugGenerate();*/
+    map.chunks[{0,0}].DebugGenerate();
 
 	ObjectFactory *factory = ObjectFactory::Get();
 	GameObject *player = factory->CreateGameObject<TestComponent, TestComponent2>("player");
@@ -56,7 +58,6 @@ GameState::GameState()
 	uiMenu = new MenuExample();
 
 	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
@@ -97,6 +98,10 @@ void GameState::tick()
 	}
 
 	uiMenu->Tick();
+
+	static bool wireframe;
+	if (Input::MouseButtonPressed(2))
+	    glPolygonMode(GL_FRONT_AND_BACK, (wireframe = !wireframe) ? GL_LINE : GL_FILL);
 }
 
 void GameState::render()
@@ -117,6 +122,7 @@ void GameState::render()
 
 	map.Render(view, {0,0,0});
 
+	glDisable(GL_DEPTH_TEST);
 
 	if (showUI)
 	{
@@ -132,8 +138,9 @@ void GameState::render()
 		fontTest->drawString("Press U (def.) to toggle the UI!", 220, HEIGHT - 120, 2.0);
 	}
 
-	glDisable(GL_DEPTH_TEST);
 	//uiMenu->Render();
+
+	glEnable(GL_CULL_FACE);
 }
 
 void GameState::destroy()

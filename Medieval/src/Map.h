@@ -1,20 +1,38 @@
 #pragma once
 
+#include <initializer_list>
 #include <unordered_map>
 
 #include <physics/Physics.h>
 #include <Utils.h>
 #include <rendering/Shader.h>
 
-struct Block
+#define BLOCK_LIST \
+    BLOCK(air   , "Air"   , INVISIBLE          , PASSABLE ) \
+    BLOCK(stone , "Stone" , COLOR(132,139,114) , SOLID    ) \
+
+class Block
 {
-    enum class Type : uint8_t
-    {
-        air,
-        stone,
-    };
+    static const bool *visible_table;
+    static const vec3 *color_table;
+    static const bool *solid_table;
+
+  public:
+    #define BLOCK(token, name, color, solid) token,
+    enum class Type : uint8_t {BLOCK_LIST};
+    #undef BLOCK
+
+    #define BLOCK(token, name, color, solid) 0,
+    static constexpr int type_count = std::initializer_list<int>({BLOCK_LIST}).size();
+    #undef BLOCK
 
     Type type;
+
+    bool Visible() const {return visible_table[(int)type];}
+
+    const vec3 &Color() const {return color_table[(int)type];}
+
+    bool Solid() const {return solid_table[(int)type];}
 };
 
 class Chunk
@@ -159,6 +177,8 @@ class Map
 
         static constexpr int vertices_per_buffer = 4096 / sizeof (Vertex);
 
+        static constexpr float shadow_factor = 0.8f;
+
         class VertexArray
         {
             Vertex *arr;
@@ -227,14 +247,93 @@ class Map
 
         ivec3 chunk_offset(chunk_pos.x * Chunk::width, 0, chunk_pos.y * Chunk::width);
 
-        auto GenSide = [&](ivec3 pos, Dir up, Dir a, Dir b, Dir c, Dir d)
+        auto GenSide = [&](Block this_block, ivec3 pos, Dir up, Dir a, Dir b, Dir c, Dir d)
         {
             if (GetBlock(chunk_offset + pos + dir11[up]).type == Block::Type::air)
             {
-                PushQuad({pos+dir01[up]+dir01[a]+dir01[b], dir11[up], {0,.5,1}},
-                         {pos+dir01[up]+dir01[b]+dir01[c], dir11[up], {0,.5,1}},
-                         {pos+dir01[up]+dir01[c]+dir01[d], dir11[up], {0,.5,1}},
-                         {pos+dir01[up]+dir01[d]+dir01[a], dir11[up], {0,.5,1}});
+                //
+                //         a
+                //
+                //      3  0  0
+                //  d   3  -  1   b
+                //      2  2  1
+                //
+                //         c
+                //
+
+                vec3 color = this_block.Color();
+
+                Vertex corners[4]{{pos+dir01[up]+dir01[a]+dir01[b], dir11[up], color},
+                                  {pos+dir01[up]+dir01[b]+dir01[c], dir11[up], color},
+                                  {pos+dir01[up]+dir01[c]+dir01[d], dir11[up], color},
+                                  {pos+dir01[up]+dir01[d]+dir01[a], dir11[up], color}};
+
+                Vertex edge_centers[4]{{vec3(pos+dir01[up]+dir01[d]+dir01[a]) - 0.5f*vec3(dir11[d]), dir11[up], color},
+                                       {vec3(pos+dir01[up]+dir01[a]+dir01[b]) - 0.5f*vec3(dir11[a]), dir11[up], color},
+                                       {vec3(pos+dir01[up]+dir01[b]+dir01[c]) - 0.5f*vec3(dir11[b]), dir11[up], color},
+                                       {vec3(pos+dir01[up]+dir01[c]+dir01[d]) - 0.5f*vec3(dir11[c]), dir11[up], color}};
+
+                Vertex center{vec3(pos+dir01[up]+dir01[a]+dir01[b]) - 0.5f*vec3(dir11[a]) - 0.5f*vec3(dir11[b]), dir11[up], this_block.Color()};
+
+                /*
+                Block near_blocks[4]{GetBlock(chunk_offset + pos + dir11[a]),
+                                     GetBlock(chunk_offset + pos + dir11[b]),
+                                     GetBlock(chunk_offset + pos + dir11[c]),
+                                     GetBlock(chunk_offset + pos + dir11[d])};
+
+                Block near_corners[4]{GetBlock(chunk_offset + pos + dir11[a]+dir11[b]),
+                                      GetBlock(chunk_offset + pos + dir11[b]+dir11[c]),
+                                      GetBlock(chunk_offset + pos + dir11[c]+dir11[d]),
+                                      GetBlock(chunk_offset + pos + dir11[d]+dir11[a])};
+                */
+
+                Block near_blocks_up[4]{GetBlock(chunk_offset + pos + dir11[a] + dir11[up]),
+                                        GetBlock(chunk_offset + pos + dir11[b] + dir11[up]),
+                                        GetBlock(chunk_offset + pos + dir11[c] + dir11[up]),
+                                        GetBlock(chunk_offset + pos + dir11[d] + dir11[up])};
+
+                Block near_corners_up[4]{GetBlock(chunk_offset + pos + dir11[a]+dir11[b] + dir11[up]),
+                                         GetBlock(chunk_offset + pos + dir11[b]+dir11[c] + dir11[up]),
+                                         GetBlock(chunk_offset + pos + dir11[c]+dir11[d] + dir11[up]),
+                                         GetBlock(chunk_offset + pos + dir11[d]+dir11[a] + dir11[up])};
+
+                bool status[4]{}, edge_status[4]{};
+
+                for (int dir = 0; dir < 4; dir++)
+                {
+                    if (near_blocks_up[dir].Solid())
+                    {
+                        edge_centers[dir].color = color * shadow_factor;
+                        edge_status[dir] = 1;
+                    }
+                    if (near_blocks_up[dir].Solid() + near_blocks_up[(dir+1)%4].Solid() + near_corners_up[dir].Solid() >= 2)
+                    {
+                        corners[dir].color = color * shadow_factor;
+                        status[dir] = 1;
+                    }
+                }
+
+                bool any_shadows = 0;
+
+                for (int dir = 0; dir < 4; dir++)
+                {
+                    if (edge_status[dir] && status[dir] && edge_status[(dir+1)%4])
+                        corners[dir].color -= color - corners[dir].color;
+                    if (edge_status[dir] || status[dir])
+                        any_shadows = 1;
+                }
+
+                if (any_shadows)
+                {
+                    PushQuad(edge_centers[0], corners[0], edge_centers[1], center);
+                    PushQuad(edge_centers[1], corners[1], edge_centers[2], center);
+                    PushQuad(edge_centers[2], corners[2], edge_centers[3], center);
+                    PushQuad(edge_centers[3], corners[3], edge_centers[0], center);
+                }
+                else
+                {
+                    PushQuad(corners[0], corners[1], corners[2], corners[3]);
+                }
             }
         };
 
@@ -244,14 +343,15 @@ class Map
             {
                 for (int zz = 0; zz < Chunk::width; zz++)
                 {
-                    if (GetBlock(chunk_offset+ivec3(xx,yy,zz)).type != Block::Type::air)
+                    Block this_block = GetBlock(chunk_offset+ivec3(xx,yy,zz));
+                    if (this_block.Visible())
                     {
-                        GenSide(ivec3(xx,yy,zz), Dir::x, Dir::y, Dir::z, Dir::_y, Dir::_z);
-                        GenSide(ivec3(xx,yy,zz), Dir::_x, Dir::y, Dir::_z, Dir::_y, Dir::z);
-                        GenSide(ivec3(xx,yy,zz), Dir::y, Dir::x, Dir::_z, Dir::_x, Dir::z);
-                        GenSide(ivec3(xx,yy,zz), Dir::_y, Dir::x, Dir::z, Dir::_x, Dir::_z);
-                        GenSide(ivec3(xx,yy,zz), Dir::z, Dir::x, Dir::y, Dir::_x, Dir::_y);
-                        GenSide(ivec3(xx,yy,zz), Dir::_z, Dir::x, Dir::_y, Dir::_x, Dir::y);
+                        GenSide(this_block, ivec3(xx,yy,zz), Dir::x, Dir::y, Dir::z, Dir::_y, Dir::_z);
+                        GenSide(this_block, ivec3(xx,yy,zz), Dir::_x, Dir::y, Dir::_z, Dir::_y, Dir::z);
+                        GenSide(this_block, ivec3(xx,yy,zz), Dir::y, Dir::x, Dir::_z, Dir::_x, Dir::z);
+                        GenSide(this_block, ivec3(xx,yy,zz), Dir::_y, Dir::x, Dir::z, Dir::_x, Dir::_z);
+                        GenSide(this_block, ivec3(xx,yy,zz), Dir::z, Dir::x, Dir::y, Dir::_x, Dir::_y);
+                        GenSide(this_block, ivec3(xx,yy,zz), Dir::_z, Dir::x, Dir::_y, Dir::_x, Dir::y);
                     }
                 }
             }
