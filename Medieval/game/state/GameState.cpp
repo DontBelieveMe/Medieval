@@ -100,7 +100,7 @@ void GameState::tick()
 }
 
 void GameState::render()
-{    
+{
 	glEnable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -124,18 +124,16 @@ void GameState::render()
 		renderer2D->drawTile(0, 0, 2, 1, 10, 10, 64 * 3, 32 * 3);
 		renderer2D->drawTile(texIndex, 1, 1, 1, 34 * 3, 12 * 3, 32 * 3, 32 * 3);
 		renderer2D->drawTile(2, 0, 1, 1, 64 * 3 + 30, 10, 32 * 3, 32*3);
-		std::stringstream ss;
-		ss << Application::getInstance().FPS();
 
         uiShader->Use();
         fontTest->bind();
-		fontTest->drawString(ss.str() + " fps", WIDTH - 135, -35, 2);
+		fontTest->drawString(Jo(Application::getInstance().FPS(), " fps"), WIDTH - 135, -35, 2);
 		fontTest->drawString("Press P (def.) to toggle sound!", 220, HEIGHT - 170, 2.0);
 		fontTest->drawString("Press U (def.) to toggle the UI!", 220, HEIGHT - 120, 2.0);
 	}
 
 	glDisable(GL_DEPTH_TEST);
-	uiMenu->Render();
+	//uiMenu->Render();
 }
 
 void GameState::destroy()

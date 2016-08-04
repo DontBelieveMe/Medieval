@@ -17,6 +17,8 @@ std::set<int> Input::keys_down, Input::keys_pressed, Input::keys_released;
 bool Input::mouse_down[max_mouse_buttons], Input::mouse_pressed[max_mouse_buttons], Input::mouse_released[max_mouse_buttons];
 glm::dvec2 Input::scroll;
 
+Input::MouseMode mmode;
+
 #define CONFIGURABLE(token, value) {token, value},
 #define STATIC(token, value) /* nothing */
 #define KEY(token, name, mode, value) mode(#token, value)
@@ -173,7 +175,13 @@ int Input::AnyKeyReleased()
 
 void Input::SetMouseMode(MouseMode mode)
 {
+    mmode = mode;
     glfwSetInputMode(Application::getInstance().getWindowHandle(), GLFW_CURSOR, (int)mode);
+}
+
+Input::MouseMode Input::GetMouseMode()
+{
+    return mmode;
 }
 
 void Input::Key::Set(int value)
