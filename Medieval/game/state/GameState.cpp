@@ -10,7 +10,7 @@
 #include <rendering/Primitives.h>
 #include <components/GameObject.h>
 #include <components/ObjectFactory.h>
-#include "../game/UI Menus/MenuExample.h"
+#include "../game/uiMenus/MenuExample.h"
 
 Map map;
 MenuExample *uiMenu;
