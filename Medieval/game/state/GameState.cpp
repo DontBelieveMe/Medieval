@@ -10,10 +10,15 @@
 #include <rendering/Primitives.h>
 #include <components/GameObject.h>
 #include <components/ObjectFactory.h>
+#include "../game/UI Menus/MenuExample.h"
+
 Map map;
+MenuExample *uiMenu;
 
 GameState::GameState()
 {
+	Primitives::Init();
+
     modelShader = new ShaderProgram("res/shaders/vert.shader", "res/shaders/frag.shader");
     modelShader->Use();
 
@@ -48,6 +53,12 @@ GameState::GameState()
 	player->RemoveComponent<TestComponent>();
 	//std::cout << player->NumComponents() << std::endl;
 
+	uiMenu = new MenuExample();
+
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 int counter = 0;
@@ -84,13 +95,13 @@ void GameState::tick()
 			hidden = true;
 		}
 	}
+
+	uiMenu->Tick();
 }
 
 void GameState::render()
-{
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
+{    
+	glEnable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     vox->bind();
@@ -122,6 +133,9 @@ void GameState::render()
 		fontTest->drawString("Press P (def.) to toggle sound!", 220, HEIGHT - 170, 2.0);
 		fontTest->drawString("Press U (def.) to toggle the UI!", 220, HEIGHT - 120, 2.0);
 	}
+
+	glDisable(GL_DEPTH_TEST);
+	uiMenu->Render();
 }
 
 void GameState::destroy()
