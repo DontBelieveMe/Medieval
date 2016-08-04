@@ -28,9 +28,6 @@ void UIButton::Tick()
 	}
 
 	glm::vec2 mousePos = Input::MousePos();
-	std::cout << "Mouse Pos: " << mousePos.x << " : " << mousePos.y << std::endl;
-	std::cout << "Top Left: " << bounds->top_left.x << " : " << bounds->top_left.y << std::endl;
-	std::cout << "Bottom Right: " << bounds->bottom_right.x << " : " << bounds->bottom_right.y << std::endl;
 	if (bounds->Contains(mousePos))
 	{
 		
