@@ -39,12 +39,6 @@ GameState::GameState()
 
 	Input::SetMouseMode(Input::MouseMode::locked);
 
-	/*
-	for (int i = -1; i <= 1; i++)
-	    for (int j = -1; j <= 1; j++)
-            map.chunks[{i,j}].DebugGenerate();*/
-    map.chunks[{0,0}].DebugGenerate();
-
 	ObjectFactory *factory = ObjectFactory::Get();
 	GameObject *player = factory->CreateGameObject<TestComponent, TestComponent2>("player");
 	//std::cout << player->NumComponents() << std::endl;
@@ -98,6 +92,13 @@ void GameState::tick()
 	}
 
 	uiMenu->Tick();
+
+
+	//if (Input::MouseButtonDown(1) && map.ChunkExists(map.GetChunkPosForBlock(camera->position)))
+	    //map.GenerateChunk(map.GetChunkPosForBlock(camera->position));
+    if (Input::MouseButtonPressed(1))
+        map.GenerateChunk(map.GetChunkPosForBlock(camera->position));
+
 
 	static bool wireframe;
 	if (Input::MouseButtonPressed(2))

@@ -130,6 +130,10 @@ inline uint32_t Random()
     return Rng()();
 }
 
+inline uint16_t Noise(uint16_t in)
+{
+    return (unsigned int)((in * 1103515245 + 12345)/65536) % 32768;
+}
 
 extern double pi;
 

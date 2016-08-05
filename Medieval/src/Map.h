@@ -2,19 +2,20 @@
 
 #include <initializer_list>
 #include <unordered_map>
+#include <vector>
 
 #include <physics/Physics.h>
 #include <Utils.h>
 #include <rendering/Shader.h>
 
 #define BLOCK_LIST \
-    BLOCK(air   , "Air"   , INVISIBLE          , PASSABLE ) \
-    BLOCK(stone , "Stone" , COLOR(132,139,114) , SOLID    ) \
+    BLOCK(air   , "Air"   , INVISIBLE                                                             , PASSABLE ) \
+    BLOCK(grass , "Grass" , COLOR(C( 65,150, 88), C( 58,129, 76), C(106,144, 80), C( 84,103, 51)) , SOLID    ) \
 
 class Block
 {
     static const bool *visible_table;
-    static const vec3 *color_table;
+    static const std::vector<vec3> *color_table;
     static const bool *solid_table;
 
   public:
@@ -30,7 +31,7 @@ class Block
 
     bool Visible() const {return visible_table[(int)type];}
 
-    const vec3 &Color() const {return color_table[(int)type];}
+    const std::vector<vec3> &Colors() const {return color_table[(int)type];}
 
     bool Solid() const {return solid_table[(int)type];}
 };
@@ -57,6 +58,19 @@ class Chunk
         Shader().UploadMatrix4f("u_model", glm::translate({}, pos));
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, triangles*3);
+    }
+
+    void Set(ivec3 pos, Block block)
+    {
+        if (pos.x < 0 || pos.y < 0 || pos.z < 0 || pos.x >= width || pos.z >= width || pos.y >= depth)
+            return; // Out of range.
+        data[pos.y][pos.x][pos.z] = block;
+    }
+    const Block get(ivec3 pos) const
+    {
+        if (pos.x < 0 || pos.y < 0 || pos.z < 0 || pos.x >= width || pos.z >= width || pos.y >= depth)
+            return Block{}; // Out of range.
+        return data[pos.y][pos.x][pos.z];
     }
 
   public:
@@ -110,49 +124,23 @@ class Chunk
             delete [] data;
     }
 
-    void Set(ivec3 pos, Block block)
-    {
-        if (pos.x < 0 || pos.y < 0 || pos.z < 0 || pos.x >= width || pos.z >= width || pos.y >= depth)
-            return; // Out of range.
-        dirty_mesh = 1;
-        data[pos.y][pos.x][pos.z] = block;
-    }
-    const Block get(ivec3 pos) const
-    {
-        if (pos.x < 0 || pos.y < 0 || pos.z < 0 || pos.x >= width || pos.z >= width || pos.y >= depth)
-            return Block{}; // Out of range.
-        return data[pos.y][pos.x][pos.z];
-    }
-
     static ShaderProgram &Shader();
-
-    void DebugGenerate()
-    {
-        for (int y = 0; y < depth; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                for (int z = 0; z < width; z++)
-                {
-                    Set({x,y,z}, Block{Block::Type(int(Random() % depth + 20) > y + 10)});
-                }
-            }
-        }
-    }
 };
 
 class Map
 {
   public:
-    std::unordered_map<ivec2, Chunk> chunks;
+    using ChunksMapType = std::unordered_map<ivec2, Chunk>;
+    ChunksMapType chunks;
 
-    void AddChunk(ivec2 pos)
+    ChunksMapType::iterator AddChunk(ivec2 pos)
     {
-        if (chunks.find(pos) != chunks.end())
-            return; // Already exists.
+        auto it = chunks.find(pos);
+        if (it != chunks.end())
+            return it; // Already exists.
 
         using T = decltype(chunks)::value_type;
-        chunks.insert((T &&) T{pos, (Chunk &&) Chunk{}});
+        return chunks.insert((T &&) T{pos, (Chunk &&) Chunk{}}).first;
     }
 
     void RemoveChunk(ivec2 pos)
@@ -247,7 +235,7 @@ class Map
 
         ivec3 chunk_offset(chunk_pos.x * Chunk::width, 0, chunk_pos.y * Chunk::width);
 
-        auto GenSide = [&](Block this_block, ivec3 pos, Dir up, Dir a, Dir b, Dir c, Dir d)
+        auto GenSide = [&](Block this_block, ivec3 pos, int noise, Dir up, Dir a, Dir b, Dir c, Dir d)
         {
             if (GetBlock(chunk_offset + pos + dir11[up]).type == Block::Type::air)
             {
@@ -261,7 +249,8 @@ class Map
                 //         c
                 //
 
-                vec3 color = this_block.Color();
+                vec3 color = this_block.Colors()[noise % this_block.Colors().size()];
+
 
                 Vertex corners[4]{{pos+dir01[up]+dir01[a]+dir01[b], dir11[up], color},
                                   {pos+dir01[up]+dir01[b]+dir01[c], dir11[up], color},
@@ -273,7 +262,7 @@ class Map
                                        {vec3(pos+dir01[up]+dir01[b]+dir01[c]) - 0.5f*vec3(dir11[b]), dir11[up], color},
                                        {vec3(pos+dir01[up]+dir01[c]+dir01[d]) - 0.5f*vec3(dir11[c]), dir11[up], color}};
 
-                Vertex center{vec3(pos+dir01[up]+dir01[a]+dir01[b]) - 0.5f*vec3(dir11[a]) - 0.5f*vec3(dir11[b]), dir11[up], this_block.Color()};
+                Vertex center{vec3(pos+dir01[up]+dir01[a]+dir01[b]) - 0.5f*vec3(dir11[a]) - 0.5f*vec3(dir11[b]), dir11[up], color};
 
                 /*
                 Block near_blocks[4]{GetBlock(chunk_offset + pos + dir11[a]),
@@ -346,12 +335,14 @@ class Map
                     Block this_block = GetBlock(chunk_offset+ivec3(xx,yy,zz));
                     if (this_block.Visible())
                     {
-                        GenSide(this_block, ivec3(xx,yy,zz), Dir::x, Dir::y, Dir::z, Dir::_y, Dir::_z);
-                        GenSide(this_block, ivec3(xx,yy,zz), Dir::_x, Dir::y, Dir::_z, Dir::_y, Dir::z);
-                        GenSide(this_block, ivec3(xx,yy,zz), Dir::y, Dir::x, Dir::_z, Dir::_x, Dir::z);
-                        GenSide(this_block, ivec3(xx,yy,zz), Dir::_y, Dir::x, Dir::z, Dir::_x, Dir::_z);
-                        GenSide(this_block, ivec3(xx,yy,zz), Dir::z, Dir::x, Dir::y, Dir::_x, Dir::_y);
-                        GenSide(this_block, ivec3(xx,yy,zz), Dir::_z, Dir::x, Dir::_y, Dir::_x, Dir::y);
+                        int noise = Noise(Noise(Noise(Noise(Noise(Noise(iround<unsigned>(chunk_offset.x + xx)) + ~iround<unsigned>(chunk_offset.y + yy)) + ~iround<unsigned>(chunk_offset.z + zz)))));
+
+                        GenSide(this_block, ivec3(xx,yy,zz), noise, Dir::x, Dir::y, Dir::z, Dir::_y, Dir::_z);
+                        GenSide(this_block, ivec3(xx,yy,zz), noise, Dir::_x, Dir::y, Dir::_z, Dir::_y, Dir::z);
+                        GenSide(this_block, ivec3(xx,yy,zz), noise, Dir::y, Dir::x, Dir::_z, Dir::_x, Dir::z);
+                        GenSide(this_block, ivec3(xx,yy,zz), noise, Dir::_y, Dir::x, Dir::z, Dir::_x, Dir::_z);
+                        GenSide(this_block, ivec3(xx,yy,zz), noise, Dir::z, Dir::x, Dir::y, Dir::_x, Dir::_y);
+                        GenSide(this_block, ivec3(xx,yy,zz), noise, Dir::_z, Dir::x, Dir::_y, Dir::_x, Dir::y);
                     }
                 }
             }
@@ -374,34 +365,88 @@ class Map
     }
 
   public:
-    void SetBlock(ivec3 pos, Block block)
+    void SetBlock_NoMeshUpdate(ChunksMapType::iterator it, ivec3 pos, Block block)
     {
         if (pos.y < 0 || pos.y >= Chunk::depth)
             return;
-        ivec2 chunk_pos(proper_div(pos.x, Chunk::width),
-                        proper_div(pos.z, Chunk::width));
-        auto it = chunks.find(chunk_pos);
         if (it == chunks.end())
             return;
         ivec3 block_pos(proper_mod(pos.x, Chunk::width),
                         pos.y, // Note the lack of proper_mod().
                         proper_mod(pos.z, Chunk::width));
         it->second.Set(block_pos, block);
+        it->second.dirty_mesh = 1;
+    }
+    void SetBlock_NoMeshUpdate(ivec3 pos, Block block)
+    {
+        SetBlock_NoMeshUpdate(chunks.find({proper_div(pos.x, Chunk::width), proper_div(pos.z, Chunk::width)}), pos, block);
     }
 
-    const Block GetBlock(ivec3 pos) const
+    void SetBlock(ChunksMapType::iterator it, ivec3 pos, Block block)
+    {
+        if (it == chunks.end())
+            return;
+        SetBlock_NoMeshUpdate(it, pos, block);
+
+        ChunksMapType::iterator tmp_it;
+
+        ivec2 block_pos(proper_mod(pos.x, Chunk::width),
+                        proper_mod(pos.z, Chunk::width));
+
+        if (block_pos.x == 0)
+        {
+            tmp_it = chunks.find(it->first + ivec2(-1,0));
+            if (tmp_it != chunks.end())
+                tmp_it->second.dirty_mesh = 1;
+        }
+        else if (block_pos.x == Chunk::width-1)
+        {
+            tmp_it = chunks.find(it->first + ivec2(1,0));
+            if (tmp_it != chunks.end())
+                tmp_it->second.dirty_mesh = 1;
+        }
+        if (block_pos.x == 0)
+        {
+            tmp_it = chunks.find(it->first + ivec2(0,-1));
+            if (tmp_it != chunks.end())
+                tmp_it->second.dirty_mesh = 1;
+        }
+        else if (block_pos.x == Chunk::width-1)
+        {
+            tmp_it = chunks.find(it->first + ivec2(0,1));
+            if (tmp_it != chunks.end())
+                tmp_it->second.dirty_mesh = 1;
+        }
+    }
+    void SetBlock(ivec3 pos, Block block)
+    {
+        SetBlock(chunks.find({proper_div(pos.x, Chunk::width), proper_div(pos.z, Chunk::width)}), pos, block);
+    }
+
+    Block GetBlock(ChunksMapType::const_iterator it, ivec3 pos) const
     {
         if (pos.y < 0 || pos.y >= Chunk::depth)
             return Block{};
-        ivec2 chunk_pos(proper_div(pos.x, Chunk::width),
-                        proper_div(pos.z, Chunk::width));
-        auto it = chunks.find(chunk_pos);
         if (it == chunks.end())
             return Block{};
         ivec3 block_pos(proper_mod(pos.x, Chunk::width),
                         pos.y, // Note the lack of proper_mod().
                         proper_mod(pos.z, Chunk::width));
         return it->second.get(block_pos);
+    }
+    Block GetBlock(ivec3 pos) const
+    {
+        return GetBlock(chunks.find({proper_div(pos.x, Chunk::width), proper_div(pos.z, Chunk::width)}), pos);
+    }
+
+    bool ChunkExists(ivec2 pos) const
+    {
+        return chunks.find(pos) != chunks.end();
+    }
+
+    static ivec2 GetChunkPosForBlock(ivec3 pos)
+    {
+        return {proper_div(pos.x, Chunk::width), proper_div(pos.z, Chunk::width)};
     }
 
     void Render(const glm::mat4 &view, vec3 pos)
@@ -415,5 +460,27 @@ class Map
             }
             it.second.Render(view, pos + vec3(it.first.x * Chunk::width, 0, it.first.y * Chunk::width));
         }
+    }
+
+    void GenerateChunk(ivec2 chunk)
+    {
+        auto it = AddChunk(chunk);
+
+        for (int y = 0; y < Chunk::depth; y++)
+        {
+            for (int x = chunk.x*Chunk::width; x < (chunk.x+1)*Chunk::width; x++)
+            {
+                for (int z = chunk.y*Chunk::width; z < (chunk.y+1)*Chunk::width; z++)
+                {
+                    SetBlock_NoMeshUpdate(it, {x,y,z}, Block{Block::Type(int(Random() % Chunk::depth + 20) > y + 10)});
+                }
+            }
+        }
+
+        UpdateChunkMesh(chunk);
+        UpdateChunkMesh(chunk + ivec2(1,0));
+        UpdateChunkMesh(chunk + ivec2(0,1));
+        UpdateChunkMesh(chunk + ivec2(-1,0));
+        UpdateChunkMesh(chunk + ivec2(0,-1));
     }
 };
