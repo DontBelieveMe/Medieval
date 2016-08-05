@@ -357,10 +357,10 @@ class Map
         glBufferData(GL_ARRAY_BUFFER, vertices * sizeof (Vertex), 0, GL_DYNAMIC_DRAW);
         for (unsigned int i = 0; i < buffer.size(); i++)
         {
-            if (i != buffer.size() - 1 && vertices % vertices_per_buffer)
+            if (i != buffer.size() - 1)
                 glBufferSubData(GL_ARRAY_BUFFER, vertices_per_buffer * sizeof (Vertex) * i, vertices_per_buffer * sizeof (Vertex), buffer[i]);
             else
-                glBufferSubData(GL_ARRAY_BUFFER, vertices_per_buffer * sizeof (Vertex) * i, (vertices % vertices_per_buffer) * sizeof (Vertex), buffer[i]);
+                glBufferSubData(GL_ARRAY_BUFFER, vertices_per_buffer * sizeof (Vertex) * i, ((vertices-1) % vertices_per_buffer + 1) * sizeof (Vertex), buffer[i]);
         }
     }
 
