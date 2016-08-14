@@ -84,10 +84,8 @@ void GameState::tick()
 	uiMenu->Tick();
 
 
-	if (Input::MouseButtonDown(1) && map.ChunkExists(map.GetChunkPosForBlock(camera->position)))
+	if (Input::MouseButtonDown(1) && !map.ChunkExists(map.GetChunkPosForBlock(camera->position)))
 	    map.GenerateChunk(map.GetChunkPosForBlock(camera->position));
-    if (Input::MouseButtonPressed(1))
-        map.GenerateChunk(map.GetChunkPosForBlock(camera->position));
 
 
 	static bool wireframe;
