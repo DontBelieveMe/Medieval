@@ -22,11 +22,9 @@ AudioSystem::AudioSystem()
 	alListener3f(AL_VELOCITY, 0, 0, 0);
 
 	source = new Source();
-	source->setVolume(.5f);
 	source->setLooping(true);
-//	source->play(buffer, false);
-//	source->pause();
-	source->setPosition(glm::vec3(0, 0, 0));
+	source->play(buffer, false);
+	source->pause();
 }
 
 void AudioSystem::destroy()
@@ -43,6 +41,7 @@ void AudioSystem::destroy()
 	alcDestroyContext(context);
 	alcCloseDevice(device);
 }
+
 bool right = false;
 void AudioSystem::tick()
 {
@@ -65,6 +64,6 @@ void AudioSystem::tick()
 			xPos -= 0.3f;
 		else
 			xPos += 0.3f;
-//		source->setPosition(glm::vec3(xPos, 0, 2));
+		source->setPosition(glm::vec3(xPos, 0, 2));
 	}
 }

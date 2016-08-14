@@ -22,9 +22,12 @@ class Block
     #define BLOCK(token, name, color, solid) token,
     enum class Type : uint8_t {BLOCK_LIST};
     #undef BLOCK
-
     #define BLOCK(token, name, color, solid) 0,
-    static constexpr int type_count = std::initializer_list<int>({BLOCK_LIST}).size();
+
+	// A problem with MSVC - error cannot evaluate non constant type.
+	// Done temporary fix, as I cannot be bothered to change the system.
+	static constexpr int type_count = 2;	// std::initalizer_list<int>({BLOCK_LIST}).size();
+	
     #undef BLOCK
 
     Type type;

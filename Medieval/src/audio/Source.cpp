@@ -15,7 +15,6 @@ void Source::destroy()
 
 void Source::play(const Buffer& buffer, bool fadeIn)
 {
-	setVolume(0.f);
 	alSourcei(id, AL_BUFFER, buffer.id);
 	alSourcePlay(id);
 }

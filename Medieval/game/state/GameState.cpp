@@ -39,16 +39,6 @@ GameState::GameState()
 
 	Input::SetMouseMode(Input::MouseMode::locked);
 
-	ObjectFactory *factory = ObjectFactory::Get();
-	GameObject *player = factory->CreateGameObject<TestComponent, TestComponent2>("player");
-	//std::cout << player->NumComponents() << std::endl;
-	TestComponent *t = player->GetComponent<TestComponent>();
-	t->value = 200;
-	player->RemoveComponent<TestComponent>();
-	//std::cout << player->NumComponents() << std::endl;
-	player->RemoveComponent<TestComponent>();
-	//std::cout << player->NumComponents() << std::endl;
-
 	uiMenu = new MenuExample();
 
 	glEnable(GL_CULL_FACE);
@@ -94,8 +84,8 @@ void GameState::tick()
 	uiMenu->Tick();
 
 
-	//if (Input::MouseButtonDown(1) && map.ChunkExists(map.GetChunkPosForBlock(camera->position)))
-	    //map.GenerateChunk(map.GetChunkPosForBlock(camera->position));
+	if (Input::MouseButtonDown(1) && map.ChunkExists(map.GetChunkPosForBlock(camera->position)))
+	    map.GenerateChunk(map.GetChunkPosForBlock(camera->position));
     if (Input::MouseButtonPressed(1))
         map.GenerateChunk(map.GetChunkPosForBlock(camera->position));
 
