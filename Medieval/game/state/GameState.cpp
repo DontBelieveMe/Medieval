@@ -22,7 +22,7 @@ GameState::GameState()
     modelShader = new ShaderProgram("res/shaders/vert.shader", "res/shaders/frag.shader");
     modelShader->Use();
 
-    vox = new Voxels(1);
+    vox = new Voxels(2);
 	playerModel = vox->loadModel("res/models/player.obj", "res/models/player.png");
 	ruu = vox->loadModel("res/models/Ruu.obj", "res/models/Ruu.png");
     vox->setDrawingStage();
@@ -47,19 +47,19 @@ GameState::GameState()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	ObjectFactory *factory = ObjectFactory::Get();
-	
+	//
+	//GameObject *otherPlayer = factory->CreateGameObject<VoxelModelComponent>("otherPlayer");
+	//VoxelModelComponent *otherRender = otherPlayer->GetComponent<VoxelModelComponent>();
+	//otherRender->model = &ruu;
+	//otherRender->object_shader = modelShader;
+	//otherPlayer->position = glm::vec3(20, -15, -40);
+
 	GameObject *player = factory->CreateGameObject<VoxelModelComponent>("player");
 	VoxelModelComponent *playerRender = player->GetComponent<VoxelModelComponent>();
 	playerRender->model = &playerModel;
+	
 	playerRender->object_shader = modelShader;
 	player->position = glm::vec3(0, -15, -40);
-
-	GameObject *otherPlayer = factory->CreateGameObject<VoxelModelComponent>("otherPlayer");
-	VoxelModelComponent *otherRender = otherPlayer->GetComponent<VoxelModelComponent>();
-	otherRender->model = &ruu;
-	otherRender->object_shader = modelShader;
-	otherPlayer->position = glm::vec3(20, -15, -40);
-
 	factory->InitAll();
 }
 
@@ -108,9 +108,8 @@ void GameState::render()
 	// TODO: Cache this as a class member
 	ObjectFactory *factory = ObjectFactory::Get();
 
-    vox->bind();
-	modelShader->Use();
 	glm::mat4 view = camera->createView();
+    vox->bind();
 	factory->RenderNecessary(view);
  //   
 	//modelShader->UploadMatrix4f("projection", Application::projection_matrix);
@@ -142,8 +141,6 @@ void GameState::render()
 	uiMenu->Render();
 
 	glEnable(GL_CULL_FACE);
-	Primitive p = Primitives::GetCube();
-	p.Render();
 }
 
 void GameState::destroy()

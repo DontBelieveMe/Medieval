@@ -15,6 +15,9 @@ class GameObject;
 
 #include "Component.h"
 
+#define stringify(T) #T
+#define ct(varT, T) (strcmp(#varT, #T))
+
 class GameObject
 {
 private:
@@ -23,16 +26,29 @@ private:
 	template <typename T>
 	Component *GetStaticComponent()
 	{
-		static T t;
-		return &t;
+		for (Component *c : components)
+		{
+			if (ct(decltype(c), T))
+			{
+				return c;
+			}
+		}
+		std::cout << "Creating new!" << std::endl;
+		T *t = new T();
+		return t;
 	}
 
 public:
-	GameObject();
+	void DeleteAllComponents()
+	{
+		for (Component *component : components) { delete component; component = NULL; }
+	}
 
+	GameObject();
+	
 	void Update();
 	void Init();
-
+	
 	template <typename T>
 	void AddComponent()
 	{
@@ -76,6 +92,8 @@ public:
 
 		Component *component = GetStaticComponent<T>();
 		components.erase(std::remove(components.begin(), components.end(), component), components.end());
+		delete component;
+		component = NULL;
 	}
 
 	inline int NumComponents() const 

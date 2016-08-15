@@ -5,7 +5,7 @@
 #include "../../rendering/Voxels.h"
 #include "../../rendering/Shader.h"
 #include "../../Application.h"
-
+#include "../../Utils.h"
 struct VoxelModelComponent : Component
 {
 	Model		  *model;
@@ -17,6 +17,7 @@ struct VoxelModelComponent : Component
 	// This can be optimised using material batching
 	void Render(GameObject *object, const glm::mat4& view) 
 	{
+		std::cout << object->position << std::endl;
 		if (model == NULL)
 		{
 			std::cout << "My model is NULL!" << std::endl;

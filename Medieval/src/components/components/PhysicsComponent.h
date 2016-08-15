@@ -4,7 +4,7 @@
 
 struct CollidableComponent : Component
 {
-	virtual void Create() {}
+	virtual void Create() { }
 	virtual void Update(GameObject *object);
 };
 
