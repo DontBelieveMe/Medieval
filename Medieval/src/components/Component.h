@@ -2,6 +2,6 @@
 
 struct Component
 {
-	virtual void create() = 0;
-	virtual void update() = 0;
+	virtual void Create() = 0;
+	virtual void Update(GameObject *object) = 0;
 };

@@ -8,20 +8,23 @@
 class Application
 {
 public:
-	void run();
+	void Run();
 
-	static Application& getInstance();
-    GLFWwindow *getWindowHandle() const {return window;} 
+	static Application& GetInstance();
+    GLFWwindow *GetWindowHandle() const {return window;} 
 
 	inline int FPS() const { return fps; }
 	inline int UPS() const { return ups; }
-	float getDelta() { return this->delta; }
+	float GetDelta() { return this->delta; }
+
+	static glm::mat4 projection_matrix;
+
 private:
 	GLFWwindow* window;
 
-    void init();
-	void mainLoop();
-	void destroy();
+    void Init();
+	void MainLoop();
+	void Destroy();
 	int fps;
 	int ups;
 	float delta;

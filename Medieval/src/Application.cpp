@@ -1,7 +1,6 @@
 #include "Application.h"
 
 #include "rendering/Shader.h"
-//#include "state/States.h"
 #include "rendering/AdditionalVAO.h"
 #include "state/StateSystem.h"
 #include "Input.h"
@@ -9,14 +8,16 @@
 #include "rendering/Voxels.h"
 #include "rendering/Renderer2D.h"
 
-void Application::run()
+glm::mat4 Application::projection_matrix = glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.005f, 200.0f);
+
+void Application::Run()
 {
-	init();
-	mainLoop();
-	destroy();
+	Init();
+	MainLoop();
+	Destroy();
 }
 
-void Application::init()
+void Application::Init()
 {
 	glfwInit();
 	glfwWindowHint(GLFW_VISIBLE, GL_FALSE); // so we can choose when to make it visible
@@ -40,8 +41,8 @@ void Application::init()
     AdditionalVAO::init();//same for all states, so initialized here, needs to be bound on use.
 }
 
-void Application::mainLoop()
-{
+void Application::MainLoop()
+{	
 	double lastTime = glfwGetTime(), secTime = lastTime, sPerTick = 1.0 / 60.0;
 	int ticks = 0, frames = 0;
 	delta = 0;
@@ -78,7 +79,7 @@ void Application::mainLoop()
 	}
 }
 
-void Application::destroy()
+void Application::Destroy()
 {
     StateSystem::get().destroy();
     AdditionalVAO::destroy();//states don't need to worry about this
@@ -90,7 +91,7 @@ Application::~Application()
 {
 }
 
-Application& Application::getInstance()
+Application& Application::GetInstance()
 {
 	static Application app;
 	return app;

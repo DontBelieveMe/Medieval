@@ -1,5 +1,4 @@
 #include "GameState.h"
-#include "components/TestComponent.h"
 #include <Input.h>
 #include "OpenAL/al.h"
 
@@ -10,6 +9,7 @@
 #include <rendering/Primitives.h>
 #include <components/GameObject.h>
 #include <components/ObjectFactory.h>
+#include <components/components/PhysicsComponent.h>
 #include "../game/uiMenus/MenuExample.h"
 
 Map map;
@@ -23,7 +23,8 @@ GameState::GameState()
     modelShader->Use();
 
     vox = new Voxels(1);
-    ent = vox->loadModel("res/models/player.obj", "res/models/player.png");
+	playerModel = vox->loadModel("res/models/player.obj", "res/models/player.png");
+	ruu = vox->loadModel("res/models/Ruu.obj", "res/models/Ruu.png");
     vox->setDrawingStage();
 
 	uiShader = new ShaderProgram("res/shaders/vert2D.shader", "res/shaders/frag2D.shader");
@@ -39,11 +40,27 @@ GameState::GameState()
 
 	Input::SetMouseMode(Input::MouseMode::locked);
 
-	uiMenu = new MenuExample();
+	uiMenu = new MenuExample(false);
 
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	ObjectFactory *factory = ObjectFactory::Get();
+	
+	GameObject *player = factory->CreateGameObject<VoxelModelComponent>("player");
+	VoxelModelComponent *playerRender = player->GetComponent<VoxelModelComponent>();
+	playerRender->model = &playerModel;
+	playerRender->object_shader = modelShader;
+	player->position = glm::vec3(0, -15, -40);
+
+	GameObject *otherPlayer = factory->CreateGameObject<VoxelModelComponent>("otherPlayer");
+	VoxelModelComponent *otherRender = otherPlayer->GetComponent<VoxelModelComponent>();
+	otherRender->model = &ruu;
+	otherRender->object_shader = modelShader;
+	otherPlayer->position = glm::vec3(20, -15, -40);
+
+	factory->InitAll();
 }
 
 int counter = 0;
@@ -68,19 +85,6 @@ void GameState::tick()
     rot += 1.0;
 	camera->tick();
 
-	if (Keys::toogle_focus.Pressed())
-	{
-		if (hidden)
-		{
-			Input::SetMouseMode(Input::MouseMode::normal);
-			hidden = false;
-		}
-		else {
-			Input::SetMouseMode(Input::MouseMode::locked);
-			hidden = true;
-		}
-	}
-
 	uiMenu->Tick();
 
 
@@ -93,6 +97,9 @@ void GameState::tick()
 	static bool wireframe;
 	if (Input::MouseButtonPressed(2))
 	    glPolygonMode(GL_FRONT_AND_BACK, (wireframe = !wireframe) ? GL_LINE : GL_FILL);
+
+	ObjectFactory *factory = ObjectFactory::Get();
+	factory->UpdateAll();
 }
 
 void GameState::render()
@@ -100,16 +107,21 @@ void GameState::render()
 	glEnable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	// TODO: Cache this as a class member
+	ObjectFactory *factory = ObjectFactory::Get();
+
     vox->bind();
 	modelShader->Use();
-    modelShader->UploadMatrix4f("projection", perspective_matrix);
 	glm::mat4 view = camera->createView();
-	modelShader->UploadMatrix4f("view", view);
-	glm::mat4 model = glm::mat4(1.0);
-    model = glm::translate(model, glm::vec3(0, -15, -40));
-	model = glm::rotate(model, glm::radians(rot), glm::vec3(0, 1, 0));
-    modelShader->UploadMatrix4f("model", model);
-    DrawModel(ent);
+	factory->RenderNecessary(view);
+ //   
+	//modelShader->UploadMatrix4f("projection", Application::projection_matrix);
+	//modelShader->UploadMatrix4f("view", view);
+	//glm::mat4 model = glm::mat4(1.0);
+ //   model = glm::translate(model, glm::vec3(0, -15, -40));
+	//model = glm::rotate(model, glm::radians(rot), glm::vec3(0, 1, 0));
+ //   modelShader->UploadMatrix4f("model", model);
+ //   DrawModel(ent);
 
 	map.Render(view, {0,0,0});
 
@@ -124,14 +136,16 @@ void GameState::render()
 
         uiShader->Use();
         fontTest->bind();
-		fontTest->drawString(Jo(Application::getInstance().FPS(), " fps"), WIDTH - 135, -35, 2);
+		fontTest->drawString(Jo(Application::GetInstance().FPS(), " fps"), WIDTH - 135, -35, 2);
 		fontTest->drawString("Press P (def.) to toggle sound!", 220, HEIGHT - 170, 2.0);
 		fontTest->drawString("Press U (def.) to toggle the UI!", 220, HEIGHT - 120, 2.0);
 	}
 
-	//uiMenu->Render();
+	uiMenu->Render();
 
 	glEnable(GL_CULL_FACE);
+	Primitive p = Primitives::GetCube();
+	p.Render();
 }
 
 void GameState::destroy()

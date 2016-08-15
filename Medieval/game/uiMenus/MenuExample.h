@@ -10,6 +10,6 @@ public:
 	void CanvasTick();
 
 private:
-	UIButton &menuToggle, &quitButton;
+	UIButton quitButton;
 };
 

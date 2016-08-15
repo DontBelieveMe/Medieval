@@ -9,6 +9,10 @@
 #include <iostream>
 #include <memory>
 
+#include <glm/glm.hpp>
+
+class GameObject;
+
 #include "Component.h"
 
 class GameObject
@@ -74,8 +78,13 @@ public:
 		components.erase(std::remove(components.begin(), components.end(), component), components.end());
 	}
 
-	int NumComponents() const 
+	inline int NumComponents() const 
 	{
 		return components.size();
 	}
+
+public:
+	glm::vec3 position;
+	glm::vec3 scale;
+	glm::vec3 rotation;
 };

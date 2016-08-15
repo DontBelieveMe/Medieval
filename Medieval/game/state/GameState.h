@@ -21,10 +21,12 @@ private:
     Font* fontTest;
 
     Voxels*    vox;
-    Model      ent;
+    Model      playerModel;
+	Model	   ruu;
     GLfloat    rot = 0;
 	FreeCamera *camera;
 	AudioSystem *audioSystem;
+
 public:
 
     GameState();

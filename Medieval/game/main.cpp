@@ -7,8 +7,8 @@ int main()
 {
 	try
 	{
-		Application& appInst = Application::getInstance();
-		appInst.run();
+		Application& appInst = Application::GetInstance();
+		appInst.Run();
 	}
 	catch (const std::runtime_error & e)
 	{

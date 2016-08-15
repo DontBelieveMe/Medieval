@@ -4,6 +4,8 @@
 #include "Component.h"
 #include "GameObject.h"
 
+#include "components/VoxelModelComponent.h"
+
 class ObjectFactory
 {
 private:
@@ -43,4 +45,35 @@ public:
 	{
 		return &objects.at(id);
 	}
+
+	void UpdateAll() 
+	{
+		for (auto& obj : objects)
+		{
+			obj.second.Update();
+		}
+	}
+
+	void InitAll()
+	{
+		for (auto& obj : objects)
+		{
+			obj.second.Init();
+		}
+	}
+
+	void RenderNecessary(const glm::mat4& view)
+	{
+		for (auto& obj : objects)
+		{
+			// Render all voxel models
+			if (obj.second.HasComponent<VoxelModelComponent>())
+			{
+				VoxelModelComponent *voxel = obj.second.GetComponent<VoxelModelComponent>();
+				voxel->Render(&obj.second, view);
+			}
+		}
+	}
+
+	std::unordered_map<std::string, GameObject>& GetObjectsMap() { return objects; }
 };

@@ -38,7 +38,7 @@ void Input::Init()
         Error("Input::init() was called twice!");
     once = 1;
 
-    glfwSetKeyCallback(Application::getInstance().getWindowHandle(),
+    glfwSetKeyCallback(Application::GetInstance().GetWindowHandle(),
     [](GLFWwindow *, int key, int, int action, int)
     {
         if (action == GLFW_REPEAT) // We don't care about auto key repeats.
@@ -46,7 +46,7 @@ void Input::Init()
         (action == GLFW_PRESS ? keys_pressed : keys_released).insert(key);
     });
 
-    glfwSetMouseButtonCallback(Application::getInstance().getWindowHandle(),
+    glfwSetMouseButtonCallback(Application::GetInstance().GetWindowHandle(),
     [](GLFWwindow *, int button, int action, int)
     {
         // GLFW_REPEAT can't occur here.
@@ -55,7 +55,7 @@ void Input::Init()
         (action == GLFW_PRESS ? mouse_pressed : mouse_released)[button] = 1;
     });
 
-    glfwSetScrollCallback(Application::getInstance().getWindowHandle(),
+    glfwSetScrollCallback(Application::GetInstance().GetWindowHandle(),
     [](GLFWwindow *, double x, double y)
     {
         scroll.x += x;
@@ -64,7 +64,7 @@ void Input::Init()
 
 
     double x, y;
-    glfwGetCursorPos(Application::getInstance().getWindowHandle(), &x, &y);
+    glfwGetCursorPos(Application::GetInstance().GetWindowHandle(), &x, &y);
     mouse_pos = prev_mouse_pos = {x,y};
 
 
@@ -107,7 +107,7 @@ void Input::Tick()
 
     // Mouse position
     double tmpx, tmpy;
-    glfwGetCursorPos(Application::getInstance().getWindowHandle(), &tmpx, &tmpy);
+    glfwGetCursorPos(Application::GetInstance().GetWindowHandle(), &tmpx, &tmpy);
     // +.5 is here to round the values properly.
     prev_mouse_pos = mouse_pos;
     mouse_pos.x = int(tmpx + .5);
@@ -176,7 +176,7 @@ int Input::AnyKeyReleased()
 void Input::SetMouseMode(MouseMode mode)
 {
     mmode = mode;
-    glfwSetInputMode(Application::getInstance().getWindowHandle(), GLFW_CURSOR, (int)mode);
+    glfwSetInputMode(Application::GetInstance().GetWindowHandle(), GLFW_CURSOR, (int)mode);
 }
 
 Input::MouseMode Input::GetMouseMode()
