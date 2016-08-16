@@ -14,9 +14,11 @@
 class GameObject;
 
 #include "Component.h"
+#include "../Utils.h"
 
-#define stringify(T) #T
 #define ct(varT, T) (strcmp(#varT, #T))
+#define test(varT, T) std::cout << #varT << ", " << #T << std::endl;
+#define strfy(T) #T
 
 class GameObject
 {
@@ -24,7 +26,7 @@ private:
 	std::vector<Component *> components;
 
 	template <typename T>
-	Component *GetStaticComponent()
+	Component *GetInternalComponent()
 	{
 		for (Component *c : components)
 		{
@@ -33,10 +35,22 @@ private:
 				return c;
 			}
 		}
-		std::cout << "Creating new!" << std::endl;
+		return NULL;
+	}
+
+	template <typename T>
+	Component *GetStaticComponent()
+	{
+		Component *existing = GetInternalComponent<T>();
+		if (existing != NULL)
+			return existing;
+		
+		MSVC_LOG("Creating new component!");
+
 		T *t = new T();
 		return t;
 	}
+
 
 public:
 	void DeleteAllComponents()
@@ -63,12 +77,8 @@ public:
 	template <typename T>
 	bool HasComponent()
 	{
-		bool exists = false;
-		Component *t = GetStaticComponent<T>();
-		if (std::find(components.begin(), components.end(), t) != components.end()) {
-			exists = true;
-		}
-		return exists;
+		Component *component = GetInternalComponent<T>();
+		return component != NULL;
 	}
 
 	template <typename T>
@@ -78,7 +88,7 @@ public:
 			return NULL;
 		else
 		{
-			T *component = dynamic_cast<T*>(GetStaticComponent<T>());
+			T *component = dynamic_cast<T*>(GetInternalComponent<T>());
 			return component;
 		}
 	}
@@ -90,7 +100,7 @@ public:
 		if (!HasComponent<T>())
 			return;
 
-		Component *component = GetStaticComponent<T>();
+		Component *component = GetInternalComponent<T>();
 		components.erase(std::remove(components.begin(), components.end(), component), components.end());
 		delete component;
 		component = NULL;

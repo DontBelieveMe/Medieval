@@ -12,6 +12,6 @@ struct RigidBodyComponent : Component
 {
 	virtual void Create() {}
 	virtual void Update(GameObject *object) {
-	//	object->position.x += 0.1f;
+		object->position.x += 1.f;
 	}
 };

@@ -62,15 +62,18 @@ public:
 		}
 	}
 
-	void RenderNecessary(const glm::mat4& view)
+	void RenderNecessary(ShaderProgram *model_shader, const glm::mat4& view)
 	{
+		model_shader->Use();
+		model_shader->UploadMatrix4f("projection", Application::projection_matrix);
+		model_shader->UploadMatrix4f("view", view);
 		for (auto& obj : objects)
 		{
 			// Render all voxel models
 			if (obj.second.HasComponent<VoxelModelComponent>())
 			{
 				VoxelModelComponent *voxel = obj.second.GetComponent<VoxelModelComponent>();
-				voxel->Render(&obj.second, view);
+				voxel->Render(&obj.second, view, model_shader);
 			}
 		}
 	}

@@ -1,9 +1,12 @@
+/*
+ * @author Egor
+ * @author Barney Wilks
+ */
+
 #pragma once
 #ifdef _MSC_VER
 #pragma warning(disable: 4003)
 #endif
-
-// Utility stuff by Egor
 
 #include <iostream>
 #include <cmath>
@@ -42,11 +45,28 @@ using i64vec4 = glm::tvec4<int64_t, glm::highp>;
 
 // Following enables printing glm vectors with stadard streams like cout.
 #define F(prefix) \
-    inline std::ostream &operator<<(std::ostream &s, prefix##vec2 obj) {s << '[' << obj.x << ',' << obj.y << ']'; return s;} \
-    inline std::ostream &operator<<(std::ostream &s, prefix##vec3 obj) {s << '[' << obj.x << ',' << obj.y << ',' << obj.z << ']'; return s;} \
-    inline std::ostream &operator<<(std::ostream &s, prefix##vec4 obj) {s << '[' << obj.x << ',' << obj.y << ',' << obj.z << ',' << obj.w << ']'; return s;}
+    inline std::ostream &operator<<(std::ostream &s, prefix##vec2 obj) {s << "vec2: [" << obj.x << ',' << obj.y << ']'; return s;} \
+    inline std::ostream &operator<<(std::ostream &s, prefix##vec3 obj) {s << "vec3: [" << obj.x << ',' << obj.y << ',' << obj.z << ']'; return s;} \
+    inline std::ostream &operator<<(std::ostream &s, prefix##vec4 obj) {s << "vec4: [" << obj.x << ',' << obj.y << ',' << obj.z << ',' << obj.w << ']'; return s;}
 F() F(d) F(i) F(u) F(b) F(i64) // Prefixes for types of vectors to print.
 #undef F
+
+// A useful macro for MSVC users to print to the VS Output window (not the console). Good for debugging
+// If there is a GCC/CodeBlocks equivilant then this should be renamed to DEBUG
+#ifdef _MSC_VER
+#ifdef _DEBUG
+#define MSVC_LOG(s)            \
+{                             \
+   std::ostringstream stream;    \
+   stream << "[DEBUG] [" << __FILE__ " (" << __LINE__ << ")]: " << s << std::endl;                   \
+   OutputDebugString( stream.str().c_str() );  \
+}
+#else 
+#define MSVC_LOG(s)
+#endif
+#else
+#define MSVC_LOG(s)
+#endif
 
 namespace Internal
 {

@@ -47,18 +47,18 @@ GameState::GameState()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	ObjectFactory *factory = ObjectFactory::Get();
-	//
-	//GameObject *otherPlayer = factory->CreateGameObject<VoxelModelComponent>("otherPlayer");
-	//VoxelModelComponent *otherRender = otherPlayer->GetComponent<VoxelModelComponent>();
-	//otherRender->model = &ruu;
-	//otherRender->object_shader = modelShader;
-	//otherPlayer->position = glm::vec3(20, -15, -40);
+	
+	GameObject *otherPlayer = factory->CreateGameObject<VoxelModelComponent>("otherPlayer");
+	VoxelModelComponent *otherRender = otherPlayer->GetComponent<VoxelModelComponent>();
+	otherRender->model = &ruu;
+	otherPlayer->position = glm::vec3(20, -15, -40);
 
-	GameObject *player = factory->CreateGameObject<VoxelModelComponent>("player");
+	GameObject *player = factory->CreateGameObject("player");
+	player->AddComponent<VoxelModelComponent>();
+	player->AddComponent<RigidBodyComponent>();
 	VoxelModelComponent *playerRender = player->GetComponent<VoxelModelComponent>();
 	playerRender->model = &playerModel;
-	
-	playerRender->object_shader = modelShader;
+	std::cout << player->NumComponents() << std::endl;
 	player->position = glm::vec3(0, -15, -40);
 	factory->InitAll();
 }
@@ -110,15 +110,7 @@ void GameState::render()
 
 	glm::mat4 view = camera->createView();
     vox->bind();
-	factory->RenderNecessary(view);
- //   
-	//modelShader->UploadMatrix4f("projection", Application::projection_matrix);
-	//modelShader->UploadMatrix4f("view", view);
-	//glm::mat4 model = glm::mat4(1.0);
- //   model = glm::translate(model, glm::vec3(0, -15, -40));
-	//model = glm::rotate(model, glm::radians(rot), glm::vec3(0, 1, 0));
- //   modelShader->UploadMatrix4f("model", model);
- //   DrawModel(ent);
+	factory->RenderNecessary(modelShader, view);
 
 	map.Render(view, {0,0,0});
 
