@@ -42,8 +42,10 @@ private:
 	Component *GetStaticComponent()
 	{
 		Component *existing = GetInternalComponent<T>();
-		if (existing != NULL)
+		if (existing != NULL) {
+			MSVC_LOG("Returning existing!");
 			return existing;
+		}
 		
 		MSVC_LOG("Creating new component!");
 
@@ -67,9 +69,6 @@ public:
 	void AddComponent()
 	{
 		// No need for duplicate components
-		if (HasComponent<T>())
-			return;
-
 		auto component = GetStaticComponent<T>();
 		components.push_back(component);
 	}

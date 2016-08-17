@@ -10,6 +10,7 @@ struct CollidableComponent : Component
 
 struct RigidBodyComponent : Component
 {
+	int test = 100;
 	virtual void Create() {}
 	virtual void Update(GameObject *object) {
 		object->position.x += 1.f;

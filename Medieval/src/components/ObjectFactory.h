@@ -10,6 +10,7 @@ class ObjectFactory
 {
 private:
 	std::unordered_map<std::string, GameObject> objects;
+
 	template <typename T>
 	GameObject& AddObjectComponent(GameObject& obj)
 	{
@@ -67,6 +68,7 @@ public:
 		model_shader->Use();
 		model_shader->UploadMatrix4f("projection", Application::projection_matrix);
 		model_shader->UploadMatrix4f("view", view);
+
 		for (auto& obj : objects)
 		{
 			// Render all voxel models

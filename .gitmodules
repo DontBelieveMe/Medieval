@@ -1,0 +1,3 @@
+[submodule "Medieval/assets"]
+	path = Medieval/assets
+	url = https://gitlab.com/Development_Team/Medieval-Assets.git

@@ -10,6 +10,7 @@
 #include <components/GameObject.h>
 #include <components/ObjectFactory.h>
 #include <components/components/PhysicsComponent.h>
+#include <introspection/IntrospectionManager.h>
 #include "../game/uiMenus/MenuExample.h"
 
 Map map;
@@ -58,9 +59,19 @@ GameState::GameState()
 	player->AddComponent<RigidBodyComponent>();
 	VoxelModelComponent *playerRender = player->GetComponent<VoxelModelComponent>();
 	playerRender->model = &playerModel;
-	std::cout << player->NumComponents() << std::endl;
+	//std::cout << player->HasComponent<CollidableComponent>() << std::endl;
 	player->position = glm::vec3(0, -15, -40);
 	factory->InitAll();
+
+	REGISTER_TYPE(Component);
+	REGISTER_TYPE(RigidBodyComponent);
+	REGISTER_TYPE(VoxelModelComponent);
+	std::vector<Component*> components;
+	components.push_back(new VoxelModelComponent());
+	components.push_back(new RigidBodyComponent());
+	VoxelModelComponent *t = dynamic_cast<VoxelModelComponent*>(components[0]);
+	Component *t2 = components[1];
+	t2->
 }
 
 int counter = 0;
