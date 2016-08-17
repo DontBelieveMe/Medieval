@@ -13,17 +13,24 @@
 #define TYPE_OF(VAR) \
 	IntrospectionManager::Get()->StaticType<decltype(VAR)>()
 
+#define TYPE_INFO_STR(str) \
+	IntrospectionManager::Get()->GetTypeByStr(str)	
+
 class IntrospectionManager
 {
 private:
 	std::unordered_map<const char *, TypeInfo*> type_map;
-
 
 public:
 	static IntrospectionManager *Get()
 	{
 		static IntrospectionManager meta;
 		return &meta;
+	}
+
+	TypeInfo *GetTypeByStr(const char *type_name)
+	{
+		return type_map.at(type_name);
 	}
 
 	template <typename T>

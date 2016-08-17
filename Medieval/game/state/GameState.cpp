@@ -96,7 +96,9 @@ void GameState::tick()
 		showUI = !showUI;
 
     rot += 1.0;
-	camera->tick();
+	
+	if(!uiMenu->enabled)
+		camera->tick();
 
 	uiMenu->Tick();
 
