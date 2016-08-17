@@ -31,7 +31,7 @@ ShaderProgram &Chunk::Shader()
     if (first)
     {
         first = 0;
-        ret = new ShaderProgram("res/shaders/vertChunk.shader", "res/shaders/fragChunk.shader");
+        ret = new ShaderProgram("assets/shaders/vertChunk.shader", "assets/shaders/fragChunk.shader");
     }
     return *ret;
 }

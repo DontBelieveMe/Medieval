@@ -11,7 +11,7 @@ UIRenderer::UIRenderer(const float &width, const float &height, const glm::vec2 
 	_scale = glm::vec3(width * SCREENSPACE_INCREMENT.x, height * SCREENSPACE_INCREMENT.y, 0);
 
 	if (shader == nullptr)
-		_uiShader = new ShaderProgram("res/shaders/vertUI.shader", "res/shaders/fragUI.shader");
+		_uiShader = new ShaderProgram("assets/shaders/vertUI.shader", "assets/shaders/fragUI.shader");
 	else
 		_uiShader = shader;
 	transScaleLocation = _uiShader->GetUniformLoc("translationScale");
@@ -25,7 +25,7 @@ UIRenderer::UIRenderer(const glm::vec2 &topLeftPos, const glm::vec2 &bottomRight
 	_scale = glm::vec3(width * SCREENSPACE_INCREMENT.x, height * SCREENSPACE_INCREMENT.y, 0);
 
 	if (shader == nullptr)
-		_uiShader = new ShaderProgram("res/shaders/vertUI.shader", "res/shaders/fragUI.shader");
+		_uiShader = new ShaderProgram("assets/shaders/vertUI.shader", "assets/shaders/fragUI.shader");
 	else
 		_uiShader = shader;
 	transScaleLocation = _uiShader->GetUniformLoc("translationScale");
@@ -39,7 +39,7 @@ UIRenderer::UIRenderer(const Texture &UITexture, const glm::vec2 &topLeftPos, co
 	_scale = glm::vec3(width * SCREENSPACE_INCREMENT.x * scaleValue, height * SCREENSPACE_INCREMENT.y * scaleValue, 0);
 
 	if (shader == nullptr)
-		_uiShader = new ShaderProgram("res/shaders/vertUI.shader", "res/shaders/fragUI.shader");
+		_uiShader = new ShaderProgram("assets/shaders/vertUI.shader", "assets/shaders/fragUI.shader");
 	else
 		_uiShader = shader;
 	transScaleLocation = _uiShader->GetUniformLoc("translationScale");

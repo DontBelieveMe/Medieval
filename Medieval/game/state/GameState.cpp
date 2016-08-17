@@ -20,20 +20,21 @@ GameState::GameState()
 {
 	Primitives::Init();
 
-    modelShader = new ShaderProgram("res/shaders/vert.shader", "res/shaders/frag.shader");
+    modelShader = new ShaderProgram("assets/shaders/vert.shader", "assets/shaders/frag.shader");
     modelShader->Use();
 
     vox = new Voxels(2);
-	playerModel = vox->loadModel("res/models/player.obj", "res/models/player.png");
-	ruu = vox->loadModel("res/models/Ruu.obj", "res/models/Ruu.png");
-    vox->setDrawingStage();
+	playerModel = vox->loadModel("assets/models/player/player.obj", "assets/models/player/player.png");
+	ruu = vox->loadModel("assets/models/ruu/Ruu.obj", "assets/models/ruu/Ruu.png");
 
-	uiShader = new ShaderProgram("res/shaders/vert2D.shader", "res/shaders/frag2D.shader");
-	renderer2D = new Renderer2D(uiShader, "res/images/hud/sheet.png", glm::ivec2(8, 8)); //renderer2D will only use 1 texture, if multiple are needed, you need to stitch them together.
+	vox->setDrawingStage();
+
+	uiShader = new ShaderProgram("assets/shaders/vert2D.shader", "assets/shaders/frag2D.shader");
+	renderer2D = new Renderer2D(uiShader, "assets/images/hud/sheet.png", glm::ivec2(8, 8)); //renderer2D will only use 1 texture, if multiple are needed, you need to stitch them together.
     /*                                                                            |
                                                                                   -------> If these are set to the width, and height of the texture, you can draw from the texture per-pixel!
     */
-    fontTest = new Font(uiShader, "res/images/font.png");
+    fontTest = new Font(uiShader, "assets/images/font.png");
 
 	rot = 0;
 	audioSystem = new AudioSystem();
@@ -71,7 +72,6 @@ GameState::GameState()
 	components.push_back(new RigidBodyComponent());
 	VoxelModelComponent *t = dynamic_cast<VoxelModelComponent*>(components[0]);
 	Component *t2 = components[1];
-	t2->
 }
 
 int counter = 0;

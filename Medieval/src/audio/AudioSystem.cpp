@@ -15,7 +15,7 @@ AudioSystem::AudioSystem()
 	context = alcCreateContext(device, NULL);
 	alcMakeContextCurrent(context);
 
-	wav = new wave::WaveFile("res/audio/NoTimeToShine.wav");
+	wav = new wave::WaveFile("assets/audio/NoTimeToShine.wav");
 	buffer = new Buffer(*wav);
 
 	alListener3f(AL_POSITION, 0, 0, 0);
