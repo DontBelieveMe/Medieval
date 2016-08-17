@@ -16,41 +16,26 @@ class GameObject;
 #include "Component.h"
 #include "../Utils.h"
 
-#define ct(varT, T) (strcmp(#varT, #T))
-#define test(varT, T) std::cout << #varT << ", " << #T << std::endl;
-#define strfy(T) #T
-
 class GameObject
 {
 private:
 	std::vector<Component *> components;
 
-	template <typename T>
-	Component *GetInternalComponent()
+	Component *GetInternalComponent(int id)
 	{
-		for (Component *c : components)
+		for (Component *component : components)
 		{
-			if (ct(decltype(c), T))
-			{
-				return c;
-			}
+			if (component->id == id)
+				return component;
 		}
+
 		return NULL;
 	}
 
 	template <typename T>
-	Component *GetStaticComponent()
+	T *GetInternalComponent()
 	{
-		Component *existing = GetInternalComponent<T>();
-		if (existing != NULL) {
-			MSVC_LOG("Returning existing!");
-			return existing;
-		}
-		
-		MSVC_LOG("Creating new component!");
-
-		T *t = new T();
-		return t;
+		return dynamic_cast<T*>(GetInternalComponent(T::static_id));
 	}
 
 
@@ -58,9 +43,11 @@ public:
 	void DeleteAllComponents()
 	{
 		for (Component *component : components) { delete component; component = NULL; }
+		components.clear();
 	}
 
 	GameObject();
+	~GameObject() { DeleteAllComponents(); }
 	
 	void Update();
 	void Init();
@@ -68,8 +55,8 @@ public:
 	template <typename T>
 	void AddComponent()
 	{
-		// No need for duplicate components
-		auto component = GetStaticComponent<T>();
+		Component *component = new T();
+		component->id = T::static_id;
 		components.push_back(component);
 	}
 

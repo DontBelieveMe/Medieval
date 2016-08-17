@@ -9,6 +9,8 @@
 
 struct VoxelModelComponent : Component
 {
+	COMPONENT
+	
 	Model		  *model;
 	
 	virtual void Create() {}
@@ -33,4 +35,5 @@ struct VoxelModelComponent : Component
 		model_shader->UploadMatrix4f("model", model_matrix);
 		DrawModel((*model));
 	}
+
 };

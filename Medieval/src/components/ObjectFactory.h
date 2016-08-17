@@ -36,8 +36,7 @@ public:
 	
 	GameObject *CreateGameObject(const std::string& id)
 	{
-		GameObject object;
-		objects[id] = object;
+		objects[id] = GameObject();
 		return &objects[id];
 	}
 

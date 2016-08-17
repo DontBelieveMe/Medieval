@@ -52,28 +52,15 @@ GameState::GameState()
 
 	ObjectFactory *factory = ObjectFactory::Get();
 	
-	GameObject *otherPlayer = factory->CreateGameObject<VoxelModelComponent>("otherPlayer");
-	VoxelModelComponent *otherRender = otherPlayer->GetComponent<VoxelModelComponent>();
-	otherRender->model = &ruu;
-	otherPlayer->position = glm::vec3(20, -15, -40);
-
 	GameObject *player = factory->CreateGameObject("player");
 	player->AddComponent<VoxelModelComponent>();
 	player->AddComponent<RigidBodyComponent>();
 	VoxelModelComponent *playerRender = player->GetComponent<VoxelModelComponent>();
 	playerRender->model = &playerModel;
-	//std::cout << player->HasComponent<CollidableComponent>() << std::endl;
+	std::cout << player->HasComponent<CollidableComponent>() << std::endl;
 	player->position = glm::vec3(0, -15, -40);
+	
 	factory->InitAll();
-
-	REGISTER_TYPE(Component);
-	REGISTER_TYPE(RigidBodyComponent);
-	REGISTER_TYPE(VoxelModelComponent);
-	std::vector<Component*> components;
-	components.push_back(new VoxelModelComponent());
-	components.push_back(new RigidBodyComponent());
-	VoxelModelComponent *t = dynamic_cast<VoxelModelComponent*>(components[0]);
-	Component *t2 = components[1];
 }
 
 int counter = 0;
@@ -95,13 +82,10 @@ void GameState::tick()
 	if (Keys::toggle_ui.Pressed())
 		showUI = !showUI;
 
-    rot += 1.0;
-	
 	if(!uiMenu->enabled)
 		camera->tick();
 
 	uiMenu->Tick();
-
 
 	if (Input::MouseButtonDown(1) && !map.ChunkExists(map.GetChunkPosForBlock(camera->position)))
 	    map.GenerateChunk(map.GetChunkPosForBlock(camera->position));
