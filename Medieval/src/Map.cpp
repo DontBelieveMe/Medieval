@@ -1,5 +1,6 @@
 #include "Map.h"
 
+#include "AssetData.h"
 
 #define BLOCK(token, name, color, solid) color
 #define INVISIBLE 0,
@@ -31,7 +32,7 @@ ShaderProgram &Chunk::Shader()
     if (first)
     {
         first = 0;
-        ret = new ShaderProgram("assets/shaders/vertChunk.shader", "assets/shaders/fragChunk.shader");
+		ret = new ShaderProgram(SHADER_PATH("vertChunk", "fragChunk"));
     }
     return *ret;
 }

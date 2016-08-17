@@ -1,15 +1,16 @@
 #include "MenuExample.h"
 #include "Application.h"
+#include <AssetData.h>
 
 #include <Input.h>
 
 MenuExample::MenuExample(bool enabled) : UICanvas(enabled), 
 	quitButton(UIButton(
-		"assets/images/ButtonNormal.png", 
-		"assets/images/ButtonPressed.png", 
-		"assets/images/ButtonHover.png", glm::vec2(WIDTH / 2 - 33 * 5, 500), glm::vec2(66, 25), 5.0f))
+		TEXTURE_PATH("ButtonNormal"), 
+		TEXTURE_PATH("ButtonPressed"), 
+		TEXTURE_PATH("ButtonHover"), glm::vec2(WIDTH / 2 - 33 * 5, 500), glm::vec2(66, 25), 5.0f))
 {
-	elements.push_back(new UIImage("assets/images/hud.png", glm::vec2(), 5));
+	elements.push_back(new UIImage(TEXTURE_PATH("hud"), glm::vec2(), 5));
 	elements.push_back(&quitButton);
 }
 

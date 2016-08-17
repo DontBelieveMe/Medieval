@@ -1,5 +1,8 @@
 #include "UIRenderer.h"
+
 #include <vector>
+
+#include "../AssetData.h"
 
 const glm::vec2 UIRenderer::SCREENSPACE_INCREMENT = glm::vec2((2.0f / WIDTH), (2.0f / HEIGHT)), UIRenderer::SCREENSPACE_OFFSET = glm::vec2(-1.0f, 1.0f);
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
@@ -11,7 +14,7 @@ UIRenderer::UIRenderer(const float &width, const float &height, const glm::vec2 
 	_scale = glm::vec3(width * SCREENSPACE_INCREMENT.x, height * SCREENSPACE_INCREMENT.y, 0);
 
 	if (shader == nullptr)
-		_uiShader = new ShaderProgram("assets/shaders/vertUI.shader", "assets/shaders/fragUI.shader");
+		_uiShader = new ShaderProgram(SHADER_PATH("vertUI", "fragUI"));
 	else
 		_uiShader = shader;
 	transScaleLocation = _uiShader->GetUniformLoc("translationScale");
@@ -25,7 +28,7 @@ UIRenderer::UIRenderer(const glm::vec2 &topLeftPos, const glm::vec2 &bottomRight
 	_scale = glm::vec3(width * SCREENSPACE_INCREMENT.x, height * SCREENSPACE_INCREMENT.y, 0);
 
 	if (shader == nullptr)
-		_uiShader = new ShaderProgram("assets/shaders/vertUI.shader", "assets/shaders/fragUI.shader");
+		_uiShader = new ShaderProgram(SHADER_PATH("vertUI", "fragUI"));
 	else
 		_uiShader = shader;
 	transScaleLocation = _uiShader->GetUniformLoc("translationScale");
@@ -39,7 +42,7 @@ UIRenderer::UIRenderer(const Texture &UITexture, const glm::vec2 &topLeftPos, co
 	_scale = glm::vec3(width * SCREENSPACE_INCREMENT.x * scaleValue, height * SCREENSPACE_INCREMENT.y * scaleValue, 0);
 
 	if (shader == nullptr)
-		_uiShader = new ShaderProgram("assets/shaders/vertUI.shader", "assets/shaders/fragUI.shader");
+		_uiShader = new ShaderProgram(SHADER_PATH("vertUI", "fragUI"));
 	else
 		_uiShader = shader;
 	transScaleLocation = _uiShader->GetUniformLoc("translationScale");

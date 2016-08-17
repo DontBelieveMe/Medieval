@@ -11,6 +11,8 @@
 #include <components/ObjectFactory.h>
 #include <components/components/PhysicsComponent.h>
 #include <introspection/IntrospectionManager.h>
+#include <AssetData.h>
+
 #include "../game/uiMenus/MenuExample.h"
 
 Map map;
@@ -20,21 +22,21 @@ GameState::GameState()
 {
 	Primitives::Init();
 
-    modelShader = new ShaderProgram("assets/shaders/vert.shader", "assets/shaders/frag.shader");
+    modelShader = new ShaderProgram(SHADER_PATH("vert", "frag"));
     modelShader->Use();
 
     vox = new Voxels(2);
-	playerModel = vox->loadModel("assets/models/player/player.obj", "assets/models/player/player.png");
-	ruu = vox->loadModel("assets/models/ruu/Ruu.obj", "assets/models/ruu/Ruu.png");
+	playerModel = vox->loadModel(MODEL_PATH("player"));
+	ruu = vox->loadModel(MODEL_PATH("wilk"));
 
 	vox->setDrawingStage();
 
-	uiShader = new ShaderProgram("assets/shaders/vert2D.shader", "assets/shaders/frag2D.shader");
-	renderer2D = new Renderer2D(uiShader, "assets/images/hud/sheet.png", glm::ivec2(8, 8)); //renderer2D will only use 1 texture, if multiple are needed, you need to stitch them together.
+	uiShader = new ShaderProgram(SHADER_PATH("vert2D", "frag2D"));
+	renderer2D = new Renderer2D(uiShader, TEXTURE_PATH("hud/sheet"), glm::ivec2(8, 8)); //renderer2D will only use 1 texture, if multiple are needed, you need to stitch them together.
     /*                                                                            |
                                                                                   -------> If these are set to the width, and height of the texture, you can draw from the texture per-pixel!
     */
-    fontTest = new Font(uiShader, "assets/images/font.png");
+    fontTest = new Font(uiShader, TEXTURE_PATH("font"));
 
 	rot = 0;
 	audioSystem = new AudioSystem();
