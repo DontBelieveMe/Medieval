@@ -10,6 +10,8 @@
 #include <audio/AudioSystem.h>
 #include <FreeCamera.h>
 
+#include "PauseState.h"
+
 class GameState : public State
 {
 private:
@@ -26,16 +28,16 @@ private:
     GLfloat    rot = 0;
 	FreeCamera *camera;
 	AudioSystem *audioSystem;
-
+	PauseState *pauseState;
 public:
 
     GameState();
 
-    void tick();
+    virtual void tick();
 
-    void render();
+    virtual void render();
 
-    void destroy();
+    virtual void destroy();
 
     ~GameState();
 

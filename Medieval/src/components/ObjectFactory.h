@@ -19,6 +19,15 @@ private:
 	}
 
 public:
+
+	~ObjectFactory()
+	{
+		for (auto& pair : objects)
+		{
+			pair.second.DeleteAllComponents();
+		}
+		objects.clear();
+	}
 	static ObjectFactory *Get()
 	{
 		static ObjectFactory object_factory;

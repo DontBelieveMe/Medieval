@@ -4,7 +4,7 @@
 UIButton::UIButton(const std::string &buttonNormalTexture, const std::string &buttonPressedTexture, const std::string &buttonHoverTexture, const glm::vec2 &topLeftPos, const glm::vec2 &size, const float &imageScale)
 {
 	textures[NORMAL] = new Texture(buttonNormalTexture);
-	textures[PRESSED] = new Texture(buttonPressedTexture);
+//	textures[PRESSED] = new Texture(buttonPressedTexture);
 	textures[HOVER] = new Texture(buttonHoverTexture);
 	renderer = new UIRenderer(*textures[NORMAL], topLeftPos, imageScale);
 
@@ -26,19 +26,17 @@ void UIButton::Tick()
 		_state = NORMAL;
 		return;
 	}
-
 	glm::vec2 mousePos = Input::MousePos();
 	if (bounds->Contains(mousePos))
 	{
-		
-
-		if (Input::MouseButtonDown(1))
-			_state = PRESSED;
-		else
+		if (Input::MouseButtonPressed(1)) {
+			on_pressed();
+		} else
 			_state = HOVER;
 	}
 	else
 		_state = NORMAL;
+	
 }
 
 void UIButton::Render()

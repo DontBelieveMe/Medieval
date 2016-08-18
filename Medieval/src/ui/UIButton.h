@@ -1,4 +1,7 @@
 #pragma once
+
+#include <functional>
+
 #include "../src/ui/UIRenderer.h"
 #include "../src/rendering/Texture.h"
 #include "../src/ui/UIObject.h"
@@ -13,15 +16,20 @@ public:
 	void Tick();
 	void Render();
 
-	bool IsPressed() const { return _state == PRESSED; }
-	bool IsMouseOver() const { return _state == HOVER || _state == PRESSED; }
+	bool IsMouseOver() const { return _state == HOVER; }
 
+	int GetState() { return _state; }
+	
+	void SetPressedCallback(const std::function<void(void)>& clbk) { on_pressed = clbk; }
+
+	enum { NORMAL, HOVER, NUM_BUTTON_STATES };
 private:
 	Bounds2D *bounds;
 
 	unsigned int _state;
-	enum { PRESSED, NORMAL, HOVER, NUM_BUTTON_STATES };
 
 	Texture *textures[NUM_BUTTON_STATES];
+	std::function<void(void)> on_pressed;
+
 };
 

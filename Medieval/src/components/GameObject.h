@@ -47,8 +47,7 @@ public:
 	}
 
 	GameObject();
-	~GameObject() { DeleteAllComponents(); }
-	
+
 	void Update();
 	void Init();
 	

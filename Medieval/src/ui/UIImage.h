@@ -1,6 +1,7 @@
 #pragma once
-#include "ui\UIRenderer.h"
-#include "ui\UIObject.h"
+
+#include "UIRenderer.h"
+#include "UIObject.h"
 
 class UIImage : public UIObject
 {

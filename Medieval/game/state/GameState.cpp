@@ -13,10 +13,12 @@
 #include <introspection/IntrospectionManager.h>
 #include <AssetData.h>
 
-#include "../game/uiMenus/MenuExample.h"
+#include "../game/menus/PauseMenu.h"
+
+#include <bullet/btBulletDynamicsCommon.h>
 
 Map map;
-MenuExample *uiMenu;
+PauseMenu *pause_menu;
 
 GameState::GameState()
 {
@@ -44,23 +46,25 @@ GameState::GameState()
 
 	Input::SetMouseMode(Input::MouseMode::locked);
 
-	uiMenu = new MenuExample(false);
-
+	pause_menu = new PauseMenu(false);
+	
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	ObjectFactory *factory = ObjectFactory::Get();
 	
-	GameObject *player = factory->CreateGameObject("player");
-	player->AddComponent<VoxelModelComponent>();
-	player->AddComponent<RigidBodyComponent>();
+	pauseState = new PauseState();
+
+	GameObject *player = factory->CreateGameObject<VoxelModelComponent, RigidBodyComponent>("player");
 	VoxelModelComponent *playerRender = player->GetComponent<VoxelModelComponent>();
 	playerRender->model = &playerModel;
 	std::cout << player->HasComponent<CollidableComponent>() << std::endl;
 	player->position = glm::vec3(0, -15, -40);
 	
 	factory->InitAll();
+
+	btDefaultCollisionConfiguration *collisionConfig = new btDefaultCollisionConfiguration();
 }
 
 int counter = 0;
@@ -78,25 +82,27 @@ void GameState::tick()
 	}
 
 	audioSystem->tick();
+	pause_menu->Tick();
+	
 
-	if (Keys::toggle_ui.Pressed())
-		showUI = !showUI;
+	if (!pause_menu->enabled)
+	{
+		if (Keys::toggle_ui.Pressed())
+			showUI = !showUI;
 
-	if(!uiMenu->enabled)
 		camera->tick();
+	
+		if (Input::MouseButtonDown(1) && !map.ChunkExists(map.GetChunkPosForBlock(camera->position)))
+			map.GenerateChunk(map.GetChunkPosForBlock(camera->position));
 
-	uiMenu->Tick();
+		static bool wireframe;
+		if (Input::MouseButtonPressed(2))
+			glPolygonMode(GL_FRONT_AND_BACK, (wireframe = !wireframe) ? GL_LINE : GL_FILL);
+	
+		ObjectFactory *factory = ObjectFactory::Get();
+		factory->UpdateAll();
+	}
 
-	if (Input::MouseButtonDown(1) && !map.ChunkExists(map.GetChunkPosForBlock(camera->position)))
-	    map.GenerateChunk(map.GetChunkPosForBlock(camera->position));
-
-
-	static bool wireframe;
-	if (Input::MouseButtonPressed(2))
-	    glPolygonMode(GL_FRONT_AND_BACK, (wireframe = !wireframe) ? GL_LINE : GL_FILL);
-
-	ObjectFactory *factory = ObjectFactory::Get();
-	factory->UpdateAll();
 }
 
 void GameState::render()
@@ -115,6 +121,13 @@ void GameState::render()
 
 	glDisable(GL_DEPTH_TEST);
 
+	if (pause_menu->enabled)
+	{
+		uiShader->Use();
+		fontTest->bind();
+		fontTest->drawString("resume button out of order. TODO: Fix", 150, 100, 2.f);
+	}
+
 	if (showUI)
 	{
 	    renderer2D->bind();
@@ -129,7 +142,7 @@ void GameState::render()
 		fontTest->drawString("Press U (def.) to toggle the UI!", 220, HEIGHT - 120, 2.0);
 	}
 
-	uiMenu->Render();
+	pause_menu->Render();
 
 	glEnable(GL_CULL_FACE);
 }
