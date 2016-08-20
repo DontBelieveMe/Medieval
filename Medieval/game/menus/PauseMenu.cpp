@@ -32,11 +32,9 @@ void PauseMenu::CanvasTick()
 {
 	if (Keys::toogle_focus.Pressed())
 	{
-		std::cout << "dsfh" << std::endl;
 		enabled = !enabled;
 		Input::SetMouseMode(Input::MouseMode::normal);
 	}
-	std::cout << enabled << std::endl;
 }
 
 void PauseMenu::CanvasRender()

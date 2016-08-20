@@ -56,10 +56,10 @@ public:
 	void Update();
 	void Init();
 	
-	template <typename T, typename... Args>
-	void AddComponent(Args... args)
+	template <typename T>
+	void AddComponent()
 	{
-		Component *component = new T(args...);
+		Component *component = new T();
 		component->id = T::static_id;
 		components.push_back(component);
 	}
@@ -81,6 +81,13 @@ public:
 			T *component = dynamic_cast<T*>(GetInternalComponent<T>());
 			return component;
 		}
+	}
+
+	template <typename T>
+	T *GetComponentFast()
+	{
+		T *component = dynamic_cast<T*>(GetInternalComponent<T>());
+		return component;
 	}
 
 	template <typename T>

@@ -6,7 +6,7 @@
 struct Component
 {
 	
-	virtual void Create() = 0;
+	virtual void Create(GameObject *object) = 0;
 	virtual void Update(GameObject *object) = 0;
 	virtual void Destroy() {};
 

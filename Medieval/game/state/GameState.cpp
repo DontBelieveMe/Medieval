@@ -9,7 +9,8 @@
 #include <rendering/Primitives.h>
 #include <components/GameObject.h>
 #include <components/ObjectFactory.h>
-#include <introspection/IntrospectionManager.h>
+#include <components/components/RigidBodyComponent.h>
+
 #include <AssetData.h>
 
 #include "../game/menus/PauseMenu.h"
@@ -55,11 +56,12 @@ GameState::GameState()
 	
 	pauseState = new PauseState();
 
-	GameObject *player = factory->CreateGameObject("player");
-	player->AddComponent<VoxelModelComponent>(playerModel);
-	VoxelModelComponent *playerRender = player->GetComponent<VoxelModelComponent>();
+	GameObject *player = factory->CreateGameObject<VoxelModelComponent>("player");
+	player->AddComponent<RigidBodyComponent>();
+
+	VoxelModelComponent *playerRender = player->GetComponentFast<VoxelModelComponent>();
+	playerRender->model = &playerModel;
 	player->position = glm::vec3(0, -15, -40);
-	player->RemoveComponent<VoxelModelComponent>();
 	factory->InitAll();
 }
 

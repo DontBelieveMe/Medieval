@@ -17,6 +17,6 @@ void GameObject::Init()
 {
 	for (auto& component : components)
 	{
-		component->Create();
+		component->Create(this);
 	}
 }
