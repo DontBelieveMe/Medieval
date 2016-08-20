@@ -13,9 +13,10 @@ struct VoxelModelComponent : Component
 	
 	Model		  *model;
 	
+	VoxelModelComponent(Model *model) : model(model) {}
+
 	virtual void Create() {}
 	virtual void Update(GameObject *object) {}
-
 	virtual void Destroy() { MSVC_LOG("Destroying!"); }
 
 	// This can be optimised using material batching

@@ -55,9 +55,9 @@ GameState::GameState()
 	
 	pauseState = new PauseState();
 
-	GameObject *player = factory->CreateGameObject<VoxelModelComponent>("player");
+	GameObject *player = factory->CreateGameObject("player");
+	player->AddComponent<VoxelModelComponent>(playerModel);
 	VoxelModelComponent *playerRender = player->GetComponent<VoxelModelComponent>();
-	playerRender->model = &playerModel;
 	player->position = glm::vec3(0, -15, -40);
 	player->RemoveComponent<VoxelModelComponent>();
 	factory->InitAll();

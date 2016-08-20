@@ -56,10 +56,10 @@ public:
 	void Update();
 	void Init();
 	
-	template <typename T>
-	void AddComponent()
+	template <typename T, typename... Args>
+	void AddComponent(Args... args)
 	{
-		Component *component = new T();
+		Component *component = new T(args...);
 		component->id = T::static_id;
 		components.push_back(component);
 	}
