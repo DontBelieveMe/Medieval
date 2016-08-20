@@ -8,6 +8,7 @@ struct Component
 	
 	virtual void Create() = 0;
 	virtual void Update(GameObject *object) = 0;
+	virtual void Destroy() {};
 
 	int id;
 };

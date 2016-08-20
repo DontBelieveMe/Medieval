@@ -150,6 +150,13 @@ inline uint32_t Random()
     return Rng()();
 }
 
+template <typename M, typename V>
+void MapToVector(const  M & m, V & v) {
+	for (typename M::const_iterator it = m.begin(); it != m.end(); ++it) {
+		v.push_back(it->second);
+	}
+}
+
 inline uint16_t Noise(uint16_t in)
 {
     return (unsigned int)((in * 1103515245 + 12345)/65536) % 32768;

@@ -13,6 +13,9 @@
 #include <rendering/Primitives.h>
 #include <glm/glm.hpp>
 #include <algorithm>
+#include <bullet/btBulletDynamicsCommon.h>
+
+#include "PhysicsWorld.h"
 
 constexpr int units_per_voxel = 256;
 constexpr double gravity = .1f; // This is measured in voxels/ticks^2.
@@ -101,4 +104,13 @@ class PhysicalBody : public AABB
         if (affected_by_gravity)
             vel.y -= gravity;
     }
+};
+
+class PhysicsSimulation
+{
+public:
+	void Tick() 
+	{
+		
+	}
 };

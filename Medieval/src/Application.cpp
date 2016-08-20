@@ -1,12 +1,13 @@
 #include "Application.h"
 
-#include "rendering/Shader.h"
-#include "rendering/AdditionalVAO.h"
 #include "state/StateSystem.h"
 #include "Input.h"
 
+#include "rendering/AdditionalVAO.h"
+#include "rendering/Shader.h"
 #include "rendering/Voxels.h"
 #include "rendering/Renderer2D.h"
+#include "physics/PhysicsWorld.h"
 
 glm::mat4 Application::projection_matrix = glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.005f, 200.0f);
 
@@ -64,6 +65,8 @@ void Application::MainLoop()
 			delta -= 1.0;
 		}
 
+		PhysicsWorld::Get()->Tick();
+
         StateSystem::get().render();
 
         glfwSwapBuffers(window);
@@ -81,6 +84,7 @@ void Application::MainLoop()
 
 void Application::Destroy()
 {
+	PhysicsWorld::Get()->Delete();
     StateSystem::get().destroy();
     AdditionalVAO::destroy();//states don't need to worry about this
 	glfwDestroyWindow(window);

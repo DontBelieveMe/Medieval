@@ -9,7 +9,6 @@
 #include <rendering/Primitives.h>
 #include <components/GameObject.h>
 #include <components/ObjectFactory.h>
-#include <components/components/PhysicsComponent.h>
 #include <introspection/IntrospectionManager.h>
 #include <AssetData.h>
 
@@ -56,15 +55,12 @@ GameState::GameState()
 	
 	pauseState = new PauseState();
 
-	GameObject *player = factory->CreateGameObject<VoxelModelComponent, RigidBodyComponent>("player");
+	GameObject *player = factory->CreateGameObject<VoxelModelComponent>("player");
 	VoxelModelComponent *playerRender = player->GetComponent<VoxelModelComponent>();
 	playerRender->model = &playerModel;
-	std::cout << player->HasComponent<CollidableComponent>() << std::endl;
 	player->position = glm::vec3(0, -15, -40);
-	
+	player->RemoveComponent<VoxelModelComponent>();
 	factory->InitAll();
-
-	btDefaultCollisionConfiguration *collisionConfig = new btDefaultCollisionConfiguration();
 }
 
 int counter = 0;

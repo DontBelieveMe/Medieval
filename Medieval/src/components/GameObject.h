@@ -10,6 +10,7 @@
 #include <memory>
 
 #include <glm/glm.hpp>
+#include <bullet/btBulletDynamicsCommon.h>
 
 class GameObject;
 
@@ -42,7 +43,11 @@ private:
 public:
 	void DeleteAllComponents()
 	{
-		for (Component *component : components) { delete component; component = NULL; }
+		for (Component *component : components) 
+		{
+			component->Destroy();
+			delete component; component = NULL; 
+		}
 		components.clear();
 	}
 
@@ -86,6 +91,7 @@ public:
 			return;
 
 		Component *component = GetInternalComponent<T>();
+		component->Destroy();
 		components.erase(std::remove(components.begin(), components.end(), component), components.end());
 		delete component;
 		component = NULL;
@@ -94,10 +100,13 @@ public:
 	inline int NumComponents() const 
 	{
 		return components.size();
+		
 	}
 
 public:
 	glm::vec3 position;
 	glm::vec3 scale;
 	glm::vec3 rotation;
+
+//	btTransform transform;
 };

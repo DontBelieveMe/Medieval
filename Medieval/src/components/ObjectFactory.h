@@ -89,4 +89,5 @@ public:
 	}
 
 	std::unordered_map<std::string, GameObject>& GetObjectsMap() { return objects; }
+	std::vector<GameObject> GetObjectsList() { std::vector<GameObject> out; MapToVector(objects, out); return out; }
 };
