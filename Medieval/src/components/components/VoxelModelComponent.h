@@ -26,13 +26,13 @@ struct VoxelModelComponent : Component
 			return;
 		}
 		glm::mat4 model_matrix;
-
-		model_matrix = glm::translate(model_matrix, object->position);
-		model_matrix = glm::rotate(model_matrix, object->rotation.x, glm::vec3(1, 0, 0));
+		glm::vec3 position = object->transform.position;
+		model_matrix = glm::translate(model_matrix, position);
+	/*	model_matrix = glm::rotate(model_matrix, object->rotation.x, glm::vec3(1, 0, 0));
 		model_matrix = glm::rotate(model_matrix, object->rotation.y, glm::vec3(0, 1, 0));
 		model_matrix = glm::rotate(model_matrix, object->rotation.z, glm::vec3(0, 0, 1));
-		model_matrix = glm::scale(model_matrix, object->scale);
-		
+		*/
+		model_matrix = glm::scale(model_matrix, object->transform.scale);
 		model_shader->UploadMatrix4f("model", model_matrix);
 		DrawModel((*model));
 	}

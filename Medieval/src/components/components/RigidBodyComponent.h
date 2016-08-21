@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../NewComponent.h"
-
 #include <bullet/btBulletDynamicsCommon.h>
+
+#include "../NewComponent.h"
 #include "../../physics/PhysicsWorld.h"
 
 struct RigidBodyComponent : Component
@@ -11,7 +11,10 @@ struct RigidBodyComponent : Component
 
 	virtual void Create(GameObject *object)
 	{
-		glm::vec3& position = object->position;
+		// 2, 6, 1
+		collider = new btCylinderShape(btVector3(bounds.x / 2, bounds.y / 2, bounds.z / 2));
+
+		glm::vec3& position = object->transform.position;
 		motion_state = new btDefaultMotionState(
 			btTransform(
 				btQuaternion(0, 0, 0, 1),
@@ -23,34 +26,52 @@ struct RigidBodyComponent : Component
 			mass,
 			motion_state,
 			collider,
-			inertia
+			btVector3(inertia.x, inertia.y, inertia.z)
 			);
 
-		rigid_body = new btRigidBody(construct);
-
-		PhysicsWorld::Get()->AddRigidBody(rigid_body);
+		rigidbody = new btRigidBody(construct);
+		PhysicsWorld::Get()->AddRigidBody(rigidbody);
+		
 	}
 
 	virtual void Update(GameObject *object)
 	{
-		btVector3 position = rigid_body->getWorldTransform().getOrigin();
-		object->position.x = position.x();
-		object->position.y = position.y();
-		object->position.z = position.z();
+		btTransform transform;
+		rigidbody->getMotionState()->getWorldTransform(transform);
+		btVector3 pos = transform.getOrigin();
+		object->transform.position.x = pos.x();
+		object->transform.position.y = pos.y();
+		object->transform.position.z = pos.z();
 	}
 
 	virtual void Destroy()
 	{
-		PhysicsWorld::Get()->RemoveRigidBody(rigid_body);
+		PhysicsWorld::Get()->RemoveRigidBody(rigidbody);
 		delete motion_state;
-		delete rigid_body;
 		delete collider;
+		delete rigidbody;
 	}
 
+
+	glm::vec3 inertia;
+	float	  mass;
+
+	// The size of the entity, from the top left corner.
+	glm::vec3 bounds;
+
+private:
 	btDefaultMotionState *motion_state;
-	btRigidBody			 *rigid_body;
+	btRigidBody			 *rigidbody;
 	btCollisionShape     *collider;
 
-	btVector3 inertia;
-	float	  mass;
+public:
+	void AddForce(const glm::vec3& force)
+	{
+		rigidbody->applyCentralForce(btVector3(force.x, force.y, force.z));
+	}
+
+	void AddForce(const glm::vec3& force, const glm::vec3& relative_pos)
+	{
+		rigidbody->applyForce(btVector3(force.x, force.y, force.z), btVector3(relative_pos.x, relative_pos.y, relative_pos.z));
+	}
 };

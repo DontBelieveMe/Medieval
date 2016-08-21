@@ -7,6 +7,7 @@
 #include <Utils.h>
 #include <chrono>
 #include <rendering/Primitives.h>
+
 #include <components/GameObject.h>
 #include <components/ObjectFactory.h>
 #include <components/components/RigidBodyComponent.h>
@@ -56,12 +57,24 @@ GameState::GameState()
 	
 	pauseState = new PauseState();
 
-	GameObject *player = factory->CreateGameObject<VoxelModelComponent>("player");
-	player->AddComponent<RigidBodyComponent>();
-
+	GameObject *player = factory->CreateGameObject<VoxelModelComponent, RigidBodyComponent>("player");
+	
+	RigidBodyComponent *player_rigidbody = player->GetComponentFast<RigidBodyComponent>();
+	player_rigidbody->mass = 1;
+	player_rigidbody->inertia = glm::vec3(0.4f, 0.4f, 0.4f);
+	
 	VoxelModelComponent *playerRender = player->GetComponentFast<VoxelModelComponent>();
 	playerRender->model = &playerModel;
-	player->position = glm::vec3(0, -15, -40);
+	player->transform.position = glm::vec3(0, -15, -40);
+
+	GameObject *ground = factory->CreateGameObject<VoxelModelComponent, RigidBodyComponent>("ground");
+	RigidBodyComponent *ground_rigidbody = ground->GetComponentFast<RigidBodyComponent>();
+	ground_rigidbody->mass = 0;
+	ground_rigidbody->inertia = glm::vec3(0, 0, 0);
+	VoxelModelComponent *ground_render = ground->GetComponentFast<VoxelModelComponent>();
+	ground_render->model = &playerModel;
+	ground->transform.position = glm::vec3(0, -100, -40);
+
 	factory->InitAll();
 }
 
@@ -76,6 +89,7 @@ void GameState::tick()
 		texIndex++;
 		if (texIndex == 5)
 			texIndex = 0;
+
 		counter = 0;
 	}
 
@@ -98,7 +112,12 @@ void GameState::tick()
 			glPolygonMode(GL_FRONT_AND_BACK, (wireframe = !wireframe) ? GL_LINE : GL_FILL);
 	
 		ObjectFactory *factory = ObjectFactory::Get();
+		GameObject *player = factory->GetGameObject("player");
+		if (Input::KeyPressed(GLFW_KEY_L))
+		{
+		}
 		factory->UpdateAll();
+		
 	}
 
 }

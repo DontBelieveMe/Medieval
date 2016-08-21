@@ -2,7 +2,7 @@
 
 GameObject::GameObject()
 {
-	scale = glm::vec3(1, 1, 1);
+
 }
 
 void GameObject::Update()

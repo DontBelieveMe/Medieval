@@ -17,6 +17,9 @@ class GameObject;
 #include "Component.h"
 #include "../Utils.h"
 
+#include "../physics/Transform.h"
+
+
 class GameObject
 {
 private:
@@ -41,6 +44,7 @@ private:
 
 
 public:
+	
 	void DeleteAllComponents()
 	{
 		for (Component *component : components) 
@@ -111,9 +115,7 @@ public:
 	}
 
 public:
-	glm::vec3 position;
-	glm::vec3 scale;
-	glm::vec3 rotation;
+	Transform transform;
 
 //	btTransform transform;
 };

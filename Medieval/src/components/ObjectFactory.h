@@ -1,10 +1,10 @@
 #pragma once
 #include <unordered_map>
 
-#include "Component.h"
-#include "GameObject.h"
+#include "NewComponent.h"
 
 #include "components/VoxelModelComponent.h"
+#include "components/RigidBodyComponent.h"
 
 class ObjectFactory
 {
@@ -59,7 +59,9 @@ public:
 	{
 		for (auto& obj : objects)
 		{
-			obj.second.Update();
+			// Not a rigidbody physics object
+			if(obj.second.GetComponentFast<RigidBodyComponent>() == NULL)
+				obj.second.Update();
 		}
 	}
 

@@ -64,7 +64,6 @@ void Application::MainLoop()
 			ups++;
 			delta -= 1.0;
 		}
-
 		PhysicsWorld::Get()->Tick();
 
         StateSystem::get().render();
@@ -84,11 +83,11 @@ void Application::MainLoop()
 
 void Application::Destroy()
 {
-	PhysicsWorld::Get()->Delete();
     StateSystem::get().destroy();
     AdditionalVAO::destroy();//states don't need to worry about this
 	glfwDestroyWindow(window);
 	glfwTerminate();
+	PhysicsWorld::Get()->Delete();
 }
 
 Application::~Application()
