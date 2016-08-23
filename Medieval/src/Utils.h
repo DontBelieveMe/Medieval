@@ -5,7 +5,8 @@
 
 #pragma once
 #ifdef _MSC_VER
-#pragma warning(disable: 4003)
+#pragma warning(disable: 4996)	// fopen is 'deprecated'
+#pragma warning(disable: 4003)  // Empty F() macro warning disable
 #endif
 
 #include <iostream>

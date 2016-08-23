@@ -1,9 +1,22 @@
 #pragma once
 
 #include <rapidjson/rapidjson.h>
-#include <vector>
 
-class Prefab
+#include "../introspection/Serializable.h"
+#include "GameObject.h"
+
+class Prefab : public Serializable, public GameObject
 {
-private:
+public:
+	Prefab();
+
+	virtual void Deserialize()
+	{
+		
+	}
+
+	virtual void Serialize()
+	{
+		
+	}
 };

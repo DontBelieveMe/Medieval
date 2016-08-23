@@ -22,7 +22,7 @@ class GameObject;
 
 class GameObject
 {
-private:
+protected:
 	std::vector<Component *> components;
 
 	Component *GetInternalComponent(int id)
@@ -44,7 +44,6 @@ private:
 
 
 public:
-	
 	void DeleteAllComponents()
 	{
 		for (Component *component : components) 
