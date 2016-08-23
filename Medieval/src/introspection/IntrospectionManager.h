@@ -121,6 +121,4 @@ public:
 
 		out->members.push_back({ info, name });
 	}
-
-	
 };

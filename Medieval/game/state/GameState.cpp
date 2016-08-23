@@ -67,8 +67,8 @@ GameState::GameState()
 	factory->CreateGameObjectFromPrefab("ground");
 	
 	factory->InitAll();
-	
-	std::cout << TYPE_INFO(RigidBodyComponent)->members[1].info->name << std::endl;
+
+
 }
 
 int counter = 0;

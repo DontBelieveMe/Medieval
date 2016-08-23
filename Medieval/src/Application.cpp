@@ -36,7 +36,10 @@ void Application::Init()
 #else
 	glfwSwapInterval(0);
 #endif
+	
+	// Registers builtin/system types for introspection
 	RegisterBuiltins();
+
     StateSystem::get().setDefaultState();
     Input::Init();
 
