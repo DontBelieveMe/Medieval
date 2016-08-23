@@ -1,10 +1,11 @@
 #pragma once
 
 #include <unordered_map>
+#include <functional>
 
 #include "TypeInfo.h"
-
 #include "../Utils.h"
+#include "Serializable.h"
 
 #define REGISTER_TYPE(T) \
 	IntrospectionManager::Get()->RegisterType<T>(#T, sizeof(T))
@@ -26,6 +27,12 @@
 
 #define REGISTER_MEMBER(T, MEMBER) \
 	IntrospectionManager::Get()->RegisterMember(TYPE_INFO(T), TYPE_OF_MEMBER(T, MEMBER), #MEMBER)
+
+#define SET_SERIALIZABLE(T) \
+	IntrospectionManager::Get()->MapInstance<T>(#T)
+
+#define CREATE_SERIALIZABLE_OBJECT(Name, STR_NAME) \
+	dynamic_cast<Name*>(IntrospectionManager::Get()->GetSerializableObject(#STR_NAME))
 
 namespace detail
 {
@@ -72,8 +79,7 @@ class IntrospectionManager
 {
 private:
 	std::unordered_map<const char *, TypeInfo*> type_map;
-	//std::unordered_map<const char*, Serializable*(*)()> serialization_map;
-
+	
 public:
 	static IntrospectionManager *Get()
 	{
@@ -116,4 +122,5 @@ public:
 		out->members.push_back({ info, name });
 	}
 
+	
 };
