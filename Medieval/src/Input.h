@@ -59,7 +59,7 @@ class Input
     static bool WheelLeft () {return scroll.x < 0;}
     static bool WheelRight() {return scroll.x > 0;}
 
-    // `hidden` just hides mouse. Sseful if you want to draw your own cursor.
+    // `hidden` just hides mouse. Useful if you want to draw your own cursor.
     // `locked` hides mouse and prevents it from leaving the window. Useful for 3D camera control.
     enum class MouseMode
     {

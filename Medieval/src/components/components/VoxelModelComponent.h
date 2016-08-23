@@ -10,15 +10,15 @@
 struct VoxelModelComponent : Component
 {
 	COMPONENT(VoxelModelComponent)
-	
+
 	Model		  *model;
 
-	virtual void Create(GameObject *object) {}
-	virtual void Update(GameObject *object) {}
+	virtual void Create(GameObject *object) {(void)object;}
+	virtual void Update(GameObject *object) {(void)object;}
 	virtual void Destroy() { MSVC_LOG("Destroying!"); }
 
 	// This can be optimised using material batching
-	void Render(GameObject *object, const glm::mat4& view, ShaderProgram *model_shader) 
+	void Render(GameObject *object, const glm::mat4& view, ShaderProgram *model_shader)
 	{
 		if (model == NULL)
 		{
