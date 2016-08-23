@@ -1,0 +1,11 @@
+{"player":{
+	"position": [0, -15, -40],
+	"scale": [1, 1, 1],
+	"RigidBodyComponent": {
+		"mass": 1,
+		"inertia":[0.4, 0.4, 0.4]
+	},
+	"VoxelModelComponent":{
+		"modelName": "player"
+	}
+}}

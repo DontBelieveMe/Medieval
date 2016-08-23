@@ -72,6 +72,7 @@ class IntrospectionManager
 {
 private:
 	std::unordered_map<const char *, TypeInfo*> type_map;
+	//std::unordered_map<const char*, Serializable*(*)()> serialization_map;
 
 public:
 	static IntrospectionManager *Get()
@@ -114,4 +115,5 @@ public:
 
 		out->members.push_back({ info, name });
 	}
+
 };

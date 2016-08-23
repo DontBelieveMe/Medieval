@@ -13,6 +13,7 @@ namespace AssetData
 		static const std::string DefaultTexExtension = ".png";
 		static const std::string DefaultModelExtension = ".obj";
 		static const std::string DefaultShaderExtension = ".shader";
+		static const std::string DefaultDataExtension = ".json";
 	}
 
 	static const std::string RootPath = "assets/";
@@ -20,6 +21,7 @@ namespace AssetData
 	static const std::string AudioPath = RootPath + "audio/";
 	static const std::string ModelPath = RootPath + "models/";
 	static const std::string TexturePath = RootPath + "images/";
+	static const std::string DataPath = "data/";
 }
 
 #define SHADER_PATH(vertName, fragName) \
