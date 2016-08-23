@@ -55,21 +55,21 @@ GameState::GameState()
 	Input::SetMouseMode(Input::MouseMode::locked);
 
 	pause_menu = new PauseMenu(false);
-	
+
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	ObjectFactory *factory = ObjectFactory::Get();
-	
+
 	pauseState = new PauseState();
 
 	GameObject *player = factory->CreateGameObject<VoxelModelComponent, RigidBodyComponent>("player");
-	
+
 	RigidBodyComponent *player_rigidbody = player->GetComponentFast<RigidBodyComponent>();
 	player_rigidbody->mass = 1;
 	player_rigidbody->inertia = glm::vec3(0.4f, 0.4f, 0.4f);
-	
+
 	VoxelModelComponent *playerRender = player->GetComponentFast<VoxelModelComponent>();
 	playerRender->model = &playerModel;
 	player->transform.position = glm::vec3(0, -15, -40);
@@ -109,7 +109,7 @@ void GameState::tick()
 
 	audioSystem->tick();
 	pause_menu->Tick();
-	
+
 
 	if (!pause_menu->enabled)
 	{
@@ -117,14 +117,14 @@ void GameState::tick()
 			showUI = !showUI;
 
 		camera->tick();
-	
+
 		if (Input::MouseButtonDown(1) && !map.ChunkExists(map.GetChunkPosForBlock(camera->position)))
 			map.GenerateChunk(map.GetChunkPosForBlock(camera->position));
 
 		static bool wireframe;
 		if (Input::MouseButtonPressed(2))
 			glPolygonMode(GL_FRONT_AND_BACK, (wireframe = !wireframe) ? GL_LINE : GL_FILL);
-	
+
 		ObjectFactory *factory = ObjectFactory::Get();
 		GameObject *player = factory->GetGameObject("player");
 		if (Input::KeyPressed(GLFW_KEY_L))
@@ -134,7 +134,7 @@ void GameState::tick()
 			rigidBodyComponent->AddForce(glm::vec3(0, 1000, 0));
 		}
 		factory->UpdateAll();
-		
+
 	}
 
 }
@@ -151,7 +151,7 @@ void GameState::render()
     vox->bind();
 	factory->RenderNecessary(modelShader, view);
 
-	map.Render(view, {0,0,0});
+	map.RenderAll(view, {0,0,0});
 
 	glDisable(GL_DEPTH_TEST);
 

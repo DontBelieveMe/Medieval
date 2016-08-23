@@ -453,7 +453,7 @@ class Map
         return {proper_div(pos.x, Chunk::width), proper_div(pos.z, Chunk::width)};
     }
 
-    void Render(const glm::mat4 &view, vec3 pos)
+    void RenderAll(const glm::mat4 &view, vec3 pos)
     {
         for (auto &it : chunks)
         {
@@ -464,6 +464,10 @@ class Map
             }
             it.second.Render(view, pos + vec3(it.first.x * Chunk::width, 0, it.first.y * Chunk::width));
         }
+    }
+    void Render(const glm::mat4 &view, vec3 pos, vec3 center, float range)
+    {
+
     }
 
     void GenerateChunk(ivec2 chunk)
