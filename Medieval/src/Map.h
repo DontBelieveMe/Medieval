@@ -1,6 +1,5 @@
 #pragma once
 
-#include <initializer_list>
 #include <unordered_map>
 #include <vector>
 
@@ -22,12 +21,11 @@ class Block
     #define BLOCK(token, name, color, solid) token,
     enum class Type : uint8_t {BLOCK_LIST};
     #undef BLOCK
-    #define BLOCK(token, name, color, solid) 0,
 
 	// A problem with MSVC - error cannot evaluate non constant type.
 	// Done temporary fix, as I cannot be bothered to change the system.
-	static constexpr int type_count = 2;	// std::initalizer_list<int>({BLOCK_LIST}).size();
-	
+	#define BLOCK(...) +1
+	static constexpr int type_count = 0 + BLOCK_LIST;
     #undef BLOCK
 
     Type type;
