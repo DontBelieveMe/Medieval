@@ -1,5 +1,3 @@
-#pragma once
-
 #include "PauseState.h"
 #include "../extern/glad/glad.h"
 
