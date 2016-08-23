@@ -3,6 +3,6 @@
 class Serializable
 {
 public:
-	virtual void Serialize();
-	virtual void Deserialize();
+	virtual void Serialize() {};
+	virtual void Deserialize() {};
 };

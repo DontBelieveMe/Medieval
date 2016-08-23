@@ -14,6 +14,7 @@
 #include <introspection/IntrospectionManager.h>
 
 #include <AssetData.h>
+#include <components/Prefab.h>
 
 #include "../game/menus/PauseMenu.h"
 
@@ -86,6 +87,9 @@ GameState::GameState()
 	std::cout << TYPE_OF_PTR(ground_rigidbody)->name << std::endl;
 
 	factory->InitAll();
+
+	Prefab prefab("player");
+	prefab.Deserialize();
 }
 
 int counter = 0;

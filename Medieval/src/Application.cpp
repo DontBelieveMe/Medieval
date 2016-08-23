@@ -87,9 +87,9 @@ void Application::Destroy()
 {
     StateSystem::get().destroy();
     AdditionalVAO::destroy();//states don't need to worry about this
+	PhysicsWorld::Get()->Delete();
 	glfwDestroyWindow(window);
 	glfwTerminate();
-	PhysicsWorld::Get()->Delete();
 }
 
 Application::~Application()
