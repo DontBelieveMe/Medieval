@@ -155,6 +155,8 @@ class Map
   private:
     void UpdateChunkMesh(ivec2 chunk_pos)
     {
+        #define AMBIENT_OCCLUSION 0
+
         auto it = chunks.find(chunk_pos);
         if (it == chunks.end())
             return; // No such chunk.
@@ -258,6 +260,7 @@ class Map
                                   {pos+dir01[up]+dir01[c]+dir01[d], dir11[up], color},
                                   {pos+dir01[up]+dir01[d]+dir01[a], dir11[up], color}};
 
+                #if AMBIENT_OCCLUSION == 1
                 Vertex edge_centers[4]{{vec3(pos+dir01[up]+dir01[d]+dir01[a]) - 0.5f*vec3(dir11[d]), dir11[up], color},
                                        {vec3(pos+dir01[up]+dir01[a]+dir01[b]) - 0.5f*vec3(dir11[a]), dir11[up], color},
                                        {vec3(pos+dir01[up]+dir01[b]+dir01[c]) - 0.5f*vec3(dir11[b]), dir11[up], color},
@@ -321,10 +324,10 @@ class Map
                     PushQuad(edge_centers[3], corners[3], edge_centers[0], center);
                 }
                 else
-                {
+                #endif
                     PushQuad(corners[0], corners[1], corners[2], corners[3]);
-                }
             }
+            #undef AMBIENT_OCCLUSION
         };
 
         for (int yy = 0; yy < Chunk::depth; yy++)
@@ -473,7 +476,7 @@ class Map
             {
                 for (int z = chunk.y*Chunk::width; z < (chunk.y+1)*Chunk::width; z++)
                 {
-                    SetBlock_NoMeshUpdate(it, {x,y,z}, Block{Block::Type(int(Random() % Chunk::depth + 20) > y + 10)});
+                    SetBlock_NoMeshUpdate(it, {x,y,z}, Block{Block::Type(int(Random() % 10 + 40) > y)});
                 }
             }
         }
