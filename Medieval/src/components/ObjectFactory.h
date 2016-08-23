@@ -4,8 +4,8 @@
 #include "NewComponent.h"
 #include "Prefab.h"
 
-#include "components/VoxelModelComponent.h"
 #include "components/RigidBodyComponent.h"
+#include "components/VoxelModelComponent.h"
 
 class ObjectFactory
 {
@@ -20,7 +20,6 @@ private:
 	}
 
 public:
-
 	~ObjectFactory()
 	{
 		for (auto& pair : objects)
@@ -44,9 +43,12 @@ public:
 		return &objects[id];
 	}
 
-	GameObject *CreateGameObjectFromPrefab(const Prefab& prefab)
+	GameObject *CreateGameObjectFromPrefab(const char *name)
 	{
-
+		Prefab prefab = Prefab(name);
+		prefab.Deserialize();
+		objects[name] = prefab;
+		return &objects[name];
 	}
 	
 	GameObject *CreateGameObject(const std::string& id)

@@ -67,6 +67,13 @@ public:
 		components.push_back(component);
 	}
 
+	void AddComponent(int id)
+	{
+		Component *component = ComponentIDList::Get()->CreateComponent(id);
+		component->id = id;
+		components.push_back(component);
+	}
+
 	template <typename T>
 	bool HasComponent()
 	{

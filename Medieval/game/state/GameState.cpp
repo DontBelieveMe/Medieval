@@ -11,6 +11,7 @@
 #include <components/GameObject.h>
 #include <components/ObjectFactory.h>
 #include <components/components/RigidBodyComponent.h>
+#include <components/components/VoxelModelComponent.h>
 #include <introspection/IntrospectionManager.h>
 
 #include <AssetData.h>
@@ -61,35 +62,13 @@ GameState::GameState()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	ObjectFactory *factory = ObjectFactory::Get();
+
+	factory->CreateGameObjectFromPrefab("player");
+	factory->CreateGameObjectFromPrefab("ground");
 	
-	pauseState = new PauseState();
-
-	GameObject *player = factory->CreateGameObject<VoxelModelComponent, RigidBodyComponent>("player");
-	
-	RigidBodyComponent *player_rigidbody = player->GetComponentFast<RigidBodyComponent>();
-	player_rigidbody->mass = 1;
-	player_rigidbody->inertia = glm::vec3(0.4f, 0.4f, 0.4f);
-	
-	VoxelModelComponent *playerRender = player->GetComponentFast<VoxelModelComponent>();
-	playerRender->model = &playerModel;
-	player->transform.position = glm::vec3(0, -15, -40);
-
-	GameObject *ground = factory->CreateGameObject<VoxelModelComponent, RigidBodyComponent>("ground");
-	RigidBodyComponent *ground_rigidbody = ground->GetComponentFast<RigidBodyComponent>();
-	ground_rigidbody->mass = 0;
-	ground_rigidbody->inertia = glm::vec3(0, 0, 0);
-	ground_rigidbody->bounds = glm::vec3(2, 6, 1);
-	VoxelModelComponent *ground_render = ground->GetComponentFast<VoxelModelComponent>();
-	ground_render->model = &playerModel;
-	ground->transform.position = glm::vec3(0, -40, -40);
-
-	RigidBodyComponent s;
-	std::cout << TYPE_OF_PTR(ground_rigidbody)->name << std::endl;
-
 	factory->InitAll();
-
-	Prefab prefab("player");
-	prefab.Deserialize();
+	
+	std::cout << TYPE_INFO(RigidBodyComponent)->members[1].info->name << std::endl;
 }
 
 int counter = 0;

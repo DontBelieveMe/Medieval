@@ -9,7 +9,7 @@
 
 struct VoxelModelComponent : Component
 {
-	COMPONENT(VoxelModelComponent)
+	COMPONENT(VoxelModelComponent, 0)
 
 	Model		  *model;
 
@@ -37,4 +37,8 @@ struct VoxelModelComponent : Component
 		DrawModel((*model));
 	}
 
+	static void RegisterMembers()
+	{
+	}
 };
+FINISH_COMPONENT(VoxelModelComponent);

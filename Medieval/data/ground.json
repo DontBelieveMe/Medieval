@@ -1,0 +1,14 @@
+{"ground":{
+	"position": [0, -40, -40],
+	"scale": [1, 1, 1],
+	"components":{
+		"1": {
+			"mass": 0,
+			"inertia": [0.0, 0.0, 0.0],
+			"half_bounds": [0.4]
+		},
+		"0":{
+			"modelName": "player"
+		}
+	}
+}}

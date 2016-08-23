@@ -8,6 +8,7 @@
 #include "rendering/Voxels.h"
 #include "rendering/Renderer2D.h"
 #include "physics/PhysicsWorld.h"
+#include "introspection/Builtin.h"
 
 glm::mat4 Application::projection_matrix = glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.005f, 200.0f);
 
@@ -35,11 +36,12 @@ void Application::Init()
 #else
 	glfwSwapInterval(0);
 #endif
-
+	RegisterBuiltins();
     StateSystem::get().setDefaultState();
     Input::Init();
 
     AdditionalVAO::init();//same for all states, so initialized here, needs to be bound on use.
+	
 }
 
 void Application::MainLoop()
@@ -50,7 +52,7 @@ void Application::MainLoop()
 	glfwShowWindow(window); // The window becomes visible here
 
 	(void)ticks; // ticks is unused. This silences the warning.
-
+	RegisterBuiltins();
 	while (!glfwWindowShouldClose(window))
 	{
 		double now = glfwGetTime();

@@ -7,7 +7,7 @@
 
 struct RigidBodyComponent : Component
 {
-	COMPONENT(RigidBodyComponent)
+	COMPONENT(RigidBodyComponent, 1)
 	
 	virtual void Create(GameObject *object)
 	{
@@ -74,4 +74,14 @@ public:
 	{
 		rigidbody->applyForce(btVector3(force.x, force.y, force.z), btVector3(relative_pos.x, relative_pos.y, relative_pos.z));
 	}
+
+public:
+	static void RegisterMembers()
+	{
+		REGISTER_MEMBER(RigidBodyComponent, mass);
+		REGISTER_MEMBER(RigidBodyComponent, inertia);
+		REGISTER_MEMBER(RigidBodyComponent, bounds);
+	}
 };
+
+FINISH_COMPONENT(RigidBodyComponent);

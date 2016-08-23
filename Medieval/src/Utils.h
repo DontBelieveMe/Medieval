@@ -106,6 +106,14 @@ void Error(P &&... p)
 	std::exit(0);
 }
 
+inline int StrToInt(const char *_char)
+{
+	std::istringstream stream(_char);
+	int out;
+	stream >> out;
+	return out;
+}
+
 template <typename T> int sign(T val)
 {
     return (val > 0) - (val < 0);

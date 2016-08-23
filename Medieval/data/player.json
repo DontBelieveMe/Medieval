@@ -1,11 +1,14 @@
 {"player":{
 	"position": [0, -15, -40],
 	"scale": [1, 1, 1],
-	"RigidBodyComponent": {
-		"mass": 1,
-		"inertia":[0.4, 0.4, 0.4]
-	},
-	"VoxelModelComponent":{
-		"modelName": "player"
+	"components":{
+		"1": {
+			"mass": 1,
+			"inertia": [0.4, 0.4, 0.4],
+			"half_bounds": [0.4]
+		},
+		"0":{
+			"modelName": "player"
+		}
 	}
 }}
