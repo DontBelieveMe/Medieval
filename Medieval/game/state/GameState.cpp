@@ -11,6 +11,7 @@
 #include <components/GameObject.h>
 #include <components/ObjectFactory.h>
 #include <components/components/RigidBodyComponent.h>
+#include <introspection/IntrospectionManager.h>
 
 #include <AssetData.h>
 
@@ -20,6 +21,11 @@
 
 Map map;
 PauseMenu *pause_menu;
+
+struct TestStruct
+{
+	int member = 20;
+};
 
 GameState::GameState()
 {
@@ -71,9 +77,13 @@ GameState::GameState()
 	RigidBodyComponent *ground_rigidbody = ground->GetComponentFast<RigidBodyComponent>();
 	ground_rigidbody->mass = 0;
 	ground_rigidbody->inertia = glm::vec3(0, 0, 0);
+	ground_rigidbody->bounds = glm::vec3(2, 6, 1);
 	VoxelModelComponent *ground_render = ground->GetComponentFast<VoxelModelComponent>();
 	ground_render->model = &playerModel;
-	ground->transform.position = glm::vec3(0, -100, -40);
+	ground->transform.position = glm::vec3(0, -40, -40);
+
+	RigidBodyComponent s;
+	std::cout << TYPE_OF_PTR(ground_rigidbody)->name << std::endl;
 
 	factory->InitAll();
 }
@@ -115,6 +125,9 @@ void GameState::tick()
 		GameObject *player = factory->GetGameObject("player");
 		if (Input::KeyPressed(GLFW_KEY_L))
 		{
+			std::cout << "Hi there" << std::endl;
+			RigidBodyComponent *rigidBodyComponent = player->GetComponentFast<RigidBodyComponent>();
+			rigidBodyComponent->AddForce(glm::vec3(0, 1000, 0));
 		}
 		factory->UpdateAll();
 		

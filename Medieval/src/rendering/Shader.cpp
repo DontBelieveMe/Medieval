@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <iostream>
 
+#include "../Utils.h"
+
 glm::mat4 perspective_matrix = glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.005f, 200.0f);
 
 const ShaderProgram *detail::current_shader = NULL;
@@ -31,21 +33,11 @@ GLuint ShaderProgram::Load(const std::string& vert_path, const std::string& frag
 GLuint ShaderProgram::CreateShader(const std::string& path, GLenum type, const std::string& error_msg)
 {
     GLuint shader = glCreateShader(type);
-    FILE *file = fopen(path.c_str(), "rb");
-    fseek(file, 0, SEEK_END);
-    long fileSize = ftell(file);
-    fseek(file, 0, SEEK_SET);
-    char *string = new char[fileSize + 1];
-    fread(string, fileSize, 1, file);
-    fclose(file);
-    string[fileSize] = 0;
-    const char *source [] = { string };
-    glShaderSource(shader, 1, source, NULL);
-    glCompileShader(shader);
-    this->CheckError(shader, false, GL_COMPILE_STATUS, error_msg);
-    delete [] string;
-    string = NULL;
-    return shader;
+	io::File file(path.c_str());
+	glShaderSource(shader, 1, const_cast<const GLchar**>(&file.data), NULL);
+	glCompileShader(shader);
+	CheckError(shader, false, GL_COMPILE_STATUS, error_msg);
+	return shader;
 }
 
 void ShaderProgram::CheckError(GLuint element, bool is_program, GLenum status, const std::string& error_msg)

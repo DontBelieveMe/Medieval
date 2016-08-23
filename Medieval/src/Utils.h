@@ -213,6 +213,37 @@ class Bounds2D
 	}
 };
 
+namespace io
+{
+	struct File
+	{
+		char *data;
+		File(const char *filepath)
+		{
+			Open(filepath);
+		}
+		File() {}
+		~File() { Close(); }
+
+		void Open(const char *filepath)
+		{
+			FILE *file = fopen(filepath, "rb");
+			fseek(file, 0, SEEK_END);
+			long fileSize = ftell(file);
+			fseek(file, 0, SEEK_SET);
+			data = new char[fileSize + 1];
+			fread(data, fileSize, 1, file);
+			fclose(file);
+			data[fileSize] = 0;
+		}
+
+		void Close()
+		{
+			delete[] data;
+			data = NULL;
+		}
+	};
+}
 
 namespace std
 {

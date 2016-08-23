@@ -2,6 +2,7 @@
 #include <unordered_map>
 
 #include "NewComponent.h"
+#include "Prefab.h"
 
 #include "components/VoxelModelComponent.h"
 #include "components/RigidBodyComponent.h"
@@ -41,6 +42,11 @@ public:
 		[](...) {}((AddObjectComponent<Args>(object))...);
 		objects[id] = object;
 		return &objects[id];
+	}
+
+	GameObject *CreateGameObjectFromPrefab(const Prefab& prefab)
+	{
+
 	}
 	
 	GameObject *CreateGameObject(const std::string& id)

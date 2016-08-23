@@ -7,12 +7,12 @@
 
 struct RigidBodyComponent : Component
 {
-	COMPONENT
-
+	COMPONENT(RigidBodyComponent)
+	
 	virtual void Create(GameObject *object)
 	{
 		// 2, 6, 1
-		collider = new btCylinderShape(btVector3(bounds.x / 2, bounds.y / 2, bounds.z / 2));
+		collider = new btCylinderShape(btVector3(2, 6, 1));
 
 		glm::vec3& position = object->transform.position;
 		motion_state = new btDefaultMotionState(
@@ -20,7 +20,7 @@ struct RigidBodyComponent : Component
 				btQuaternion(0, 0, 0, 1),
 				btVector3(position.x, position.y, position.z)
 				)
-			);
+		);
 
 		btRigidBody::btRigidBodyConstructionInfo construct(
 			mass,

@@ -9,7 +9,7 @@
 
 struct VoxelModelComponent : Component
 {
-	COMPONENT
+	COMPONENT(VoxelModelComponent)
 	
 	Model		  *model;
 
