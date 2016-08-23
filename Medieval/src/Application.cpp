@@ -43,7 +43,7 @@ void Application::Init()
 }
 
 void Application::MainLoop()
-{	
+{
 	double lastTime = glfwGetTime(), secTime = lastTime, sPerTick = 1.0 / 60.0;
 	int ticks = 0, frames = 0;
 	delta = 0;
@@ -79,6 +79,8 @@ void Application::MainLoop()
 			secTime += 1.0;
 		}
 	}
+
+	std::exit(0);
 }
 
 void Application::Destroy()
