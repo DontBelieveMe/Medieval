@@ -118,8 +118,9 @@ void GameState::tick()
 
 		camera->tick();
 
-		if (Input::MouseButtonDown(1) && !map.ChunkExists(map.GetChunkPosForBlock(camera->position)))
-			map.GenerateChunk(map.GetChunkPosForBlock(camera->position));
+		map.GenerateChunks(camera->position);
+		std::cout << "Loaded chunks: " << map.chunks.size() << '\n';
+		map.Tick();
 
 		static bool wireframe;
 		if (Input::MouseButtonPressed(2))
@@ -129,7 +130,6 @@ void GameState::tick()
 		GameObject *player = factory->GetGameObject("player");
 		if (Input::KeyPressed(GLFW_KEY_L))
 		{
-			std::cout << "Hi there" << std::endl;
 			RigidBodyComponent *rigidBodyComponent = player->GetComponentFast<RigidBodyComponent>();
 			rigidBodyComponent->AddForce(glm::vec3(0, 1000, 0));
 		}
@@ -151,7 +151,7 @@ void GameState::render()
     vox->bind();
 	factory->RenderNecessary(modelShader, view);
 
-	map.RenderAll(view, {0,0,0});
+	map.Render(view, {0,-70,0}, camera->position);
 
 	glDisable(GL_DEPTH_TEST);
 
