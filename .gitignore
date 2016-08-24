@@ -10,6 +10,11 @@
 /Medieval/.vs
 /Medieval.VC.db
 
+/Medieval/x64
+/Medieval/MedievalTK/EntityTK/GeneratedFiles
+/Medieval/MedievalTK/EntityTK/x64
+
+
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
@@ -22,6 +27,6 @@
 
 Medieval/bin
 Medieval/obj
-Medieval/EntityTK/GeneratedFiles
+
 */controls.config
 acp.py
