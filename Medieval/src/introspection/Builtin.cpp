@@ -16,7 +16,7 @@ void RegisterBuiltins()
 	REGISTER_TYPE(short);
 
 	REGISTER_TYPE(std::string);
-	REGISTER_MEMBER(std::string, length);
+	//REGISTER_MEMBER(std::string, length);
 	REGISTER_TYPE(glm::vec3);
 	REGISTER_MEMBER(glm::vec3, x);
 	REGISTER_MEMBER(glm::vec3, y);

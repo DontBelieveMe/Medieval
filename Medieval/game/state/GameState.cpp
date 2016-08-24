@@ -24,9 +24,15 @@
 Map map;
 PauseMenu *pause_menu;
 
-struct TestStruct
+struct TestStructBase
 {
-	int member = 20;
+	int base = 200;
+};
+
+struct tPlayer
+{
+	glm::vec3 position;
+	glm::vec3 scale;
 };
 
 GameState::GameState()
@@ -56,19 +62,17 @@ GameState::GameState()
 	Input::SetMouseMode(Input::MouseMode::locked);
 
 	pause_menu = new PauseMenu(false);
-	
+
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	ObjectFactory *factory = ObjectFactory::Get();
 
-	factory->CreateGameObjectFromPrefab("player");
-	factory->CreateGameObjectFromPrefab("ground");
-	
+	GameObject *player = factory->CreateGameObjectFromPrefab("player");
+	GameObject *ground = factory->CreateGameObjectFromPrefab("ground");
+
 	factory->InitAll();
-
-
 }
 
 int counter = 0;
@@ -88,7 +92,7 @@ void GameState::tick()
 
 	audioSystem->tick();
 	pause_menu->Tick();
-	
+
 
 	if (!pause_menu->enabled)
 	{
@@ -96,24 +100,25 @@ void GameState::tick()
 			showUI = !showUI;
 
 		camera->tick();
-	
-		if (Input::MouseButtonDown(1) && !map.ChunkExists(map.GetChunkPosForBlock(camera->position)))
-			map.GenerateChunk(map.GetChunkPosForBlock(camera->position));
+
+	// Sorry egor - it was freaking my FPS out sooo much
+	//	map.GenerateChunks(camera->position);
+	//	std::cout << "Loaded chunks: " << map.chunks.size() << '\n';
+	//	map.Tick();
 
 		static bool wireframe;
 		if (Input::MouseButtonPressed(2))
 			glPolygonMode(GL_FRONT_AND_BACK, (wireframe = !wireframe) ? GL_LINE : GL_FILL);
-	
+
 		ObjectFactory *factory = ObjectFactory::Get();
 		GameObject *player = factory->GetGameObject("player");
 		if (Input::KeyPressed(GLFW_KEY_L))
 		{
-			std::cout << "Hi there" << std::endl;
 			RigidBodyComponent *rigidBodyComponent = player->GetComponentFast<RigidBodyComponent>();
 			rigidBodyComponent->AddForce(glm::vec3(0, 1000, 0));
 		}
 		factory->UpdateAll();
-		
+
 	}
 
 }
@@ -130,7 +135,7 @@ void GameState::render()
     vox->bind();
 	factory->RenderNecessary(modelShader, view);
 
-	map.Render(view, {0,0,0});
+	map.Render(view, {0,-70,0}, camera->position);
 
 	glDisable(GL_DEPTH_TEST);
 

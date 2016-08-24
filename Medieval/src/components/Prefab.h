@@ -12,9 +12,9 @@
 #include "GameObject.h"
 #include "components/RigidBodyComponent.h"
 #include "components/VoxelModelComponent.h"
-
 #include "../rendering/Voxels.h"
 
+#include "Common.h"
 
 class Prefab : public Serializable, public GameObject
 {
@@ -25,13 +25,32 @@ public:
 	Prefab(const std::string& name)
 		: name(name) {}
 
-	// 
+	template <typename T>
+	void DeserializeComponent(T* out, const rapidjson::Value::ConstMemberIterator& component_it)
+	{
+		for (rapidjson::Value::ConstMemberIterator it = component_it->value.MemberBegin(); it != component_it->value.MemberEnd(); ++it) 
+		{
+			const char *name = it->name.GetString();
+			if (it->value.IsArray()) 
+			{
+				auto value = it->value.GetArray();
+				SET_MEMBER_STR_OBJ_PTR(out, name, glm::vec3(value[0].GetFloat(), value[1].GetFloat(), value[2].GetFloat()));
+			}
+			else if (it->value.IsFloat() || it->value.IsInt()) 
+			{
+				float value = it->value.GetFloat();
+				SET_MEMBER_STR_OBJ_PTR(out, name, value);
+			}
+			else if (it->value.IsString())
+			{
+				const char *value = it->value.GetString();
+				SET_MEMBER_STR_OBJ_PTR(out, name, std::string(value));
+			}
+		}
+	}
+
 	virtual void Deserialize()
 	{
-		Voxels *vox = new Voxels(2);
-		static Model playerModel = vox->loadModel(MODEL_PATH("player"));
-		static Model ruu = vox->loadModel(MODEL_PATH("wilk"));
-
 		using namespace rapidjson;
 		std::string filename = AssetData::DataPath + name + AssetData::detail::DefaultDataExtension;
 		io::File file(filename.c_str());
@@ -47,24 +66,12 @@ public:
 		transform.position = glm::vec3(position[0].GetFloat(), position[1].GetFloat(), position[2].GetFloat());
 		transform.scale = glm::vec3(scale[0].GetFloat(), scale[1].GetFloat(), scale[2].GetFloat());
 
-		for (Value::ConstMemberIterator it = components.MemberBegin(); it != components.MemberEnd(); ++it)
+		for (Value::ConstMemberIterator component_it = components.MemberBegin(); component_it != components.MemberEnd(); ++component_it)
 		{
-			int ID = StrToInt(it->name.GetString());
+			int ID = StrToInt(component_it->name.GetString());
 			AddComponent(ID);
-			if (ID == RigidBodyComponent::static_id) {
-				float mass = components[it->name]["mass"].GetFloat();
-				Value& inertia_value = components[it->name]["inertia"];
-				glm::vec3 inertia = glm::vec3(inertia_value[0].GetFloat(), inertia_value[1].GetFloat(), inertia_value[2].GetFloat());
-				RigidBodyComponent *component = GetComponentFast<RigidBodyComponent>();
-				component->mass = mass;
-				component->inertia = inertia;
-			}
-			if (ID == VoxelModelComponent::static_id)
-			{
-				VoxelModelComponent *component = GetComponentFast<VoxelModelComponent>();
-				const char *modelPath = components[it->name]["modelName"].GetString();
-				component->model = &playerModel;
-			}
+			
+			EXECUTE_ALL_SPECIALISED_COMPONENT_LOADING(ID, component_it);
 		}
 	}
 

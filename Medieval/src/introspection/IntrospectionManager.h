@@ -7,32 +7,7 @@
 #include "../Utils.h"
 #include "Serializable.h"
 
-#define REGISTER_TYPE(T) \
-	IntrospectionManager::Get()->RegisterType<T>(#T, sizeof(T))
 
-#define TYPE_INFO(T) \
-	IntrospectionManager::Get()->StaticType<T>()
-
-#define TYPE_OF(VAR) \
-	IntrospectionManager::Get()->GetType<decltype(VAR)>()
-
-#define TYPE_OF_PTR(PTR) \
-	IntrospectionManager::Get()->StaticType< detail::RemovePointer< decltype(PTR) >::type >()
-
-#define TYPE_INFO_STR(str) \
-	IntrospectionManager::Get()->GetTypeByStr(str)	
-
-#define TYPE_OF_MEMBER(T, MEMBER) \
-	TYPE_INFO(detail::RemoveMemberDetail<decltype(&T::MEMBER)>::type)
-
-#define REGISTER_MEMBER(T, MEMBER) \
-	IntrospectionManager::Get()->RegisterMember(TYPE_INFO(T), TYPE_OF_MEMBER(T, MEMBER), #MEMBER)
-
-#define SET_SERIALIZABLE(T) \
-	IntrospectionManager::Get()->MapInstance<T>(#T)
-
-#define CREATE_SERIALIZABLE_OBJECT(Name, STR_NAME) \
-	dynamic_cast<Name*>(IntrospectionManager::Get()->GetSerializableObject(#STR_NAME))
 
 namespace detail
 {
@@ -56,23 +31,45 @@ namespace detail
 	{ 
 		typedef typename RemovePointer<T>::type type; 
 	};
+
+	template <typename T, typename U>
+	constexpr size_t OffsetOf(U T::*member)
+	{
+		return (char*)&((T*)nullptr->*member) - (char*)nullptr;
+	}
 }
 
 template <typename T>
-struct Type { enum { is_primitive = 0 }; };
-	
+struct Type { enum { is_fundemental = false, is_pointer = false }; };
+
+template <typename T>
+struct Type<T*> { enum { is_pointer = true, is_fundemental = false
+}; };
+
 template <>
-struct Type<int> { enum { is_primitive = 1 }; };
+struct Type<int> { enum {
+	is_fundemental = true, is_pointer = false
+}; };
 template <>
-struct Type<bool> { enum { is_primitive = 1 }; };
+struct Type<bool> { enum {
+	is_fundemental = true, is_pointer = false
+}; };
 template <>
-struct Type<float> { enum { is_primitive = 1 }; };
+struct Type<float> { enum {
+	is_fundemental = true, is_pointer = false
+}; };
 template <>
-struct Type<char> { enum { is_primitive = 1 }; };
+struct Type<char> { enum {
+	is_fundemental = true, is_pointer = false
+}; };
 template <>
-struct Type<long> { enum { is_primitive = 1 }; };
+struct Type<long> { enum {
+	is_fundemental = true, is_pointer = false
+}; };
 template <>
-struct Type<double> { enum { is_primitive = 1 }; };
+struct Type<double> { enum {
+	is_fundemental = true, is_pointer = false
+}; };
 
 
 class IntrospectionManager
@@ -109,7 +106,7 @@ public:
 		return type;
 	}
 
-	void RegisterMember(TypeInfo* out, TypeInfo *info, const char *name)
+	void RegisterMember(TypeInfo* out, TypeInfo *info, const char *name, size_t offset)
 	{
 		for (auto& member : out->members)
 		{
@@ -119,6 +116,6 @@ public:
 			}
 		}
 
-		out->members.push_back({ info, name });
+		out->members.push_back({ info, name , offset });
 	}
 };

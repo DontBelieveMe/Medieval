@@ -3,12 +3,12 @@
 	"scale": [1, 1, 1],
 	"components":{
 		"1": {
-			"mass": 1,
+			"mass": 10,
 			"inertia": [0.4, 0.4, 0.4],
-			"half_bounds": [0.4]
+			"aabb_bounds": [4, 12, 2]
 		},
 		"0":{
-			"modelName": "player"
+			"model_path": "player"
 		}
 	}
 }}

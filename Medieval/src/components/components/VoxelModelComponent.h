@@ -11,20 +11,21 @@ struct VoxelModelComponent : Component
 {
 	COMPONENT(VoxelModelComponent, 0)
 
-	Model		  *model;
+	std::string   model_path;
+	Model		 model;
 
-	virtual void Create(GameObject *object) {(void)object;}
+	virtual void Create(GameObject *object) 
+	{
+		Voxels voxel_loader(1);
+		model = voxel_loader.loadModel(MODEL_PATH(model_path));
+	}
+
 	virtual void Update(GameObject *object) {(void)object;}
-	virtual void Destroy() { MSVC_LOG("Destroying!"); }
+	virtual void Destroy() {}
 
 	// This can be optimised using material batching
 	void Render(GameObject *object, const glm::mat4& view, ShaderProgram *model_shader)
 	{
-		if (model == NULL)
-		{
-			std::cout << "My model is NULL!" << std::endl;
-			return;
-		}
 		glm::mat4 model_matrix;
 		glm::vec3 position = object->transform.position;
 		model_matrix = glm::translate(model_matrix, position);
@@ -34,11 +35,12 @@ struct VoxelModelComponent : Component
 		*/
 		model_matrix = glm::scale(model_matrix, object->transform.scale);
 		model_shader->UploadMatrix4f("model", model_matrix);
-		DrawModel((*model));
+		DrawModel(model);
 	}
 
 	static void RegisterMembers()
 	{
+		REGISTER_MEMBER(VoxelModelComponent, model_path);
 	}
 };
 FINISH_COMPONENT(VoxelModelComponent);

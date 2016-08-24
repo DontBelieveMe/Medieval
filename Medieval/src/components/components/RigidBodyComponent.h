@@ -12,7 +12,7 @@ struct RigidBodyComponent : Component
 	virtual void Create(GameObject *object)
 	{
 		// 2, 6, 1
-		collider = new btCylinderShape(btVector3(2, 6, 1));
+		collider = new btCylinderShape(btVector3(aabb_bounds.x/2, aabb_bounds.y/2, aabb_bounds.z/2));
 
 		glm::vec3& position = object->transform.position;
 		motion_state = new btDefaultMotionState(
@@ -56,8 +56,7 @@ struct RigidBodyComponent : Component
 	glm::vec3 inertia;
 	float	  mass;
 
-	// The size of the entity, from the top left corner.
-	glm::vec3 bounds;
+	glm::vec3 aabb_bounds;
 
 private:
 	btDefaultMotionState *motion_state;
@@ -80,7 +79,7 @@ public:
 	{
 		REGISTER_MEMBER(RigidBodyComponent, mass);
 		REGISTER_MEMBER(RigidBodyComponent, inertia);
-		REGISTER_MEMBER(RigidBodyComponent, bounds);
+		REGISTER_MEMBER(RigidBodyComponent, aabb_bounds);
 	}
 };
 

@@ -43,6 +43,8 @@ protected:
 	}
 
 
+
+
 public:
 	void DeleteAllComponents()
 	{

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <deque>
 #include <unordered_map>
 #include <vector>
 
@@ -42,12 +43,12 @@ class Chunk
     friend class Map;
 
   public:
-    static constexpr int width = 16, depth = 64;
+    static constexpr int width = 24, depth = 64;
 
   private:
     //       y      x      z
     Block (*data)[width][width];
-    bool dirty_mesh = 0;
+    bool dirty_mesh = 0, in_mesh_update_queue = 0;
     GLuint vbo, vao;
     int triangles = 0;
 
@@ -130,9 +131,35 @@ class Chunk
 
 class Map
 {
+    int mesh_update_timer = 0;
+
+    using MeshUpdateDequeType = std::deque<ivec2>;
+    MeshUpdateDequeType mesh_gen_que, mesh_upd_que; // Separate update queues for fresh chunks and just modified chunks, because quickly giving fresh chunks is more important.
+
+    ivec2 *PollChunkForMeshUpdate()
+    {
+        static ivec2 ret;
+        if (mesh_gen_que.size())
+        {
+            ret = mesh_gen_que[0];
+            mesh_gen_que.pop_front();
+            return &ret;
+        }
+        if (mesh_upd_que.size())
+        {
+            ret = mesh_upd_que[0];
+            mesh_upd_que.pop_front();
+            return &ret;
+        }
+        return 0;
+    }
   public:
     using ChunksMapType = std::unordered_map<ivec2, Chunk>;
     ChunksMapType chunks;
+
+    static constexpr int generation_distance = 6; // 0 means 1x1, 1 means 3x3, etc.
+    static constexpr int render_distance = 6;
+    static constexpr int mesh_update_period = 1; // If multiple new meshes are needed, the map will generate new one each `mesh_update_period` ticks. Setting it to 0 will gen everything instantly, leading to freezes.
 
     ChunksMapType::iterator AddChunk(ivec2 pos)
     {
@@ -155,6 +182,8 @@ class Map
   private:
     void UpdateChunkMesh(ivec2 chunk_pos)
     {
+        #define AMBIENT_OCCLUSION 0
+
         auto it = chunks.find(chunk_pos);
         if (it == chunks.end())
             return; // No such chunk.
@@ -166,7 +195,9 @@ class Map
 
         static constexpr int vertices_per_buffer = 4096 / sizeof (Vertex);
 
+        #if AMBIENT_OCCLUSION == 1
         static constexpr float shadow_factor = 0.8f;
+        #endif
 
         class VertexArray
         {
@@ -258,6 +289,7 @@ class Map
                                   {pos+dir01[up]+dir01[c]+dir01[d], dir11[up], color},
                                   {pos+dir01[up]+dir01[d]+dir01[a], dir11[up], color}};
 
+                #if AMBIENT_OCCLUSION == 1
                 Vertex edge_centers[4]{{vec3(pos+dir01[up]+dir01[d]+dir01[a]) - 0.5f*vec3(dir11[d]), dir11[up], color},
                                        {vec3(pos+dir01[up]+dir01[a]+dir01[b]) - 0.5f*vec3(dir11[a]), dir11[up], color},
                                        {vec3(pos+dir01[up]+dir01[b]+dir01[c]) - 0.5f*vec3(dir11[b]), dir11[up], color},
@@ -321,10 +353,10 @@ class Map
                     PushQuad(edge_centers[3], corners[3], edge_centers[0], center);
                 }
                 else
-                {
+                #endif
                     PushQuad(corners[0], corners[1], corners[2], corners[3]);
-                }
             }
+            #undef AMBIENT_OCCLUSION
         };
 
         for (int yy = 0; yy < Chunk::depth; yy++)
@@ -450,38 +482,87 @@ class Map
         return {proper_div(pos.x, Chunk::width), proper_div(pos.z, Chunk::width)};
     }
 
-    void Render(const glm::mat4 &view, vec3 pos)
+    void Render(const glm::mat4 &view, vec3 pos, vec3 center)
     {
-        for (auto &it : chunks)
+        ivec2 center_chunk = GetChunkPosForBlock(center);
+        for (int y = -render_distance; y <= render_distance; y++)
         {
-            if (it.second.dirty_mesh)
+            for (int x = -render_distance; x <= render_distance; x++)
             {
-                it.second.dirty_mesh = 0;
-                UpdateChunkMesh(it.first);
+                auto it = chunks.find(center_chunk + ivec2(x,y));
+                if (it == chunks.end())
+                    continue;
+                if (it->second.dirty_mesh && !it->second.in_mesh_update_queue)
+                {
+                    it->second.in_mesh_update_queue = 1;
+                    mesh_upd_que.push_back(it->first);
+                }
+                it->second.Render(view, pos + vec3(it->first.x * Chunk::width, 0, it->first.y * Chunk::width));
             }
-            it.second.Render(view, pos + vec3(it.first.x * Chunk::width, 0, it.first.y * Chunk::width));
         }
     }
 
-    void GenerateChunk(ivec2 chunk)
+  public:
+    void GenerateChunks(vec3 center)
     {
-        auto it = AddChunk(chunk);
-
-        for (int y = 0; y < Chunk::depth; y++)
+        ivec2 center_chunk = GetChunkPosForBlock(center);
+        for (int y = -generation_distance; y <= generation_distance; y++)
         {
-            for (int x = chunk.x*Chunk::width; x < (chunk.x+1)*Chunk::width; x++)
+            for (int x = -generation_distance; x <= generation_distance; x++)
             {
-                for (int z = chunk.y*Chunk::width; z < (chunk.y+1)*Chunk::width; z++)
+                ivec2 chunk = center_chunk + ivec2(x,y);
+                auto it = chunks.find(chunk);
+                if (it != chunks.end())
+                    continue;
+
+                it = AddChunk(chunk);
+
+                for (int y = 0; y < Chunk::depth; y++)
                 {
-                    SetBlock_NoMeshUpdate(it, {x,y,z}, Block{Block::Type(int(Random() % Chunk::depth + 20) > y + 10)});
+                    for (int x = chunk.x*Chunk::width; x < (chunk.x+1)*Chunk::width; x++)
+                    {
+                        for (int z = chunk.y*Chunk::width; z < (chunk.y+1)*Chunk::width; z++)
+                        {
+                            SetBlock_NoMeshUpdate(it, {x,y,z}, Block{Block::Type(int(Random() % 10 + 40) > y)});
+                        }
+                    }
                 }
+
+                it->second.dirty_mesh = 1;
+                it->second.in_mesh_update_queue = 1;
+                mesh_gen_que.push_back(it->first);
+                auto SetDirtyFlag = [&](ivec2 offset)
+                {
+                    auto it = chunks.find(chunk + offset);
+                    if (it == chunks.end())
+                        return;
+                    it->second.dirty_mesh = 1;
+                };
+                SetDirtyFlag({1,0});
+                SetDirtyFlag({0,1});
+                SetDirtyFlag({-1,0});
+                SetDirtyFlag({0,-1});
             }
         }
+    }
 
-        UpdateChunkMesh(chunk);
-        UpdateChunkMesh(chunk + ivec2(1,0));
-        UpdateChunkMesh(chunk + ivec2(0,1));
-        UpdateChunkMesh(chunk + ivec2(-1,0));
-        UpdateChunkMesh(chunk + ivec2(0,-1));
+    void Tick() // You should call this each tick *after* using the map, but it's not mandratory.
+    {
+        if (mesh_update_timer)
+            mesh_update_timer--;
+        else
+        {
+          repeat:
+            ivec2 *pos = PollChunkForMeshUpdate();
+            if (!pos)
+                return;
+            auto it = chunks.find(*pos);
+            if (!it->second.dirty_mesh)
+                goto repeat;
+            it->second.dirty_mesh = 0;
+            it->second.in_mesh_update_queue = 0;
+            UpdateChunkMesh(*pos);
+            mesh_update_timer = mesh_update_period;
+        }
     }
 };
