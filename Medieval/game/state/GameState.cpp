@@ -101,10 +101,9 @@ void GameState::tick()
 
 		camera->tick();
 
-	// Sorry egor - it was freaking my FPS out sooo much
-	//	map.GenerateChunks(camera->position);
-	//	std::cout << "Loaded chunks: " << map.chunks.size() << '\n';
-	//	map.Tick();
+		map.GenerateChunks(camera->position);
+		std::cout << "Loaded chunks: " << map.chunks.size() << '\n';
+		map.Tick();
 
 		static bool wireframe;
 		if (Input::MouseButtonPressed(2))

@@ -1,6 +1,17 @@
 #pragma once
 
 #include "ReflectionAPI.h"
+#include <vector>
+#include <cstring>
+
+namespace detail
+{
+    template <typename T, typename U>
+	constexpr size_t OffsetOf(U T::*member)
+	{
+		return (char*)&((T*)nullptr->*member) - (char*)nullptr;
+	}
+}
 
 struct TypeInfo;
 
@@ -27,7 +38,7 @@ struct TypeInfo
 	void SetMember(T *object, M T::*member, const M& newValue)
 	{
 		size_t offset = detail::OffsetOf(member);
-		
+
 		char *base = (char*)object;
 		M *newPtr;
 
@@ -41,7 +52,7 @@ struct TypeInfo
 		Member *member_ptr = NULL;
 		for (Member& member : members)
 		{
-			if (strcmp(member.name, name) == 0)
+			if (std::strcmp(member.name, name) == 0)
 				member_ptr = &member;
 		}
 

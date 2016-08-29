@@ -19,24 +19,6 @@ namespace detail
 	{
 		typedef T type;
 	};
-
-	template <typename T>
-	struct RemovePointer 
-	{ 
-		typedef T type; 
-	};
-	
-	template <typename T>
-	struct RemovePointer<T*> 
-	{ 
-		typedef typename RemovePointer<T>::type type; 
-	};
-
-	template <typename T, typename U>
-	constexpr size_t OffsetOf(U T::*member)
-	{
-		return (char*)&((T*)nullptr->*member) - (char*)nullptr;
-	}
 }
 
 template <typename T>
@@ -76,7 +58,7 @@ class IntrospectionManager
 {
 private:
 	std::unordered_map<const char *, TypeInfo*> type_map;
-	
+
 public:
 	static IntrospectionManager *Get()
 	{
