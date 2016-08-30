@@ -14,7 +14,7 @@ CXX           = g++
 DEFINES       = -DUNICODE -DQT_QML_DEBUG -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_NEEDS_QMAIN
 CFLAGS        = -pipe -fno-keep-inline-dllexport -O2 -Wall -Wextra $(DEFINES)
 CXXFLAGS      = -pipe -fno-keep-inline-dllexport -O2 -std=gnu++11 -frtti -Wall -Wextra -fexceptions -mthreads $(DEFINES)
-INCPATH       = -I../EntityTK -I. -I../../../include -II:/Qt57/5.7/mingw53_32/include -II:/Qt57/5.7/mingw53_32/include/QtWidgets -II:/Qt57/5.7/mingw53_32/include/QtGui -II:/Qt57/5.7/mingw53_32/include/QtANGLE -II:/Qt57/5.7/mingw53_32/include/QtCore -Irelease -I. -II:/Qt57/5.7/mingw53_32/mkspecs/win32-g++ 
+INCPATH       = -I../EntityTK -I. -I../../../include -II:/gdstl/GDstl/source/include -II:/Qt57/5.7/mingw53_32/include -II:/Qt57/5.7/mingw53_32/include/QtWidgets -II:/Qt57/5.7/mingw53_32/include/QtGui -II:/Qt57/5.7/mingw53_32/include/QtANGLE -II:/Qt57/5.7/mingw53_32/include/QtCore -Irelease -I. -II:/Qt57/5.7/mingw53_32/mkspecs/win32-g++ 
 LINKER      =        g++
 LFLAGS        =        -Wl,-s -Wl,-subsystem,windows -mthreads
 LIBS        =        -lmingw32 -LI:/Qt57/5.7/mingw53_32/lib I:/Qt57/5.7/mingw53_32/lib/libqtmain.a -LC:/utils/postgresql/pgsql/lib -LC:/utils/my_sql/my_sql/lib -lshell32 I:/Qt57/5.7/mingw53_32/lib/libQt5Core.a I:/Qt57/5.7/mingw53_32/lib/libQt5Widgets.a I:/Qt57/5.7/mingw53_32/lib/libQt5Gui.a I:/Qt57/5.7/mingw53_32/lib/libQt5Core.a 
@@ -53,7 +53,7 @@ OBJECTS       = release/main.o \
 
 DIST          =  ../EntityTK/EntityTK.h \
 		../EntityTK/EntityObject.h \
-		../EntityTK/component.h ../EntityTK/main.cpp \
+		../EntityTK/Component.h ../EntityTK/main.cpp \
 		../EntityTK/EntityTK.cpp \
 		../EntityTK/EntityObject.cpp
 QMAKE_TARGET  = EntityTK
@@ -219,7 +219,7 @@ release/moc_EntityTK.cpp: I:/Qt57/5.7/mingw53_32/include/QtWidgets/QMainWindow \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qrubberband.h \
 		../EntityTK/EntityTK.h \
 		I:/Qt57/5.7/mingw53_32/bin/moc.exe
-	'I:\Qt57\5.7\mingw53_32\bin\moc.exe' $(DEFINES) -D__GNUC__ -DWIN32 -II:/Qt57/5.7/mingw53_32/mkspecs/win32-g++ -II:/Medieval/MedievalProject/Medieval/MedievalTK/EntityTK/EntityTK -II:/Medieval/MedievalProject/Medieval/include -II:/Qt57/5.7/mingw53_32/include -II:/Qt57/5.7/mingw53_32/include/QtWidgets -II:/Qt57/5.7/mingw53_32/include/QtGui -II:/Qt57/5.7/mingw53_32/include/QtANGLE -II:/Qt57/5.7/mingw53_32/include/QtCore -I. ../EntityTK/EntityTK.h -o release/moc_EntityTK.cpp
+	'I:\Qt57\5.7\mingw53_32\bin\moc.exe' $(DEFINES) -D__GNUC__ -DWIN32 -II:/Qt57/5.7/mingw53_32/mkspecs/win32-g++ -II:/Medieval/MedievalProject/Medieval/MedievalTK/EntityTK/EntityTK -II:/Medieval/MedievalProject/Medieval/include -II:/gdstl/GDstl/source/include -II:/Qt57/5.7/mingw53_32/include -II:/Qt57/5.7/mingw53_32/include/QtWidgets -II:/Qt57/5.7/mingw53_32/include/QtGui -II:/Qt57/5.7/mingw53_32/include/QtANGLE -II:/Qt57/5.7/mingw53_32/include/QtCore -I. ../EntityTK/EntityTK.h -o release/moc_EntityTK.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -503,13 +503,11 @@ release/EntityTK.o: ../EntityTK/EntityTK.cpp ../EntityTK/EntityTK.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qinputmethod.h \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QButtonGroup \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qbuttongroup.h \
-		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QFormLayout \
-		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qformlayout.h \
-		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QLayout \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QGridLayout \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qgridlayout.h \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qlayout.h \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qlayoutitem.h \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qboxlayout.h \
-		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qgridlayout.h \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QHeaderView \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qheaderview.h \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QLabel \
@@ -557,7 +555,8 @@ release/EntityTK.o: ../EntityTK/EntityTK.cpp ../EntityTK/EntityTK.h \
 		../../../include/rapidjson/stringbuffer.h \
 		../../../include/rapidjson/filereadstream.h \
 		../EntityTK/EntityObject.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/QStringList
+		../EntityTK/component.h \
+		I:/gdstl/GDstl/source/include/gdtl/scoped_ptr.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release/EntityTK.o ../EntityTK/EntityTK.cpp
 
 release/EntityObject.o: ../EntityTK/EntityObject.cpp ../EntityTK/EntityObject.h \
@@ -581,10 +580,10 @@ release/EntityObject.o: ../EntityTK/EntityObject.cpp ../EntityTK/EntityObject.h 
 		../../../include/rapidjson/internal/pow10.h \
 		../../../include/rapidjson/error/error.h \
 		../../../include/rapidjson/internal/strfunc.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/QStringList \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qstringlist.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qlist.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qalgorithms.h \
+		ui_EntityTK.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/QVariant \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qvariant.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qatomic.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qglobal.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qconfig.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qfeatures.h \
@@ -597,32 +596,31 @@ release/EntityObject.o: ../EntityTK/EntityObject.cpp ../EntityTK/EntityObject.h 
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qsysinfo.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qlogging.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qflags.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qatomic.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qglobalstatic.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qmutex.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qnumeric.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qversiontagging.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qbasicatomic.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qatomic_bootstrap.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qgenericatomic.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qatomic_cxx11.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qatomic_msvc.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qglobalstatic.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qmutex.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qnumeric.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qversiontagging.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qiterator.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qbytearray.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qrefcount.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qnamespace.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qarraydata.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qhashfunctions.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qstring.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qchar.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qstringbuilder.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qlist.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qalgorithms.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qiterator.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qhashfunctions.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qpair.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qbytearraylist.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qbytearray.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qnamespace.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qstring.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qstringbuilder.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qstringlist.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qregexp.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qstringmatcher.h \
-		ui_EntityTK.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/QVariant \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qvariant.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qmetatype.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qvarlengtharray.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qcontainerfwd.h \
@@ -693,13 +691,11 @@ release/EntityObject.o: ../EntityTK/EntityObject.cpp ../EntityTK/EntityObject.h 
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qinputmethod.h \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QButtonGroup \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qbuttongroup.h \
-		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QFormLayout \
-		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qformlayout.h \
-		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QLayout \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QGridLayout \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qgridlayout.h \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qlayout.h \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qlayoutitem.h \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qboxlayout.h \
-		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qgridlayout.h \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QHeaderView \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qheaderview.h \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qabstractitemview.h \
@@ -735,8 +731,12 @@ release/EntityObject.o: ../EntityTK/EntityObject.cpp ../EntityTK/EntityObject.h 
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QStatusBar \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qstatusbar.h \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QWidget \
+		../EntityTK/component.h \
+		I:/gdstl/GDstl/source/include/gdtl/scoped_ptr.h \
 		../../../include/rapidjson/filereadstream.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/QString \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/QStringList \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QLayout \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QLineEdit \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qlineedit.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qtextcursor.h \

@@ -13,7 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QFormLayout>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QListWidget>
@@ -39,11 +39,11 @@ public:
     QWidget *centralWidget;
     QListWidget *allComponents;
     QListWidget *entityComponentList;
-    QWidget *formLayoutWidget;
-    QFormLayout *formLayout;
-    QPushButton *pushButton;
     QLabel *label;
     QLabel *label_2;
+    QWidget *gridLayoutWidget;
+    QGridLayout *gridLayout;
+    QPushButton *pushButton;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuAbout;
@@ -83,25 +83,25 @@ public:
         entityComponentList = new QListWidget(centralWidget);
         entityComponentList->setObjectName(QStringLiteral("entityComponentList"));
         entityComponentList->setGeometry(QRect(10, 30, 191, 471));
-        formLayoutWidget = new QWidget(centralWidget);
-        formLayoutWidget->setObjectName(QStringLiteral("formLayoutWidget"));
-        formLayoutWidget->setGeometry(QRect(210, 10, 241, 491));
-        formLayout = new QFormLayout(formLayoutWidget);
-        formLayout->setSpacing(6);
-        formLayout->setContentsMargins(11, 11, 11, 11);
-        formLayout->setObjectName(QStringLiteral("formLayout"));
-        formLayout->setContentsMargins(0, 0, 0, 0);
-        pushButton = new QPushButton(formLayoutWidget);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
-
-        formLayout->setWidget(0, QFormLayout::FieldRole, pushButton);
-
         label = new QLabel(centralWidget);
         label->setObjectName(QStringLiteral("label"));
         label->setGeometry(QRect(530, 10, 81, 16));
         label_2 = new QLabel(centralWidget);
         label_2->setObjectName(QStringLiteral("label_2"));
         label_2->setGeometry(QRect(50, 10, 141, 16));
+        gridLayoutWidget = new QWidget(centralWidget);
+        gridLayoutWidget->setObjectName(QStringLiteral("gridLayoutWidget"));
+        gridLayoutWidget->setGeometry(QRect(210, 30, 251, 481));
+        gridLayout = new QGridLayout(gridLayoutWidget);
+        gridLayout->setSpacing(6);
+        gridLayout->setContentsMargins(11, 11, 11, 11);
+        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setContentsMargins(0, 0, 0, 0);
+        pushButton = new QPushButton(gridLayoutWidget);
+        pushButton->setObjectName(QStringLiteral("pushButton"));
+
+        gridLayout->addWidget(pushButton, 0, 0, 1, 1);
+
         EntityTK->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(EntityTK);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -141,9 +141,9 @@ public:
         actionHelp->setText(QApplication::translate("EntityTK", "Help", 0));
         actionAbout->setText(QApplication::translate("EntityTK", "About", 0));
         actionNew->setText(QApplication::translate("EntityTK", "New", 0));
-        pushButton->setText(QApplication::translate("EntityTK", "Remove Component", 0));
         label->setText(QApplication::translate("EntityTK", "All Components", 0));
         label_2->setText(QApplication::translate("EntityTK", "This entitys components", 0));
+        pushButton->setText(QApplication::translate("EntityTK", "Remove Component", 0));
         menuFile->setTitle(QApplication::translate("EntityTK", "File", 0));
         menuAbout->setTitle(QApplication::translate("EntityTK", "About", 0));
     } // retranslateUi

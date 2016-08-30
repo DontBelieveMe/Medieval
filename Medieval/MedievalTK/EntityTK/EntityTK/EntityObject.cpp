@@ -10,7 +10,7 @@
 
 EntityObject::EntityObject(const std::string& pathToDoc, Ui::EntityTK* ui)
 {
-    form = ui->formLayout;
+    form = ui->gridLayout;
 
     FILE* file = fopen(pathToDoc.c_str(), "rb");
     char buffer[65536];
@@ -30,15 +30,15 @@ EntityObject::EntityObject(const std::string& pathToDoc, Ui::EntityTK* ui)
     }
 
    QLabel *positionLabel = new QLabel("Position");
-   form->addWidget(positionLabel);
-
+   QHBoxLayout *boxLayout = new QHBoxLayout;
    QLineEdit *x = new QLineEdit("");
    QLineEdit *y = new QLineEdit("");
    QLineEdit *z = new QLineEdit("");
-   form->addWidget(x);
-   form->addWidget(y);
-   form->addWidget(z);
-
+   boxLayout->addWidget(positionLabel);
+   boxLayout->addWidget(x);
+   boxLayout->addWidget(y);
+   boxLayout->addWidget(z);
+   form->addLayout(boxLayout,form->rowCount(), 0);
 }
 
 std::string EntityObject::getFileNameFromPath(const std::string& path, const std::string& extension)

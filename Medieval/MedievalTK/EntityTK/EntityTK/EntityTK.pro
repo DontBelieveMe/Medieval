@@ -18,7 +18,7 @@ SOURCES += main.cpp\
 
 HEADERS  += EntityTK.h \
     EntityObject.h \
-    component.h
+    Component.h
 
 FORMS    += EntityTK.ui
-INCLUDEPATH += I:\Medieval\MedievalProject\Medieval\include
+INCLUDEPATH += I:\Medieval\MedievalProject\Medieval\include I:\gdstl\GDstl\source\include
