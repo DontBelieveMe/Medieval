@@ -3,7 +3,7 @@
 	"scale": [1, 1, 1],
 	"components":{
 		"1": {
-			"mass": 10,
+			"mass": 1,
 			"inertia": [0.4, 0.4, 0.4],
 			"aabb_bounds": [4, 12, 2]
 		},

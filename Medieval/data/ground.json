@@ -3,8 +3,8 @@
 	"scale": [1, 1, 1],
 	"components":{
 		"1": {
-			"mass": 1,
-			"inertia": [0.4, 0.4, 0.4],
+			"mass": 0,
+			"inertia": [0, 0, 0],
 			"aabb_bounds": [4, 12, 2]
 		},
 		"0":{
