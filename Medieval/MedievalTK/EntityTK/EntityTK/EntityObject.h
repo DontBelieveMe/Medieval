@@ -6,6 +6,8 @@
 #include "ui_EntityTK.h"
 #include "component.h"
 
+#include <gdtl/scoped_ptr.h>
+
 class EntityObject
 {
 private:
@@ -20,10 +22,11 @@ private:
     float sx, sy, sz;
 
     QGridLayout *form;
-
+    QHBoxLayout *positionLayout;
+    QHBoxLayout *scaleLayout;
+private:
 public:
     EntityObject(const std::string& pathToDoc, Ui::EntityTK* ui);
-    ~EntityObject();
 };
 
 #endif // ENTITYOBJECT_H

@@ -2,7 +2,6 @@
 #define COMPONENT_H
 
 #include <map>
-#include <gdtl/scoped_ptr.h>
 
 class Component
 {

@@ -28,17 +28,31 @@ EntityObject::EntityObject(const std::string& pathToDoc, Ui::EntityTK* ui)
         if(component_it->name == "1")
             ui->entityComponentList->addItem("RigidBodyComponent");
     }
+    rapidjson::Value& position = jsonDoc[name.c_str()]["position"];
+    rapidjson::Value& scale = jsonDoc[name.c_str()]["scale"];
 
-   QLabel *positionLabel = new QLabel("Position");
-   QHBoxLayout *boxLayout = new QHBoxLayout;
-   QLineEdit *x = new QLineEdit("");
-   QLineEdit *y = new QLineEdit("");
-   QLineEdit *z = new QLineEdit("");
-   boxLayout->addWidget(positionLabel);
-   boxLayout->addWidget(x);
-   boxLayout->addWidget(y);
-   boxLayout->addWidget(z);
-   form->addLayout(boxLayout,form->rowCount(), 0);
+    QLabel *positionLabel = new QLabel("Position");
+    QLabel *scaleLabel = new QLabel("Scale");
+    QLineEdit *x = new QLineEdit(QString::number(position[0].GetFloat()));
+    QLineEdit *y = new QLineEdit(QString::number(position[1].GetFloat()));
+    QLineEdit *z = new QLineEdit(QString::number(position[2].GetFloat()));
+    QLineEdit *sx = new QLineEdit(QString::number(scale[0].GetFloat()));
+    QLineEdit *sy = new QLineEdit(QString::number(scale[1].GetFloat()));
+    QLineEdit *sz = new QLineEdit(QString::number(scale[2].GetFloat()));
+
+    positionLayout = new QHBoxLayout;
+    scaleLayout = new QHBoxLayout;
+    positionLayout->addWidget(positionLabel);
+    positionLayout->addWidget(x);
+    positionLayout->addWidget(y);
+    positionLayout->addWidget(z);
+    scaleLayout->addWidget(scaleLabel);
+    scaleLayout->addWidget(sx);
+    scaleLayout->addWidget(sy);
+    scaleLayout->addWidget(sz);
+
+    form->addLayout(positionLayout,form->rowCount(), 0);
+    form->addLayout(scaleLayout, form->rowCount(), 0);
 }
 
 std::string EntityObject::getFileNameFromPath(const std::string& path, const std::string& extension)
@@ -48,10 +62,6 @@ std::string EntityObject::getFileNameFromPath(const std::string& path, const std
     QString nameWithExtension = list[list.size() - 1];
     QStringList nameWithoutExtension = nameWithExtension.split(".");
     return nameWithoutExtension[0].toStdString();
-}
-
-EntityObject::~EntityObject()
-{
 }
 
 
