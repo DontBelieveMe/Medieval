@@ -1,3 +1,5 @@
+#ifndef BUILD_LIB
+
 #include <iostream>
 #include <stdexcept>
 
@@ -18,3 +20,5 @@ int main()
 
 	return EXIT_SUCCESS;
 }
+
+#endif

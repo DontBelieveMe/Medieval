@@ -10,6 +10,11 @@
 /Medieval/.vs
 /Medieval.VC.db
 
+/Medieval/x64
+/Medieval/MedievalTK/EntityTK/GeneratedFiles
+/Medieval/MedievalTK/EntityTK/x64
+/Medieval/MedievalTK/build-EntityTK-Desktop_Qt_5_7_0_MinGW_32bit-Debug
+
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
@@ -24,4 +29,3 @@ Medieval/bin
 Medieval/obj
 
 */controls.config
-acp.py
