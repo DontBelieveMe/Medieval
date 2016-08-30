@@ -1,6 +1,7 @@
 #include "EntityObject.h"
 
 #include <rapidjson/filereadstream.h>
+
 #include <QString>
 #include <QStringList>
 #include <iostream>
