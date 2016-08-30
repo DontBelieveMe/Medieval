@@ -8,7 +8,7 @@
 struct RigidBodyComponent : Component
 {
 	COMPONENT(RigidBodyComponent, 1)
-	
+
 	virtual void Create(GameObject *object)
 	{
 		// 2, 6, 1
@@ -31,7 +31,7 @@ struct RigidBodyComponent : Component
 
 		rigidbody = new btRigidBody(construct);
 		PhysicsWorld::Get()->AddRigidBody(rigidbody);
-		
+
 	}
 
 	virtual void Update(GameObject *object)
@@ -83,4 +83,4 @@ public:
 	}
 };
 
-FINISH_COMPONENT(RigidBodyComponent);
+FINISH_COMPONENT(RigidBodyComponent)

@@ -267,9 +267,24 @@ class Map
 
         ivec3 chunk_offset(chunk_pos.x * Chunk::width, 0, chunk_pos.y * Chunk::width);
 
+
+        ChunksMapType::const_iterator chunk_iters_3x3[3][3]
+        {
+            {chunks.find(chunk_pos + ivec2(-1,-1)), chunks.find(chunk_pos + ivec2(-1,0)), chunks.find(chunk_pos + ivec2(-1,1))},
+            {chunks.find(chunk_pos + ivec2( 0,-1)), it,                                   chunks.find(chunk_pos + ivec2( 0,1))},
+            {chunks.find(chunk_pos + ivec2( 1,-1)), chunks.find(chunk_pos + ivec2( 1,0)), chunks.find(chunk_pos + ivec2( 1,1))},
+        };
+
+        auto GetBlockFast = [&](ivec3 pos) -> Block
+        {
+            ivec2 chunk_index = GetChunkPosForBlock(pos) - chunk_pos + 1;
+            return GetBlock(chunk_iters_3x3[chunk_index.x][chunk_index.y], pos);
+        };
+
+
         auto GenSide = [&](Block this_block, ivec3 pos, int noise, Dir up, Dir a, Dir b, Dir c, Dir d)
         {
-            if (GetBlock(chunk_offset + pos + dir11[up]).type == Block::Type::air)
+            if (GetBlockFast(chunk_offset + pos + dir11[up]).type == Block::Type::air)
             {
                 //
                 //         a
@@ -298,26 +313,26 @@ class Map
                 Vertex center{vec3(pos+dir01[up]+dir01[a]+dir01[b]) - 0.5f*vec3(dir11[a]) - 0.5f*vec3(dir11[b]), dir11[up], color};
 
                 /*
-                Block near_blocks[4]{GetBlock(chunk_offset + pos + dir11[a]),
-                                     GetBlock(chunk_offset + pos + dir11[b]),
-                                     GetBlock(chunk_offset + pos + dir11[c]),
-                                     GetBlock(chunk_offset + pos + dir11[d])};
+                Block near_blocks[4]{GetBlockFast(chunk_offset + pos + dir11[a]),
+                                     GetBlockFast(chunk_offset + pos + dir11[b]),
+                                     GetBlockFast(chunk_offset + pos + dir11[c]),
+                                     GetBlockFast(chunk_offset + pos + dir11[d])};
 
-                Block near_corners[4]{GetBlock(chunk_offset + pos + dir11[a]+dir11[b]),
-                                      GetBlock(chunk_offset + pos + dir11[b]+dir11[c]),
-                                      GetBlock(chunk_offset + pos + dir11[c]+dir11[d]),
-                                      GetBlock(chunk_offset + pos + dir11[d]+dir11[a])};
+                Block near_corners[4]{GetBlockFast(chunk_offset + pos + dir11[a]+dir11[b]),
+                                      GetBlockFast(chunk_offset + pos + dir11[b]+dir11[c]),
+                                      GetBlockFast(chunk_offset + pos + dir11[c]+dir11[d]),
+                                      GetBlockFast(chunk_offset + pos + dir11[d]+dir11[a])};
                 */
 
-                Block near_blocks_up[4]{GetBlock(chunk_offset + pos + dir11[a] + dir11[up]),
-                                        GetBlock(chunk_offset + pos + dir11[b] + dir11[up]),
-                                        GetBlock(chunk_offset + pos + dir11[c] + dir11[up]),
-                                        GetBlock(chunk_offset + pos + dir11[d] + dir11[up])};
+                Block near_blocks_up[4]{GetBlockFast(chunk_offset + pos + dir11[a] + dir11[up]),
+                                        GetBlockFast(chunk_offset + pos + dir11[b] + dir11[up]),
+                                        GetBlockFast(chunk_offset + pos + dir11[c] + dir11[up]),
+                                        GetBlockFast(chunk_offset + pos + dir11[d] + dir11[up])};
 
-                Block near_corners_up[4]{GetBlock(chunk_offset + pos + dir11[a]+dir11[b] + dir11[up]),
-                                         GetBlock(chunk_offset + pos + dir11[b]+dir11[c] + dir11[up]),
-                                         GetBlock(chunk_offset + pos + dir11[c]+dir11[d] + dir11[up]),
-                                         GetBlock(chunk_offset + pos + dir11[d]+dir11[a] + dir11[up])};
+                Block near_corners_up[4]{GetBlockFast(chunk_offset + pos + dir11[a]+dir11[b] + dir11[up]),
+                                         GetBlockFast(chunk_offset + pos + dir11[b]+dir11[c] + dir11[up]),
+                                         GetBlockFast(chunk_offset + pos + dir11[c]+dir11[d] + dir11[up]),
+                                         GetBlockFast(chunk_offset + pos + dir11[d]+dir11[a] + dir11[up])};
 
                 bool status[4]{}, edge_status[4]{};
 
@@ -365,7 +380,7 @@ class Map
             {
                 for (int zz = 0; zz < Chunk::width; zz++)
                 {
-                    Block this_block = GetBlock(chunk_offset+ivec3(xx,yy,zz));
+                    Block this_block = GetBlockFast(chunk_offset+ivec3(xx,yy,zz));
                     if (this_block.Visible())
                     {
                         int noise = Noise(Noise(Noise(Noise(Noise(Noise(iround<unsigned>(chunk_offset.x + xx)) + ~iround<unsigned>(chunk_offset.y + yy)) + ~iround<unsigned>(chunk_offset.z + zz)))));

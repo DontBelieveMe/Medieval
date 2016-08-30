@@ -1,5 +1,6 @@
 #pragma once
 
+#include <type_traits>
 #include "IntrospectionManager.h"
 
 #define REGISTER_TYPE(T) \
@@ -12,10 +13,10 @@
 	IntrospectionManager::Get()->StaticType<decltype(VAR)>()
 
 #define TYPE_OF_PTR(PTR) \
-	IntrospectionManager::Get()->StaticType< detail::RemovePointer< decltype(PTR) >::type >()
+	IntrospectionManager::Get()->StaticType< std::remove_pointer_t< decltype(PTR) >>()
 
 #define TYPE_INFO_STR(str) \
-	IntrospectionManager::Get()->GetTypeByStr(str)	
+	IntrospectionManager::Get()->GetTypeByStr(str)
 
 #define DECLTYPE_MEMBER(T, MEMBER) \
 	detail::RemoveMemberDetail<decltype(&T::MEMBER)>::type
@@ -35,5 +36,5 @@
 #define SET_MEMBER_STR(OBJ, MEMBER, VALUE) \
 	TYPE_OF(OBJ)->SetMember(&OBJ, MEMBER, VALUE)
 
-#define SET_MEMBER_STR_OBJ_PTR(OBJ, MEMBER, VALUE, T, MT) \
+#define SET_MEMBER_STR_OBJ_PTR(OBJ, MEMBER, VALUE) \
 	TYPE_OF_PTR(OBJ)->SetMember(OBJ, MEMBER, VALUE)

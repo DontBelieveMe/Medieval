@@ -7,14 +7,14 @@
 
 #define REGISTER_COMPONENT_ID(T) \
 	static ComponentRegister<T> registrar_##T;
-		
+
 // __COUNTER__ is not actually standard but should be alright for GCC and MSVC
 #define COMPONENT(TYPE, ID) \
 	static constexpr int static_id = ID; \
 	TYPE() { REGISTER_TYPE(TYPE); REGISTER_MEMBER(TYPE, id); } \
 
 #define FINISH_COMPONENT(NAME) \
-	REGISTER_COMPONENT_ID(NAME); 
+	REGISTER_COMPONENT_ID(NAME)
 
 struct Component : public Serializable
 {
@@ -22,7 +22,7 @@ struct Component : public Serializable
 	virtual void Update(GameObject *object) = 0;
 	virtual void Destroy() {};
 	virtual ~Component() {}
-	
+
 	int id;
 };
 
@@ -38,7 +38,7 @@ public:
 		map::iterator it = component_map.find(id);
 		if (it != component_map.end())
 			return;
-		
+
 		component_map[id] = function;
 	}
 
@@ -55,7 +55,7 @@ public:
 	ComponentRegister()
 	{
 		T::RegisterMembers();
-		// register the class factory function 
+		// register the class factory function
 		ComponentIDList::Get()->RegisterComponent(T::static_id,
 			[](void) -> Component * { return new T(); });
 	}

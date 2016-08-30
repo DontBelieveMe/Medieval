@@ -14,7 +14,7 @@ struct VoxelModelComponent : Component
 	std::string   model_path;
 	Model		 model;
 
-	virtual void Create(GameObject *object) 
+	virtual void Create(GameObject *object)
 	{
 		Voxels voxel_loader(1);
 		model = voxel_loader.loadModel(MODEL_PATH(model_path));
@@ -43,4 +43,4 @@ struct VoxelModelComponent : Component
 		REGISTER_MEMBER(VoxelModelComponent, model_path);
 	}
 };
-FINISH_COMPONENT(VoxelModelComponent);
+FINISH_COMPONENT(VoxelModelComponent)
