@@ -140,7 +140,7 @@ void Map::GenerateChunks(vec3 center)
 
                         float block_type_noise = GetNoise(color_noise)/11+0.5;
 
-                        SetBlock_NoMeshUpdate(it, {x,y,z}, Block{Block::Type(int(y < height * 24 + Chunk::depth/2 ? int(Block::Type::grass_a) + clamp(4*block_type_noise,0,3) : 0))});
+                        SetBlock_NoMeshUpdateI(it, {x,y,z}, Block{Block::Type(int(y < height * 24 + Chunk::depth/2 ? int(Block::Type::grass_a) + clamp(4*block_type_noise,0,3) : 0))});
                     }
                 }
             }

@@ -282,7 +282,7 @@ class Map
         auto GetBlockFast = [&](ivec3 pos) -> Block
         {
             ivec2 chunk_index = GetChunkPosForBlock(pos) - chunk_pos + 1;
-            return GetBlock(chunk_iters_3x3[chunk_index.x][chunk_index.y], pos);
+            return GetBlockI(chunk_iters_3x3[chunk_index.x][chunk_index.y], pos);
         };
 
 
@@ -415,7 +415,7 @@ class Map
     }
 
   public:
-    void SetBlock_NoMeshUpdate(ChunksMapType::iterator it, ivec3 pos, Block block)
+    void SetBlock_NoMeshUpdateI(ChunksMapType::iterator it, ivec3 pos, Block block)
     {
         if (pos.y < 0 || pos.y >= Chunk::depth)
             return;
@@ -429,14 +429,14 @@ class Map
     }
     void SetBlock_NoMeshUpdate(ivec3 pos, Block block)
     {
-        SetBlock_NoMeshUpdate(chunks.find({proper_div(pos.x, Chunk::width), proper_div(pos.z, Chunk::width)}), pos, block);
+        SetBlock_NoMeshUpdateI(chunks.find({proper_div(pos.x, Chunk::width), proper_div(pos.z, Chunk::width)}), pos, block);
     }
 
-    void SetBlock(ChunksMapType::iterator it, ivec3 pos, Block block)
+    void SetBlockI(ChunksMapType::iterator it, ivec3 pos, Block block)
     {
         if (it == chunks.end())
             return;
-        SetBlock_NoMeshUpdate(it, pos, block);
+        SetBlock_NoMeshUpdateI(it, pos, block);
 
         ChunksMapType::iterator tmp_it;
 
@@ -470,10 +470,10 @@ class Map
     }
     void SetBlock(ivec3 pos, Block block)
     {
-        SetBlock(chunks.find({proper_div(pos.x, Chunk::width), proper_div(pos.z, Chunk::width)}), pos, block);
+        SetBlockI(chunks.find({proper_div(pos.x, Chunk::width), proper_div(pos.z, Chunk::width)}), pos, block);
     }
 
-    Block GetBlock(ChunksMapType::const_iterator it, ivec3 pos) const
+    Block GetBlockI(ChunksMapType::const_iterator it, ivec3 pos) const
     {
         if (pos.y < 0 || pos.y >= Chunk::depth)
             return Block{};
@@ -486,7 +486,7 @@ class Map
     }
     Block GetBlock(ivec3 pos) const
     {
-        return GetBlock(chunks.find({proper_div(pos.x, Chunk::width), proper_div(pos.z, Chunk::width)}), pos);
+        return GetBlockI(chunks.find({proper_div(pos.x, Chunk::width), proper_div(pos.z, Chunk::width)}), pos);
     }
 
     bool ChunkExists(ivec2 pos) const
