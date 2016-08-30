@@ -1,3 +1,2 @@
 You probably do not want to bother trying to build/setup these projects
-If you know How to setup QT from source then go ahed other wise Its not worth it.
-I use a Qt5 VS plugin to make it easy so, yeah ^
+If you know How to setup QT from source then go ahed other wise its not worth it.
