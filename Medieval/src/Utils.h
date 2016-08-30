@@ -62,7 +62,7 @@ F() F(d) F(i) F(u) F(b) F(i64) // Prefixes for types of vectors to print.
    stream << "[DEBUG] [" << __FILE__ " (" << __LINE__ << ")]: " << s << std::endl;                   \
    OutputDebugString( stream.str().c_str() );  \
 }
-#else 
+#else
 #define MSVC_LOG(s)
 #endif
 #else
@@ -142,6 +142,14 @@ template <typename T> T proper_mod(T a, T b)
 		return std::abs(b) - 1 + (a + 1) % b;
 }
 
+template <typename T> T clamp(T val, std::common_type_t<T> min, std::common_type_t<T> max)
+{
+    if (val < min)
+        return min;
+    if (val > max)
+        return max;
+    return val;
+}
 
 inline std::mt19937 &Rng()
 {
@@ -169,6 +177,30 @@ void MapToVector(const  M & m, V & v) {
 inline uint16_t Noise(uint16_t in)
 {
     return (unsigned int)((in * 1103515245 + 12345)/65536) % 32768;
+}
+
+uint32_t Noise32(uint32_t in);
+inline uint32_t HashVec2(ivec2 v)
+{
+    return v.x ^ Noise32(v.y);
+}
+inline uint32_t HashVec3(ivec3 v)
+{
+    return v.x ^ Noise32(v.y ^ Noise32(v.z));
+}
+
+inline float Noise32f(uint32_t in, unsigned int precision = 4096)
+{
+    return (int(Noise32(in) % (precision * 2 + 1)) - int(precision)) / float(precision);
+}
+
+inline float HermiteInterpolationWithDerivatives(float a, float b, float da, float db, float t)
+{
+    return (2*t*t*t - 3*t*t + 1) * a + (t*t*t - 2*t*t + t) * da + (-2*t*t*t + 3*t*t) * b + (t*t*t - t*t) * db;
+}
+inline float HermiteInterpolation(float aa, float a, float b, float bb, float t)
+{
+    return HermiteInterpolationWithDerivatives(a, b, (b-aa)/2, (bb-a)/2, t);
 }
 
 extern double pi;

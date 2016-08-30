@@ -9,13 +9,16 @@
 #include <rendering/Shader.h>
 
 #define BLOCK_LIST \
-    BLOCK(air   , "Air"   , INVISIBLE                                                             , PASSABLE ) \
-    BLOCK(grass , "Grass" , COLOR(C( 65,150, 88), C( 58,129, 76), C(106,144, 80), C( 84,103, 51)) , SOLID    ) \
+    BLOCK(air     , "Air"   , INVISIBLE          , PASSABLE ) \
+    BLOCK(grass_a , "Grass" , COLOR( 65,150, 88) , SOLID    ) \
+    BLOCK(grass_b , "Grass" , COLOR( 58,129, 76) , SOLID    ) \
+    BLOCK(grass_c , "Grass" , COLOR(106,144, 80) , SOLID    ) \
+    BLOCK(grass_d , "Grass" , COLOR( 84,103, 51) , SOLID    ) \
 
 class Block
 {
     static const bool *visible_table;
-    static const std::vector<vec3> *color_table;
+    static const vec3 *color_table;
     static const bool *solid_table;
 
   public:
@@ -33,7 +36,7 @@ class Block
 
     bool Visible() const {return visible_table[(int)type];}
 
-    const std::vector<vec3> &Colors() const {return color_table[(int)type];}
+    vec3 Color() const {return color_table[(int)type];}
 
     bool Solid() const {return solid_table[(int)type];}
 };
@@ -43,7 +46,7 @@ class Chunk
     friend class Map;
 
   public:
-    static constexpr int width = 24, depth = 64;
+    static constexpr int width = 24, depth = 96;
 
   private:
     //       y      x      z
@@ -132,6 +135,7 @@ class Chunk
 class Map
 {
     int mesh_update_timer = 0;
+    uint32_t seed = Noise32(Random());
 
     using MeshUpdateDequeType = std::deque<ivec2>;
     MeshUpdateDequeType mesh_gen_que, mesh_upd_que; // Separate update queues for fresh chunks and just modified chunks, because quickly giving fresh chunks is more important.
@@ -157,9 +161,9 @@ class Map
     using ChunksMapType = std::unordered_map<ivec2, Chunk>;
     ChunksMapType chunks;
 
-    static constexpr int generation_distance = 6; // 0 means 1x1, 1 means 3x3, etc.
-    static constexpr int render_distance = 6;
-    static constexpr int mesh_update_period = 1; // If multiple new meshes are needed, the map will generate new one each `mesh_update_period` ticks. Setting it to 0 will gen everything instantly, leading to freezes.
+    static constexpr int generation_distance = 4; // 0 means 1x1, 1 means 3x3, etc.
+    static constexpr int render_distance = 4;
+    static constexpr int mesh_update_period = 2; // If multiple new meshes are needed, the map will generate new one each `mesh_update_period` ticks. Setting it to 0 will gen everything instantly, leading to freezes.
 
     ChunksMapType::iterator AddChunk(ivec2 pos)
     {
@@ -282,7 +286,7 @@ class Map
         };
 
 
-        auto GenSide = [&](Block this_block, ivec3 pos, int noise, Dir up, Dir a, Dir b, Dir c, Dir d)
+        auto GenSide = [&](Block this_block, ivec3 pos, Dir up, Dir a, Dir b, Dir c, Dir d)
         {
             if (GetBlockFast(chunk_offset + pos + dir11[up]).type == Block::Type::air)
             {
@@ -296,7 +300,7 @@ class Map
                 //         c
                 //
 
-                vec3 color = this_block.Colors()[noise % this_block.Colors().size()];
+                vec3 color = this_block.Color();
 
 
                 Vertex corners[4]{{pos+dir01[up]+dir01[a]+dir01[b], dir11[up], color},
@@ -383,14 +387,12 @@ class Map
                     Block this_block = GetBlockFast(chunk_offset+ivec3(xx,yy,zz));
                     if (this_block.Visible())
                     {
-                        int noise = Noise(Noise(Noise(Noise(Noise(Noise(iround<unsigned>(chunk_offset.x + xx)) + ~iround<unsigned>(chunk_offset.y + yy)) + ~iround<unsigned>(chunk_offset.z + zz)))));
-
-                        GenSide(this_block, ivec3(xx,yy,zz), noise, Dir::x, Dir::y, Dir::z, Dir::_y, Dir::_z);
-                        GenSide(this_block, ivec3(xx,yy,zz), noise, Dir::_x, Dir::y, Dir::_z, Dir::_y, Dir::z);
-                        GenSide(this_block, ivec3(xx,yy,zz), noise, Dir::y, Dir::x, Dir::_z, Dir::_x, Dir::z);
-                        GenSide(this_block, ivec3(xx,yy,zz), noise, Dir::_y, Dir::x, Dir::z, Dir::_x, Dir::_z);
-                        GenSide(this_block, ivec3(xx,yy,zz), noise, Dir::z, Dir::x, Dir::y, Dir::_x, Dir::_y);
-                        GenSide(this_block, ivec3(xx,yy,zz), noise, Dir::_z, Dir::x, Dir::_y, Dir::_x, Dir::y);
+                        GenSide(this_block, ivec3(xx,yy,zz), Dir::x, Dir::y, Dir::z, Dir::_y, Dir::_z);
+                        GenSide(this_block, ivec3(xx,yy,zz), Dir::_x, Dir::y, Dir::_z, Dir::_y, Dir::z);
+                        GenSide(this_block, ivec3(xx,yy,zz), Dir::y, Dir::x, Dir::_z, Dir::_x, Dir::z);
+                        GenSide(this_block, ivec3(xx,yy,zz), Dir::_y, Dir::x, Dir::z, Dir::_x, Dir::_z);
+                        GenSide(this_block, ivec3(xx,yy,zz), Dir::z, Dir::x, Dir::y, Dir::_x, Dir::_y);
+                        GenSide(this_block, ivec3(xx,yy,zz), Dir::_z, Dir::x, Dir::_y, Dir::_x, Dir::y);
                     }
                 }
             }
@@ -518,48 +520,7 @@ class Map
     }
 
   public:
-    void GenerateChunks(vec3 center)
-    {
-        ivec2 center_chunk = GetChunkPosForBlock(center);
-        for (int y = -generation_distance; y <= generation_distance; y++)
-        {
-            for (int x = -generation_distance; x <= generation_distance; x++)
-            {
-                ivec2 chunk = center_chunk + ivec2(x,y);
-                auto it = chunks.find(chunk);
-                if (it != chunks.end())
-                    continue;
-
-                it = AddChunk(chunk);
-
-                for (int y = 0; y < Chunk::depth; y++)
-                {
-                    for (int x = chunk.x*Chunk::width; x < (chunk.x+1)*Chunk::width; x++)
-                    {
-                        for (int z = chunk.y*Chunk::width; z < (chunk.y+1)*Chunk::width; z++)
-                        {
-                            SetBlock_NoMeshUpdate(it, {x,y,z}, Block{Block::Type(int(Random() % 10 + 40) > y)});
-                        }
-                    }
-                }
-
-                it->second.dirty_mesh = 1;
-                it->second.in_mesh_update_queue = 1;
-                mesh_gen_que.push_back(it->first);
-                auto SetDirtyFlag = [&](ivec2 offset)
-                {
-                    auto it = chunks.find(chunk + offset);
-                    if (it == chunks.end())
-                        return;
-                    it->second.dirty_mesh = 1;
-                };
-                SetDirtyFlag({1,0});
-                SetDirtyFlag({0,1});
-                SetDirtyFlag({-1,0});
-                SetDirtyFlag({0,-1});
-            }
-        }
-    }
+    void GenerateChunks(vec3 center);
 
     void Tick() // You should call this each tick *after* using the map, but it's not mandratory.
     {
