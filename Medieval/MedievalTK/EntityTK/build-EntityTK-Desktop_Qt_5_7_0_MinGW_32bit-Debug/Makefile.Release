@@ -14,7 +14,7 @@ CXX           = g++
 DEFINES       = -DUNICODE -DQT_QML_DEBUG -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_NEEDS_QMAIN
 CFLAGS        = -pipe -fno-keep-inline-dllexport -O2 -Wall -Wextra $(DEFINES)
 CXXFLAGS      = -pipe -fno-keep-inline-dllexport -O2 -std=gnu++11 -frtti -Wall -Wextra -fexceptions -mthreads $(DEFINES)
-INCPATH       = -I../EntityTK -I. -II:/Qt57/5.7/mingw53_32/include -II:/Qt57/5.7/mingw53_32/include/QtWidgets -II:/Qt57/5.7/mingw53_32/include/QtGui -II:/Qt57/5.7/mingw53_32/include/QtANGLE -II:/Qt57/5.7/mingw53_32/include/QtCore -Irelease -I. -II:/Qt57/5.7/mingw53_32/mkspecs/win32-g++ 
+INCPATH       = -I../EntityTK -I. -I../../../include -II:/Qt57/5.7/mingw53_32/include -II:/Qt57/5.7/mingw53_32/include/QtWidgets -II:/Qt57/5.7/mingw53_32/include/QtGui -II:/Qt57/5.7/mingw53_32/include/QtANGLE -II:/Qt57/5.7/mingw53_32/include/QtCore -Irelease -I. -II:/Qt57/5.7/mingw53_32/mkspecs/win32-g++ 
 LINKER      =        g++
 LFLAGS        =        -Wl,-s -Wl,-subsystem,windows -mthreads
 LIBS        =        -lmingw32 -LI:/Qt57/5.7/mingw53_32/lib I:/Qt57/5.7/mingw53_32/lib/libqtmain.a -LC:/utils/postgresql/pgsql/lib -LC:/utils/my_sql/my_sql/lib -lshell32 I:/Qt57/5.7/mingw53_32/lib/libQt5Core.a I:/Qt57/5.7/mingw53_32/lib/libQt5Widgets.a I:/Qt57/5.7/mingw53_32/lib/libQt5Gui.a I:/Qt57/5.7/mingw53_32/lib/libQt5Core.a 
@@ -52,7 +52,8 @@ OBJECTS       = release/main.o \
 		release/moc_EntityTK.o
 
 DIST          =  ../EntityTK/EntityTK.h \
-		../EntityTK/EntityObject.h ../EntityTK/main.cpp \
+		../EntityTK/EntityObject.h \
+		../EntityTK/component.h ../EntityTK/main.cpp \
 		../EntityTK/EntityTK.cpp \
 		../EntityTK/EntityObject.cpp
 QMAKE_TARGET  = EntityTK
@@ -218,7 +219,7 @@ release/moc_EntityTK.cpp: I:/Qt57/5.7/mingw53_32/include/QtWidgets/QMainWindow \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qrubberband.h \
 		../EntityTK/EntityTK.h \
 		I:/Qt57/5.7/mingw53_32/bin/moc.exe
-	'I:\Qt57\5.7\mingw53_32\bin\moc.exe' $(DEFINES) -D__GNUC__ -DWIN32 -II:/Qt57/5.7/mingw53_32/mkspecs/win32-g++ -II:/Medieval/MedievalProject/Medieval/MedievalTK/EntityTK/EntityTK -II:/Qt57/5.7/mingw53_32/include -II:/Qt57/5.7/mingw53_32/include/QtWidgets -II:/Qt57/5.7/mingw53_32/include/QtGui -II:/Qt57/5.7/mingw53_32/include/QtANGLE -II:/Qt57/5.7/mingw53_32/include/QtCore -I. ../EntityTK/EntityTK.h -o release/moc_EntityTK.cpp
+	'I:\Qt57\5.7\mingw53_32\bin\moc.exe' $(DEFINES) -D__GNUC__ -DWIN32 -II:/Qt57/5.7/mingw53_32/mkspecs/win32-g++ -II:/Medieval/MedievalProject/Medieval/MedievalTK/EntityTK/EntityTK -II:/Medieval/MedievalProject/Medieval/include -II:/Qt57/5.7/mingw53_32/include -II:/Qt57/5.7/mingw53_32/include/QtWidgets -II:/Qt57/5.7/mingw53_32/include/QtGui -II:/Qt57/5.7/mingw53_32/include/QtANGLE -II:/Qt57/5.7/mingw53_32/include/QtCore -I. ../EntityTK/EntityTK.h -o release/moc_EntityTK.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -489,62 +490,97 @@ release/EntityTK.o: ../EntityTK/EntityTK.cpp ../EntityTK/EntityTK.h \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qtabbar.h \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qrubberband.h \
 		ui_EntityTK.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/QVariant \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QAction \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qaction.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qactiongroup.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QApplication \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qapplication.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qcoreapplication.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qeventloop.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qdesktopwidget.h \
+		I:/Qt57/5.7/mingw53_32/include/QtGui/qguiapplication.h \
+		I:/Qt57/5.7/mingw53_32/include/QtGui/qinputmethod.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QButtonGroup \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qbuttongroup.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QFormLayout \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qformlayout.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QLayout \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qlayout.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qlayoutitem.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qboxlayout.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qgridlayout.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QHeaderView \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qheaderview.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QLabel \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qlabel.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QListWidget \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QMenu \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qmenu.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QMenuBar \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qmenubar.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QPushButton \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qpushbutton.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qabstractbutton.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QStatusBar \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qstatusbar.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QWidget \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/QMouseEvent \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QFileDialog \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qfiledialog.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qdir.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qfileinfo.h \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qdialog.h \
-		../EntityTK/rapidjson/document.h \
-		../EntityTK/rapidjson/reader.h \
-		../EntityTK/rapidjson/allocators.h \
-		../EntityTK/rapidjson/rapidjson.h \
-		../EntityTK/rapidjson/msinttypes/stdint.h \
-		../EntityTK/rapidjson/msinttypes/inttypes.h \
-		../EntityTK/rapidjson/stream.h \
-		../EntityTK/rapidjson/encodings.h \
-		../EntityTK/rapidjson/encodedstream.h \
-		../EntityTK/rapidjson/memorystream.h \
-		../EntityTK/rapidjson/internal/meta.h \
-		../EntityTK/rapidjson/internal/stack.h \
-		../EntityTK/rapidjson/internal/swap.h \
-		../EntityTK/rapidjson/internal/strtod.h \
-		../EntityTK/rapidjson/internal/ieee754.h \
-		../EntityTK/rapidjson/internal/biginteger.h \
-		../EntityTK/rapidjson/internal/diyfp.h \
-		../EntityTK/rapidjson/internal/pow10.h \
-		../EntityTK/rapidjson/error/error.h \
-		../EntityTK/rapidjson/internal/strfunc.h \
-		../EntityTK/rapidjson/writer.h \
-		../EntityTK/rapidjson/internal/dtoa.h \
-		../EntityTK/rapidjson/internal/itoa.h \
-		../EntityTK/rapidjson/stringbuffer.h \
-		../EntityTK/rapidjson/filereadstream.h \
+		../../../include/rapidjson/document.h \
+		../../../include/rapidjson/reader.h \
+		../../../include/rapidjson/allocators.h \
+		../../../include/rapidjson/rapidjson.h \
+		../../../include/rapidjson/msinttypes/stdint.h \
+		../../../include/rapidjson/msinttypes/inttypes.h \
+		../../../include/rapidjson/stream.h \
+		../../../include/rapidjson/encodings.h \
+		../../../include/rapidjson/encodedstream.h \
+		../../../include/rapidjson/memorystream.h \
+		../../../include/rapidjson/internal/meta.h \
+		../../../include/rapidjson/internal/stack.h \
+		../../../include/rapidjson/internal/swap.h \
+		../../../include/rapidjson/internal/strtod.h \
+		../../../include/rapidjson/internal/ieee754.h \
+		../../../include/rapidjson/internal/biginteger.h \
+		../../../include/rapidjson/internal/diyfp.h \
+		../../../include/rapidjson/internal/pow10.h \
+		../../../include/rapidjson/error/error.h \
+		../../../include/rapidjson/internal/strfunc.h \
+		../../../include/rapidjson/writer.h \
+		../../../include/rapidjson/internal/dtoa.h \
+		../../../include/rapidjson/internal/itoa.h \
+		../../../include/rapidjson/stringbuffer.h \
+		../../../include/rapidjson/filereadstream.h \
 		../EntityTK/EntityObject.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/QStringList
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release/EntityTK.o ../EntityTK/EntityTK.cpp
 
 release/EntityObject.o: ../EntityTK/EntityObject.cpp ../EntityTK/EntityObject.h \
-		../EntityTK/rapidjson/document.h \
-		../EntityTK/rapidjson/reader.h \
-		../EntityTK/rapidjson/allocators.h \
-		../EntityTK/rapidjson/rapidjson.h \
-		../EntityTK/rapidjson/msinttypes/stdint.h \
-		../EntityTK/rapidjson/msinttypes/inttypes.h \
-		../EntityTK/rapidjson/stream.h \
-		../EntityTK/rapidjson/encodings.h \
-		../EntityTK/rapidjson/encodedstream.h \
-		../EntityTK/rapidjson/memorystream.h \
-		../EntityTK/rapidjson/internal/meta.h \
-		../EntityTK/rapidjson/internal/stack.h \
-		../EntityTK/rapidjson/internal/swap.h \
-		../EntityTK/rapidjson/internal/strtod.h \
-		../EntityTK/rapidjson/internal/ieee754.h \
-		../EntityTK/rapidjson/internal/biginteger.h \
-		../EntityTK/rapidjson/internal/diyfp.h \
-		../EntityTK/rapidjson/internal/pow10.h \
-		../EntityTK/rapidjson/error/error.h \
-		../EntityTK/rapidjson/internal/strfunc.h \
+		../../../include/rapidjson/document.h \
+		../../../include/rapidjson/reader.h \
+		../../../include/rapidjson/allocators.h \
+		../../../include/rapidjson/rapidjson.h \
+		../../../include/rapidjson/msinttypes/stdint.h \
+		../../../include/rapidjson/msinttypes/inttypes.h \
+		../../../include/rapidjson/stream.h \
+		../../../include/rapidjson/encodings.h \
+		../../../include/rapidjson/encodedstream.h \
+		../../../include/rapidjson/memorystream.h \
+		../../../include/rapidjson/internal/meta.h \
+		../../../include/rapidjson/internal/stack.h \
+		../../../include/rapidjson/internal/swap.h \
+		../../../include/rapidjson/internal/strtod.h \
+		../../../include/rapidjson/internal/ieee754.h \
+		../../../include/rapidjson/internal/biginteger.h \
+		../../../include/rapidjson/internal/diyfp.h \
+		../../../include/rapidjson/internal/pow10.h \
+		../../../include/rapidjson/error/error.h \
+		../../../include/rapidjson/internal/strfunc.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/QStringList \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qstringlist.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qlist.h \
@@ -585,74 +621,124 @@ release/EntityObject.o: ../EntityTK/EntityObject.cpp ../EntityTK/EntityObject.h 
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qregexp.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qstringmatcher.h \
 		ui_EntityTK.h \
-		../EntityTK/rapidjson/filereadstream.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/QString \
-		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QLayout \
-		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qlayout.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qobject.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qobjectdefs.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qobjectdefs_impl.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qcoreevent.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qscopedpointer.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/QVariant \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qvariant.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qmetatype.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qvarlengtharray.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qcontainerfwd.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qobjectdefs.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qobjectdefs_impl.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qmap.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qdebug.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qhash.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qtextstream.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qiodevice.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qobject.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qcoreevent.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qscopedpointer.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qobject_impl.h \
-		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qlayoutitem.h \
-		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qsizepolicy.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qrect.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qmargins.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qsize.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qlocale.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qshareddata.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qvector.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qpoint.h \
-		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qboxlayout.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qset.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qcontiguouscache.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qsharedpointer.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qsharedpointer_impl.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QAction \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qaction.h \
+		I:/Qt57/5.7/mingw53_32/include/QtGui/qkeysequence.h \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qwidget.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qwindowdefs.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qwindowdefs_win.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qmargins.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qpaintdevice.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qrect.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qsize.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qpalette.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qcolor.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qrgb.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qrgba64.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qbrush.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qvector.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qmatrix.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qpolygon.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qregion.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qdatastream.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qiodevice.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qline.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qtransform.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qpainterpath.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qimage.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qpixelformat.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qpixmap.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qsharedpointer.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qshareddata.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qhash.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qsharedpointer_impl.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qfont.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qfontmetrics.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qfontinfo.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qsizepolicy.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qcursor.h \
-		I:/Qt57/5.7/mingw53_32/include/QtGui/qkeysequence.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qevent.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qvariant.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qmap.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qdebug.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qtextstream.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qlocale.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qset.h \
-		I:/Qt57/5.7/mingw53_32/include/QtCore/qcontiguouscache.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qurl.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qurlquery.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qfile.h \
 		I:/Qt57/5.7/mingw53_32/include/QtCore/qfiledevice.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qvector2d.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qtouchdevice.h \
+		I:/Qt57/5.7/mingw53_32/include/QtGui/qicon.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qactiongroup.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QApplication \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qapplication.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qcoreapplication.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qeventloop.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qdesktopwidget.h \
+		I:/Qt57/5.7/mingw53_32/include/QtGui/qguiapplication.h \
+		I:/Qt57/5.7/mingw53_32/include/QtGui/qinputmethod.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QButtonGroup \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qbuttongroup.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QFormLayout \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qformlayout.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QLayout \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qlayout.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qlayoutitem.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qboxlayout.h \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qgridlayout.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QHeaderView \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qheaderview.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qabstractitemview.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qabstractscrollarea.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qframe.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qabstractitemmodel.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qitemselectionmodel.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qabstractitemdelegate.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qstyleoption.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qabstractspinbox.h \
+		I:/Qt57/5.7/mingw53_32/include/QtGui/qvalidator.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/qregularexpression.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qslider.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qabstractslider.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qstyle.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qtabbar.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qtabwidget.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qrubberband.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QLabel \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qlabel.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QListWidget \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qlistwidget.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qlistview.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QMainWindow \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qmainwindow.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QMenu \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qmenu.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QMenuBar \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qmenubar.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QPushButton \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qpushbutton.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qabstractbutton.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QStatusBar \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qstatusbar.h \
+		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QWidget \
+		../../../include/rapidjson/filereadstream.h \
+		I:/Qt57/5.7/mingw53_32/include/QtCore/QString \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/QLineEdit \
 		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qlineedit.h \
-		I:/Qt57/5.7/mingw53_32/include/QtWidgets/qframe.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qtextcursor.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qtextformat.h \
 		I:/Qt57/5.7/mingw53_32/include/QtGui/qpen.h \

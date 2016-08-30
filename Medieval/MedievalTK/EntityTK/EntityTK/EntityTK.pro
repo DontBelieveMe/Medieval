@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     EntityObject.cpp
 
 HEADERS  += EntityTK.h \
-    EntityObject.h
+    EntityObject.h \
+    component.h
 
 FORMS    += EntityTK.ui
 INCLUDEPATH += I:\Medieval\MedievalProject\Medieval\include
