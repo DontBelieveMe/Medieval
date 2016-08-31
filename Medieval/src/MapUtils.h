@@ -44,8 +44,8 @@ struct NoiseData
 	float noise_sub4[7][7];
 	float noise_sub8[11][11];
 	uint32_t seed;
-	float micro_noise_additional_factor;
 	float(*factor_modifier)(float);
+	float micro_noise_additional_factor;
 };
 
 namespace MapFuncs
@@ -76,20 +76,18 @@ namespace MapFuncs
 	template<typename T>
 	float InterpolateSubArray(const float *arr, int grid_size, int x, int z)
 	{
-		int arr_size = T::width / grid_size + 3;
-		//ivec2 sub_pos = ivec2(proper_div(proper_mod(x, T::width), grid_size), proper_div(proper_mod(z, T::width), grid_size));
-		int sub_pos_x = proper_div(proper_mod(x, T::width), grid_size);
-		int sub_pos_y = proper_div(proper_mod(z, T::width), grid_size);
-
+		int arr_size = Chunk::width / grid_size + 3;
+		ivec2 sub_pos = ivec2(proper_div(proper_mod(pos.x, Chunk::width), grid_size), proper_div(proper_mod(pos.y, Chunk::width), grid_size));
 		float noise_line[4];
 		for (int i = 0; i < 4; i++)
 		{
-			noise_line[i] = HermiteInterpolation(arr[i + sub_pos_x + arr_size*(0 + sub_pos_y)],
-				arr[i + sub_pos_x + arr_size*(1 + sub_pos_y)],
-				arr[i + sub_pos_x + arr_size*(2 + sub_pos_y)],
-				arr[i + sub_pos_x + arr_size*(3 + sub_pos_y)], proper_mod(z, grid_size) / float(grid_size));
+			noise_line[i] = HermiteInterpolation(arr[i + sub_pos.x + arr_size*(0 + sub_pos.y)],
+				arr[i + sub_pos.x + arr_size*(1 + sub_pos.y)],
+				arr[i + sub_pos.x + arr_size*(2 + sub_pos.y)],
+				arr[i + sub_pos.x + arr_size*(3 + sub_pos.y)], proper_mod(pos.y, grid_size) / float(grid_size));
 		}
-		return HermiteInterpolation(noise_line[0], noise_line[1], noise_line[2], noise_line[3], proper_mod(x, grid_size) / float(grid_size));
+
+		return HermiteInterpolation(noise_line[0], noise_line[1], noise_line[2], noise_line[3], proper_mod(pos.x, grid_size) / float(grid_size));
 	}
 
 	float InterpolateSuperArray(const float(*arr)[4], int grid_size, int x, int z);
