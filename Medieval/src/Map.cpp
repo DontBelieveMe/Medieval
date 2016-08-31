@@ -58,8 +58,8 @@ void Map::GenerateChunks(vec3 center)
                 float noise_sub4[7][7];
                 float noise_sub8[11][11];
                 uint32_t seed;
-                float micro_noise_additional_factor;
                 float (*factor_modifier)(float);
+                float micro_noise_additional_factor;
             };
 
             auto GenNoise = [&](NoiseData *noise, uint32_t seed, float (*f_mod)(float), float micro_f = 1)
@@ -82,65 +82,81 @@ void Map::GenerateChunks(vec3 center)
                 noise->factor_modifier = f_mod;
             };
 
+            auto InterpolateSuperArray = [&](const float (*arr)[4], ivec2 pos, int grid_size)
+            {
+                float noise_line[4];
+                for (int i = 0; i < 4; i++)
+                {
+                    noise_line[i] = HermiteInterpolation(arr[i][0], arr[i][1], arr[i][2], arr[i][3], proper_mod(pos.x, grid_size) / float(grid_size));
+                }
+                return HermiteInterpolation(noise_line[0], noise_line[1], noise_line[2], noise_line[3], proper_mod(pos.y, grid_size) / float(grid_size));
+            };
+            auto InterpolateSubArray = [&](const float *arr, ivec2 pos, int grid_size)
+            {
+                int arr_size = Chunk::width/grid_size + 3;
+                ivec2 sub_pos = ivec2(proper_div(proper_mod(pos.x, Chunk::width), grid_size), proper_div(proper_mod(pos.y, Chunk::width), grid_size));
+                float noise_line[4];
+                for (int i = 0; i < 4; i++)
+                {
+                    noise_line[i] = HermiteInterpolation(arr[i+sub_pos.x+arr_size*(0+sub_pos.y)],
+                                                         arr[i+sub_pos.x+arr_size*(1+sub_pos.y)],
+                                                         arr[i+sub_pos.x+arr_size*(2+sub_pos.y)],
+                                                         arr[i+sub_pos.x+arr_size*(3+sub_pos.y)], proper_mod(pos.y, grid_size) / float(grid_size));
+                }
+                return HermiteInterpolation(noise_line[0], noise_line[1], noise_line[2], noise_line[3], proper_mod(pos.x, grid_size) / float(grid_size));
+            };
+
+            auto ComputeNoise = [&](const NoiseData &noise, ivec2 pos)
+            {
+                float ret = 0, factor = 1;
+                ret += InterpolateSuperArray(noise.noise8, pos, Chunk::width * 8) * factor;
+                factor = noise.factor_modifier(factor);
+                ret += InterpolateSuperArray(noise.noise4, pos, Chunk::width * 4) * factor;
+                factor = noise.factor_modifier(factor);
+                ret += InterpolateSuperArray(noise.noise2, pos, Chunk::width * 2) * factor;
+                factor = noise.factor_modifier(factor);
+                ret += InterpolateSuperArray(noise.noise,  pos, Chunk::width * 1) * factor;
+                factor = noise.factor_modifier(factor);
+                ret += InterpolateSubArray(*noise.noise_sub2, pos, Chunk::width / 2) * factor;
+                factor = noise.factor_modifier(factor);
+                ret += InterpolateSubArray(*noise.noise_sub4, pos, Chunk::width / 4) * factor;
+                factor = noise.factor_modifier(factor);
+                ret += InterpolateSubArray(*noise.noise_sub8, pos, Chunk::width / 8) * factor;
+                factor = noise.factor_modifier(factor);
+                ret += Noise32f(noise.seed ^ HashVec2(pos)) * factor * noise.micro_noise_additional_factor;
+                return ret;
+            };
+
             NoiseData terrain_noise, color_noise;
             GenNoise(&terrain_noise, seed, [](float in) -> float {return in / 1.7;}, 0);
-            GenNoise(&color_noise, Noise32(seed), [](float in) -> float {return in;}, 1);
+            GenNoise(&color_noise, Noise32(seed), [](float in) -> float {return in;}, 0.5);
+
+            float terrain_noise_cache[Chunk::width][Chunk::width],
+                  color_noise_cache[Chunk::width][Chunk::width];
+
+            for (int x = 0; x < Chunk::width; x++)
+            {
+                for (int y = 0; y < Chunk::width; y++)
+                {
+                    ivec2 abs_pos = chunk * Chunk::width + ivec2(x,y);
+                    terrain_noise_cache[x][y] = ComputeNoise(terrain_noise, abs_pos);
+                    color_noise_cache[x][y] = ComputeNoise(color_noise, abs_pos);
+                }
+            }
 
             for (int y = 0; y < Chunk::depth; y++)
             {
-                for (int x = chunk.x*Chunk::width; x < (chunk.x+1)*Chunk::width; x++)
+                for (int x = 0; x < Chunk::width; x++)
                 {
-                    for (int z = chunk.y*Chunk::width; z < (chunk.y+1)*Chunk::width; z++)
+                    for (int z = 0; z < Chunk::width; z++)
                     {
-                        auto InterpolateSubArray = [&](const float *arr, int grid_size)
-                        {
-                            int arr_size = Chunk::width/grid_size + 3;
-                            ivec2 sub_pos = ivec2(proper_div(proper_mod(x, Chunk::width), grid_size), proper_div(proper_mod(z, Chunk::width), grid_size));
-                            float noise_line[4];
-                            for (int i = 0; i < 4; i++)
-                            {
-                                noise_line[i] = HermiteInterpolation(arr[i+sub_pos.x+arr_size*(0+sub_pos.y)],
-                                                                     arr[i+sub_pos.x+arr_size*(1+sub_pos.y)],
-                                                                     arr[i+sub_pos.x+arr_size*(2+sub_pos.y)],
-                                                                     arr[i+sub_pos.x+arr_size*(3+sub_pos.y)], proper_mod(z, grid_size) / float(grid_size));
-                            }
-                            return HermiteInterpolation(noise_line[0], noise_line[1], noise_line[2], noise_line[3], proper_mod(x, grid_size) / float(grid_size));
-                        };
-                        auto InterpolateSuperArray = [&](const float (*arr)[4], int grid_size)
-                        {
-                            float noise_line[4];
-                            for (int i = 0; i < 4; i++)
-                            {
-                                noise_line[i] = HermiteInterpolation(arr[i][0], arr[i][1], arr[i][2], arr[i][3], proper_mod(x, grid_size) / float(grid_size));
-                            }
-                            return HermiteInterpolation(noise_line[0], noise_line[1], noise_line[2], noise_line[3], proper_mod(z, grid_size) / float(grid_size));
-                        };
-                        auto GetNoise = [&](const NoiseData &noise)
-                        {
-                            float ret = 0, factor = 1;
-                            ret += InterpolateSuperArray(noise.noise8, Chunk::width * 8) * factor;
-                            factor = noise.factor_modifier(factor);
-                            ret += InterpolateSuperArray(noise.noise4, Chunk::width * 4) * factor;
-                            factor = noise.factor_modifier(factor);
-                            ret += InterpolateSuperArray(noise.noise2, Chunk::width * 2) * factor;
-                            factor = noise.factor_modifier(factor);
-                            ret += InterpolateSuperArray(noise.noise,  Chunk::width * 1) * factor;
-                            factor = noise.factor_modifier(factor);
-                            ret += InterpolateSubArray(*noise.noise_sub2, Chunk::width / 2) * factor;
-                            factor = noise.factor_modifier(factor);
-                            ret += InterpolateSubArray(*noise.noise_sub4, Chunk::width / 4) * factor;
-                            factor = noise.factor_modifier(factor);
-                            ret += InterpolateSubArray(*noise.noise_sub8, Chunk::width / 8) * factor;
-                            factor = noise.factor_modifier(factor);
-                            ret += Noise32f(noise.seed ^ HashVec2(chunk + ivec2(x,z))) * factor;
-                            return ret;
-                        };
+                        ivec3 abs_pos(chunk.x * Chunk::width + x, y, chunk.y * Chunk::width + z);
 
-                        float height = GetNoise(terrain_noise);
+                        float height = terrain_noise_cache[x][z];
 
-                        float block_type_noise = GetNoise(color_noise)/11+0.5;
+                        float block_type_noise = color_noise_cache[x][z]/11+0.5;
 
-                        SetBlock_NoMeshUpdateI(it, {x,y,z}, Block{Block::Type(int(y < height * 24 + Chunk::depth/2 ? int(Block::Type::grass_a) + clamp(4*block_type_noise,0,3) : 0))});
+                        SetBlock_NoMeshUpdateI(it, abs_pos, Block{Block::Type(int(y < height * 24 + Chunk::depth/2 ? int(Block::Type::grass_a) + clamp(4*block_type_noise,0,3) : 0))});
                     }
                 }
             }
