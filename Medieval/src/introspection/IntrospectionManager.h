@@ -19,6 +19,7 @@ namespace detail
 	{
 		typedef T type;
 	};
+
 }
 
 template <typename T>

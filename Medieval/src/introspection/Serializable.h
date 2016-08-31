@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unordered_map>
+
 #define SERIALIZABLE(T) \
 	virtual Serializable *CreateObject(){ return new T; }
 

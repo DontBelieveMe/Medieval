@@ -8,6 +8,8 @@
 #include <Utils.h>
 #include <rendering/Shader.h>
 
+#include "MapUtils.h"
+
 #define BLOCK_LIST \
     BLOCK(air     , "Air"   , INVISIBLE          , PASSABLE ) \
     BLOCK(grass_a , "Grass" , COLOR( 65,150, 88) , SOLID    ) \
@@ -132,6 +134,8 @@ class Chunk
     static ShaderProgram &Shader();
 };
 
+
+
 class Map
 {
     int mesh_update_timer = 0;
@@ -184,18 +188,16 @@ class Map
     }
 
   private:
+        
     void UpdateChunkMesh(ivec2 chunk_pos)
     {
+		// This looks awesome with it to 1. Just saying.
         #define AMBIENT_OCCLUSION 0
 
         auto it = chunks.find(chunk_pos);
         if (it == chunks.end())
             return; // No such chunk.
 
-        struct Vertex
-        {
-            vec3 pos, normal, color;
-        };
 
         static constexpr int vertices_per_buffer = 4096 / sizeof (Vertex);
 
@@ -203,56 +205,29 @@ class Map
         static constexpr float shadow_factor = 0.8f;
         #endif
 
-        class VertexArray
-        {
-            Vertex *arr;
-          public:
-            operator       Vertex *()       {return arr;}
-            operator const Vertex *() const {return arr;}
-            VertexArray()
-            {
-                arr = new Vertex[vertices_per_buffer];
-            }
-            VertexArray(VertexArray &&o)
-            {
-                arr = o.arr;
-                o.arr = 0;
-            }
-            VertexArray &operator=(VertexArray &&o)
-            {
-                this->~VertexArray();
-                new (this) VertexArray((VertexArray &&) o);
-                return *this;
-            }
-            ~VertexArray()
-            {
-                if (arr)
-                    delete [] arr;
-            }
-        };
-
         int vertices = 0;
 
-        std::vector<VertexArray> buffer;
+        std::vector<VertexArray<vertices_per_buffer>> buffer;
 
-        auto PushVertex = [&](const Vertex &vertex)
+       /* auto PushVertex = [&](const Vertex &vertex)
         {
             if (vertices % vertices_per_buffer == 0)
                 buffer.push_back({});
             buffer[vertices/vertices_per_buffer][vertices%vertices_per_buffer] = vertex;
 
             vertices++;
-        };
+        };*/
 
-        auto PushQuad = [&](const Vertex &a, const Vertex &b, const Vertex &c, const Vertex &d)
+        /*auto PushQuad = [&](const Vertex &a, const Vertex &b, const Vertex &c, const Vertex &d)
         {
-            PushVertex(a);
-            PushVertex(b);
-            PushVertex(d);
-            PushVertex(b);
-            PushVertex(c);
-            PushVertex(d);
-        };
+			MapFuncs::PushVertex<vertices_per_buffer>(a, buffer, vertices);
+			MapFuncs::PushVertex<vertices_per_buffer>(b, buffer, vertices);
+			MapFuncs::PushVertex<vertices_per_buffer>(d, buffer, vertices);
+			MapFuncs::PushVertex<vertices_per_buffer>(b, buffer, vertices);
+			MapFuncs::PushVertex<vertices_per_buffer>(c, buffer, vertices);
+			MapFuncs::PushVertex<vertices_per_buffer>(d, buffer, vertices);
+        };*/
+
         enum Dir {x,y,z,_x,_y,_z};
 
         static const ivec3 dir11[]{{1,0,0},
@@ -271,18 +246,25 @@ class Map
 
         ivec3 chunk_offset(chunk_pos.x * Chunk::width, 0, chunk_pos.y * Chunk::width);
 
-
+		/*ChunksMapType::const_iterator chunk_iters_3x3[3 * 3]
+		{
+			chunks.find(chunk_pos + ivec2(-1,-1)), chunks.find(chunk_pos + ivec2(-1,0)), chunks.find(chunk_pos + ivec2(-1,1)),
+		    chunks.find(chunk_pos + ivec2(0,-1)), it,                                   chunks.find(chunk_pos + ivec2(0,1)),
+			chunks.find(chunk_pos + ivec2(1,-1)), chunks.find(chunk_pos + ivec2(1,0)), chunks.find(chunk_pos + ivec2(1,1))
+		};*/
         ChunksMapType::const_iterator chunk_iters_3x3[3][3]
         {
             {chunks.find(chunk_pos + ivec2(-1,-1)), chunks.find(chunk_pos + ivec2(-1,0)), chunks.find(chunk_pos + ivec2(-1,1))},
             {chunks.find(chunk_pos + ivec2( 0,-1)), it,                                   chunks.find(chunk_pos + ivec2( 0,1))},
             {chunks.find(chunk_pos + ivec2( 1,-1)), chunks.find(chunk_pos + ivec2( 1,0)), chunks.find(chunk_pos + ivec2( 1,1))},
         };
-
+		
         auto GetBlockFast = [&](ivec3 pos) -> Block
         {
             ivec2 chunk_index = GetChunkPosForBlock(pos) - chunk_pos + 1;
-            return GetBlockI(chunk_iters_3x3[chunk_index.x][chunk_index.y], pos);
+			//std::cout << chunk_index.x << std::endl;
+			//return GetBlockI(chunk_iters_3x3[chunk_index.x + chunk_index.y * 3], pos);
+			return GetBlockI(chunk_iters_3x3[chunk_index.x][chunk_index.y], pos);
         };
 
 
@@ -373,7 +355,7 @@ class Map
                 }
                 else
                 #endif
-                    PushQuad(corners[0], corners[1], corners[2], corners[3]);
+                MapFuncs::PushQuad<vertices_per_buffer>(corners[0], corners[1], corners[2], corners[3], buffer, vertices);
             }
             #undef AMBIENT_OCCLUSION
         };
@@ -405,7 +387,7 @@ class Map
 
         glBindBuffer(GL_ARRAY_BUFFER, it->second.vbo);
         glBufferData(GL_ARRAY_BUFFER, vertices * sizeof (Vertex), 0, GL_DYNAMIC_DRAW);
-        for (unsigned int i = 0; i < buffer.size(); i++)
+        for (unsigned int i = 0; i < buffer.size(); ++i)
         {
             if (i != buffer.size() - 1)
                 glBufferSubData(GL_ARRAY_BUFFER, vertices_per_buffer * sizeof (Vertex) * i, vertices_per_buffer * sizeof (Vertex), buffer[i]);

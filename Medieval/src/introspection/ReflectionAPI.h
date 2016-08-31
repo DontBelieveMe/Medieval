@@ -28,7 +28,7 @@
 	detail::OffsetOf(&T::MEMBER)
 
 #define REGISTER_MEMBER(T, MEMBER) \
-	IntrospectionManager::Get()->RegisterMember(TYPE_INFO(T), TYPE_OF_MEMBER(T, MEMBER), #MEMBER, detail::OffsetOf(&T::MEMBER))
+	IntrospectionManager::Get()->RegisterMember(TYPE_INFO(T), TYPE_OF_MEMBER(T, MEMBER), #MEMBER, OFFSET_OF(T, MEMBER))
 
 #define SET_MEMBER_VAR(OBJ, MEMBER, VALUE) \
 	TYPE_OF(OBJ)->SetMember(&OBJ, &decltype(OBJ)::MEMBER, VALUE)

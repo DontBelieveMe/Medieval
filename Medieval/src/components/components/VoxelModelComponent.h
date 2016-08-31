@@ -43,4 +43,5 @@ struct VoxelModelComponent : Component
 		REGISTER_MEMBER(VoxelModelComponent, model_path);
 	}
 };
+
 FINISH_COMPONENT(VoxelModelComponent)

@@ -52,6 +52,12 @@ using i64vec4 = glm::tvec4<int64_t, glm::highp>;
 F() F(d) F(i) F(u) F(b) F(i64) // Prefixes for types of vectors to print.
 #undef F
 
+#ifdef _MSC_VER
+#define FORCEINLINE __forceinline
+#elif (__MINGW32__) || (__GNUC__)
+#define FORCEINLINE __attribute__((always_inline))
+#endif
+
 // A useful macro for MSVC users to print to the VS Output window (not the console). Good for debugging
 // If there is a GCC/CodeBlocks equivilant then this should be renamed to DEBUG
 #ifdef _MSC_VER
@@ -126,7 +132,8 @@ template <typename I, typename F> I iround(F f)
 }
 
 
-template <typename T> T proper_div(T a, T b)
+template <typename T> 
+__forceinline T proper_div(T a, T b)
 {
 	if (a >= 0)
 		return a / b;
@@ -134,7 +141,8 @@ template <typename T> T proper_div(T a, T b)
 		return (a + 1 - std::abs(b)) / b;
 }
 
-template <typename T> T proper_mod(T a, T b)
+template <typename T> 
+__forceinline T proper_mod(T a, T b)
 {
 	if (a >= 0)
 		return a % b;
@@ -194,11 +202,13 @@ inline float Noise32f(uint32_t in, unsigned int precision = 4096)
     return (int(Noise32(in) % (precision * 2 + 1)) - int(precision)) / float(precision);
 }
 
-inline float HermiteInterpolationWithDerivatives(float a, float b, float da, float db, float t)
+FORCEINLINE float HermiteInterpolationWithDerivatives(const float& a, const float& b, const float& da, const float& db, const float& t)
 {
-    return (2*t*t*t - 3*t*t + 1) * a + (t*t*t - 2*t*t + t) * da + (-2*t*t*t + 3*t*t) * b + (t*t*t - t*t) * db;
+	float t3 = t*t*t;
+	float t2 = t*t;
+	return (2 * t3 - 3 * t2 + 1) * a + (t3 - 2 * t2 + t) * da + (-2 * t3 + 3 * t2) * b + (t3 - t2) * db;
 }
-inline float HermiteInterpolation(float aa, float a, float b, float bb, float t)
+FORCEINLINE float HermiteInterpolation(const float& aa, const float& a, const float& b, const float& bb, const float& t)
 {
     return HermiteInterpolationWithDerivatives(a, b, (b-aa)/2, (bb-a)/2, t);
 }
