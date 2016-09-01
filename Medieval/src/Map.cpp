@@ -85,9 +85,10 @@ void Map::GenerateChunks(vec3 center)
             auto InterpolateSuperArray = [&](const float (*arr)[4], ivec2 pos, int grid_size)
             {
                 float noise_line[4];
+                float line_pos = proper_mod(pos.x, grid_size) / float(grid_size);
                 for (int i = 0; i < 4; i++)
                 {
-                    noise_line[i] = HermiteInterpolation(arr[i][0], arr[i][1], arr[i][2], arr[i][3], proper_mod(pos.x, grid_size) / float(grid_size));
+                    noise_line[i] = HermiteInterpolation(arr[i][0], arr[i][1], arr[i][2], arr[i][3], line_pos);
                 }
                 return HermiteInterpolation(noise_line[0], noise_line[1], noise_line[2], noise_line[3], proper_mod(pos.y, grid_size) / float(grid_size));
             };
@@ -96,12 +97,13 @@ void Map::GenerateChunks(vec3 center)
                 int arr_size = Chunk::width/grid_size + 3;
                 ivec2 sub_pos = ivec2(proper_div(proper_mod(pos.x, Chunk::width), grid_size), proper_div(proper_mod(pos.y, Chunk::width), grid_size));
                 float noise_line[4];
+                float line_pos = proper_mod(pos.y, grid_size) / float(grid_size);
                 for (int i = 0; i < 4; i++)
                 {
                     noise_line[i] = HermiteInterpolation(arr[i+sub_pos.x+arr_size*(0+sub_pos.y)],
                                                          arr[i+sub_pos.x+arr_size*(1+sub_pos.y)],
                                                          arr[i+sub_pos.x+arr_size*(2+sub_pos.y)],
-                                                         arr[i+sub_pos.x+arr_size*(3+sub_pos.y)], proper_mod(pos.y, grid_size) / float(grid_size));
+                                                         arr[i+sub_pos.x+arr_size*(3+sub_pos.y)], line_pos);
                 }
                 return HermiteInterpolation(noise_line[0], noise_line[1], noise_line[2], noise_line[3], proper_mod(pos.x, grid_size) / float(grid_size));
             };
