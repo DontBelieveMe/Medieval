@@ -7,6 +7,7 @@
 #include <physics/Physics.h>
 #include <Utils.h>
 #include <rendering/Shader.h>
+#include <zlib.h>
 
 #define BLOCK_LIST \
     BLOCK(air     , "Air"   , INVISIBLE          , PASSABLE ) \
@@ -129,6 +130,16 @@ class Chunk
             delete [] data;
     }
 
+    void *Data() const
+    {
+        return data;
+    }
+
+    static constexpr std::size_t ByteSize()
+    {
+        return width * width * depth;
+    }
+
     static ShaderProgram &Shader();
 };
 
@@ -139,6 +150,9 @@ class Map
 
     using MeshUpdateDequeType = std::deque<ivec2>;
     MeshUpdateDequeType mesh_gen_que, mesh_upd_que; // Separate update queues for fresh chunks and just modified chunks, because quickly giving fresh chunks is more important.
+
+    using MapArchiveType = std::unordered_map<ivec2, std::vector<Bytef>>;
+    MapArchiveType archive;
 
     ivec2 *PollChunkForMeshUpdate()
     {
@@ -161,7 +175,8 @@ class Map
     using ChunksMapType = std::unordered_map<ivec2, Chunk>;
     ChunksMapType chunks;
 
-    static constexpr int generation_distance = 4; // 0 means 1x1, 1 means 3x3, etc.
+    static constexpr int load_distance = 4; // 0 means 1x1, 1 means 3x3, etc.
+    static constexpr int unload_distance = 6;
     static constexpr int render_distance = 4;
     static constexpr int mesh_update_period = 2; // If multiple new meshes are needed, the map will generate new one each `mesh_update_period` ticks. Setting it to 0 will gen everything instantly, leading to freezes.
 
@@ -173,6 +188,36 @@ class Map
 
         using T = decltype(chunks)::value_type;
         return chunks.insert((T &&) T{pos, (Chunk &&) Chunk{}}).first;
+    }
+
+    ChunksMapType::iterator SaveChunk(ivec2 pos, bool del_src = 1) // If `del_src`, returns an iterator to the next valid chunk (like erase()).
+    {
+        auto it = chunks.find(pos);
+        if (it == chunks.end())
+            return chunks.end();
+        auto &dst = archive[pos];
+        uLongf dst_buf_sz = compressBound(it->second.ByteSize());
+        dst.resize(dst_buf_sz);
+        if (compress(dst.data(), &dst_buf_sz, (const Bytef *)it->second.Data(), it->second.ByteSize()) != Z_OK)
+            Error("Zlib is unable to compress a chunk.");
+        dst.resize(dst_buf_sz); // Dupe intended.
+        if (del_src)
+            return chunks.erase(it);
+        return chunks.end();
+    }
+    void LoadChunk(ivec2 pos, bool del_archived = 1)
+    {
+        auto it = archive.find(pos);
+        if (it == archive.end())
+            return;
+        auto &dst = chunks[pos];
+        uLongf dst_buf_sz = dst.ByteSize();
+        if (uncompress((Bytef *)dst.Data(), &dst_buf_sz, it->second.data(), it->second.size()) != Z_OK)
+            Error("Zlib is unable to decompress a chunk.");
+        if (dst_buf_sz != dst.ByteSize())
+            Error("Compressed chunk was corrupted.");
+        if (del_archived)
+            archive.erase(it);
     }
 
     void RemoveChunk(ivec2 pos)
@@ -414,6 +459,7 @@ class Map
         }
     }
 
+    void GenerateChunks(vec3 center);
   public:
     void SetBlock_NoMeshUpdateI(ChunksMapType::iterator it, ivec3 pos, Block block)
     {
@@ -519,11 +565,10 @@ class Map
         }
     }
 
-  public:
-    void GenerateChunks(vec3 center);
-
-    void Tick() // You should call this each tick *after* using the map, but it's not mandratory.
+    void Tick(vec3 center)
     {
+        GenerateChunks(center);
+
         if (mesh_update_timer)
             mesh_update_timer--;
         else
@@ -533,7 +578,7 @@ class Map
             if (!pos)
                 return;
             auto it = chunks.find(*pos);
-            if (!it->second.dirty_mesh)
+            if (it == chunks.end() || !it->second.dirty_mesh)
                 goto repeat;
             it->second.dirty_mesh = 0;
             it->second.in_mesh_update_queue = 0;

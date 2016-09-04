@@ -101,9 +101,8 @@ void GameState::tick()
 
 		camera->tick();
 
-		map.GenerateChunks(camera->position);
 		std::cout << "Loaded chunks: " << map.chunks.size() << '\n';
-		map.Tick();
+		map.Tick(camera->position);
 
 		static bool wireframe;
 		if (Input::MouseButtonPressed(2))
