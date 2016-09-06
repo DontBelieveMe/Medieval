@@ -31,10 +31,11 @@ void MapFuncs::GenNoise(NoiseData *noise, uint32_t seed, float(*f_mod)(float), c
 
 float MapFuncs::InterpolateSuperArray(const float(*arr)[4], int grid_size, int x, int z)
 {
-	float noise_line[4];
+	/*float noise_line[4];
 	for (int i = 0; i < 4; i++)
 	{
 		noise_line[i] = HermiteInterpolation(arr[i][0], arr[i][1], arr[i][2], arr[i][3], proper_mod(pos.x, grid_size) / float(grid_size));
 	}
-	return HermiteInterpolation(noise_line[0], noise_line[1], noise_line[2], noise_line[3], proper_mod(pos.y, grid_size) / float(grid_size));
+	return HermiteInterpolation(noise_line[0], noise_line[1], noise_line[2], noise_line[3], proper_mod(pos.y, grid_size) / float(grid_size));*/
+	return -1.f;
 };
