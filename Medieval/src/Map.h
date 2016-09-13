@@ -229,77 +229,70 @@ class Map
     }
 
   private:
-    void UpdateChunkMesh(ivec2 chunk_pos)
+    struct Vertex
     {
-        #define AMBIENT_OCCLUSION 0
+        vec3 pos, normal, color;
+    };
 
-        auto it = chunks.find(chunk_pos);
-        if (it == chunks.end())
-            return; // No such chunk.
+    static constexpr int vertices_per_buffer = 4096 / sizeof (Vertex);
 
-        struct Vertex
+    class VertexArray
+    {
+        Vertex *arr;
+      public:
+        operator       Vertex *()       {return arr;}
+        operator const Vertex *() const {return arr;}
+        VertexArray()
         {
-            vec3 pos, normal, color;
-        };
-
-        static constexpr int vertices_per_buffer = 4096 / sizeof (Vertex);
-
-        #if AMBIENT_OCCLUSION == 1
-        static constexpr float shadow_factor = 0.8f;
-        #endif
-
-        class VertexArray
+            arr = new Vertex[vertices_per_buffer];
+        }
+        VertexArray(VertexArray &&o)
         {
-            Vertex *arr;
-          public:
-            operator       Vertex *()       {return arr;}
-            operator const Vertex *() const {return arr;}
-            VertexArray()
-            {
-                arr = new Vertex[vertices_per_buffer];
-            }
-            VertexArray(VertexArray &&o)
-            {
-                arr = o.arr;
-                o.arr = 0;
-            }
-            VertexArray &operator=(VertexArray &&o)
-            {
-                this->~VertexArray();
-                new (this) VertexArray((VertexArray &&) o);
-                return *this;
-            }
-            ~VertexArray()
-            {
-                if (arr)
-                    delete [] arr;
-            }
-        };
-
-        int vertices = 0;
-
-        std::vector<VertexArray> buffer;
-
-        auto PushVertex = [&](const Vertex &vertex)
+            arr = o.arr;
+            o.arr = 0;
+        }
+        VertexArray &operator=(VertexArray &&o)
         {
-            if (vertices % vertices_per_buffer == 0)
-                buffer.push_back({});
-            buffer[vertices/vertices_per_buffer][vertices%vertices_per_buffer] = vertex;
-
-            vertices++;
-        };
-
-        auto PushQuad = [&](const Vertex &a, const Vertex &b, const Vertex &c, const Vertex &d)
+            this->~VertexArray();
+            new (this) VertexArray((VertexArray &&) o);
+            return *this;
+        }
+        ~VertexArray()
         {
-            PushVertex(a);
-            PushVertex(b);
-            PushVertex(d);
-            PushVertex(b);
-            PushVertex(c);
-            PushVertex(d);
-        };
-        enum Dir {x,y,z,_x,_y,_z};
+            if (arr)
+                delete [] arr;
+        }
+    };
 
+    void PushVertex(std::vector<VertexArray> &buffer, int &vertices, const Vertex &vertex)
+    {
+        if (vertices % vertices_per_buffer == 0)
+            buffer.push_back({});
+        buffer[vertices/vertices_per_buffer][vertices%vertices_per_buffer] = vertex;
+
+        vertices++;
+    };
+
+    void PushQuad(std::vector<VertexArray> &buffer, int &vertices, const Vertex &a, const Vertex &b, const Vertex &c, const Vertex &d)
+    {
+        PushVertex(buffer, vertices, a);
+        PushVertex(buffer, vertices, b);
+        PushVertex(buffer, vertices, d);
+        PushVertex(buffer, vertices, b);
+        PushVertex(buffer, vertices, c);
+        PushVertex(buffer, vertices, d);
+    };
+
+    Block GetBlockFast(ChunksMapType::const_iterator (*chunk_iters_3x3)[3], ivec2 chunk_pos, ivec3 pos)
+    {
+        ivec2 chunk_index = GetChunkPosForBlock(pos) - chunk_pos + 1;
+        return GetBlockI(chunk_iters_3x3[chunk_index.x][chunk_index.y], pos);
+    };
+
+    enum Dir {x,y,z,_x,_y,_z};
+
+    void GenSide(std::vector<VertexArray> &buffer, int &vertices, ChunksMapType::const_iterator (*chunk_iters_3x3)[3], ivec2 chunk_pos, ivec3 chunk_offset, Block this_block, ivec3 pos, Dir up, Dir a, Dir b, Dir c, Dir d)
+    {
         static const ivec3 dir11[]{{1,0,0},
                                    {0,1,0},
                                    {0,0,1},
@@ -314,8 +307,41 @@ class Map
                                    {0,0,0},
                                    {0,0,0}};
 
-        ivec3 chunk_offset(chunk_pos.x * Chunk::width, 0, chunk_pos.y * Chunk::width);
+        if (GetBlockFast(chunk_iters_3x3, chunk_pos, chunk_offset + pos + dir11[up]).type == Block::Type::air)
+        {
+            //
+            //         a
+            //
+            //      3  0  0
+            //  d   3  -  1   b
+            //      2  2  1
+            //
+            //         c
+            //
 
+            vec3 color = this_block.Color();
+
+
+            Vertex corners[4]{{pos+dir01[up]+dir01[a]+dir01[b], dir11[up], color},
+                              {pos+dir01[up]+dir01[b]+dir01[c], dir11[up], color},
+                              {pos+dir01[up]+dir01[c]+dir01[d], dir11[up], color},
+                              {pos+dir01[up]+dir01[d]+dir01[a], dir11[up], color}};
+
+            PushQuad(buffer, vertices, corners[0], corners[1], corners[2], corners[3]);
+        }
+    };
+
+    void UpdateChunkMesh(ivec2 chunk_pos)
+    {
+        auto it = chunks.find(chunk_pos);
+        if (it == chunks.end())
+            return; // No such chunk.
+
+        int vertices = 0;
+
+        std::vector<VertexArray> buffer;
+
+        ivec3 chunk_offset(chunk_pos.x * Chunk::width, 0, chunk_pos.y * Chunk::width);
 
         ChunksMapType::const_iterator chunk_iters_3x3[3][3]
         {
@@ -324,120 +350,21 @@ class Map
             {chunks.find(chunk_pos + ivec2( 1,-1)), chunks.find(chunk_pos + ivec2( 1,0)), chunks.find(chunk_pos + ivec2( 1,1))},
         };
 
-        auto GetBlockFast = [&](ivec3 pos) -> Block
-        {
-            ivec2 chunk_index = GetChunkPosForBlock(pos) - chunk_pos + 1;
-            return GetBlockI(chunk_iters_3x3[chunk_index.x][chunk_index.y], pos);
-        };
-
-
-        auto GenSide = [&](Block this_block, ivec3 pos, Dir up, Dir a, Dir b, Dir c, Dir d)
-        {
-            if (GetBlockFast(chunk_offset + pos + dir11[up]).type == Block::Type::air)
-            {
-                //
-                //         a
-                //
-                //      3  0  0
-                //  d   3  -  1   b
-                //      2  2  1
-                //
-                //         c
-                //
-
-                vec3 color = this_block.Color();
-
-
-                Vertex corners[4]{{pos+dir01[up]+dir01[a]+dir01[b], dir11[up], color},
-                                  {pos+dir01[up]+dir01[b]+dir01[c], dir11[up], color},
-                                  {pos+dir01[up]+dir01[c]+dir01[d], dir11[up], color},
-                                  {pos+dir01[up]+dir01[d]+dir01[a], dir11[up], color}};
-
-                #if AMBIENT_OCCLUSION == 1
-                Vertex edge_centers[4]{{vec3(pos+dir01[up]+dir01[d]+dir01[a]) - 0.5f*vec3(dir11[d]), dir11[up], color},
-                                       {vec3(pos+dir01[up]+dir01[a]+dir01[b]) - 0.5f*vec3(dir11[a]), dir11[up], color},
-                                       {vec3(pos+dir01[up]+dir01[b]+dir01[c]) - 0.5f*vec3(dir11[b]), dir11[up], color},
-                                       {vec3(pos+dir01[up]+dir01[c]+dir01[d]) - 0.5f*vec3(dir11[c]), dir11[up], color}};
-
-                Vertex center{vec3(pos+dir01[up]+dir01[a]+dir01[b]) - 0.5f*vec3(dir11[a]) - 0.5f*vec3(dir11[b]), dir11[up], color};
-
-                /*
-                Block near_blocks[4]{GetBlockFast(chunk_offset + pos + dir11[a]),
-                                     GetBlockFast(chunk_offset + pos + dir11[b]),
-                                     GetBlockFast(chunk_offset + pos + dir11[c]),
-                                     GetBlockFast(chunk_offset + pos + dir11[d])};
-
-                Block near_corners[4]{GetBlockFast(chunk_offset + pos + dir11[a]+dir11[b]),
-                                      GetBlockFast(chunk_offset + pos + dir11[b]+dir11[c]),
-                                      GetBlockFast(chunk_offset + pos + dir11[c]+dir11[d]),
-                                      GetBlockFast(chunk_offset + pos + dir11[d]+dir11[a])};
-                */
-
-                Block near_blocks_up[4]{GetBlockFast(chunk_offset + pos + dir11[a] + dir11[up]),
-                                        GetBlockFast(chunk_offset + pos + dir11[b] + dir11[up]),
-                                        GetBlockFast(chunk_offset + pos + dir11[c] + dir11[up]),
-                                        GetBlockFast(chunk_offset + pos + dir11[d] + dir11[up])};
-
-                Block near_corners_up[4]{GetBlockFast(chunk_offset + pos + dir11[a]+dir11[b] + dir11[up]),
-                                         GetBlockFast(chunk_offset + pos + dir11[b]+dir11[c] + dir11[up]),
-                                         GetBlockFast(chunk_offset + pos + dir11[c]+dir11[d] + dir11[up]),
-                                         GetBlockFast(chunk_offset + pos + dir11[d]+dir11[a] + dir11[up])};
-
-                bool status[4]{}, edge_status[4]{};
-
-                for (int dir = 0; dir < 4; dir++)
-                {
-                    if (near_blocks_up[dir].Solid())
-                    {
-                        edge_centers[dir].color = color * shadow_factor;
-                        edge_status[dir] = 1;
-                    }
-                    if (near_blocks_up[dir].Solid() + near_blocks_up[(dir+1)%4].Solid() + near_corners_up[dir].Solid() >= 2)
-                    {
-                        corners[dir].color = color * shadow_factor;
-                        status[dir] = 1;
-                    }
-                }
-
-                bool any_shadows = 0;
-
-                for (int dir = 0; dir < 4; dir++)
-                {
-                    if (edge_status[dir] && status[dir] && edge_status[(dir+1)%4])
-                        corners[dir].color -= color - corners[dir].color;
-                    if (edge_status[dir] || status[dir])
-                        any_shadows = 1;
-                }
-
-                if (any_shadows)
-                {
-                    PushQuad(edge_centers[0], corners[0], edge_centers[1], center);
-                    PushQuad(edge_centers[1], corners[1], edge_centers[2], center);
-                    PushQuad(edge_centers[2], corners[2], edge_centers[3], center);
-                    PushQuad(edge_centers[3], corners[3], edge_centers[0], center);
-                }
-                else
-                #endif
-                    PushQuad(corners[0], corners[1], corners[2], corners[3]);
-            }
-            #undef AMBIENT_OCCLUSION
-        };
-
         for (int yy = 0; yy < Chunk::depth; yy++)
         {
             for (int xx = 0; xx < Chunk::width; xx++)
             {
                 for (int zz = 0; zz < Chunk::width; zz++)
                 {
-                    Block this_block = GetBlockFast(chunk_offset+ivec3(xx,yy,zz));
+                    Block this_block = GetBlockFast(chunk_iters_3x3, chunk_pos, chunk_offset+ivec3(xx,yy,zz));
                     if (this_block.Visible())
                     {
-                        GenSide(this_block, ivec3(xx,yy,zz), Dir::x, Dir::y, Dir::z, Dir::_y, Dir::_z);
-                        GenSide(this_block, ivec3(xx,yy,zz), Dir::_x, Dir::y, Dir::_z, Dir::_y, Dir::z);
-                        GenSide(this_block, ivec3(xx,yy,zz), Dir::y, Dir::x, Dir::_z, Dir::_x, Dir::z);
-                        GenSide(this_block, ivec3(xx,yy,zz), Dir::_y, Dir::x, Dir::z, Dir::_x, Dir::_z);
-                        GenSide(this_block, ivec3(xx,yy,zz), Dir::z, Dir::x, Dir::y, Dir::_x, Dir::_y);
-                        GenSide(this_block, ivec3(xx,yy,zz), Dir::_z, Dir::x, Dir::_y, Dir::_x, Dir::y);
+                        GenSide(buffer, vertices, chunk_iters_3x3, chunk_pos, chunk_offset, this_block, ivec3(xx,yy,zz), Dir::x, Dir::y, Dir::z, Dir::_y, Dir::_z);
+                        GenSide(buffer, vertices, chunk_iters_3x3, chunk_pos, chunk_offset, this_block, ivec3(xx,yy,zz), Dir::_x, Dir::y, Dir::_z, Dir::_y, Dir::z);
+                        GenSide(buffer, vertices, chunk_iters_3x3, chunk_pos, chunk_offset, this_block, ivec3(xx,yy,zz), Dir::y, Dir::x, Dir::_z, Dir::_x, Dir::z);
+                        GenSide(buffer, vertices, chunk_iters_3x3, chunk_pos, chunk_offset, this_block, ivec3(xx,yy,zz), Dir::_y, Dir::x, Dir::z, Dir::_x, Dir::_z);
+                        GenSide(buffer, vertices, chunk_iters_3x3, chunk_pos, chunk_offset, this_block, ivec3(xx,yy,zz), Dir::z, Dir::x, Dir::y, Dir::_x, Dir::_y);
+                        GenSide(buffer, vertices, chunk_iters_3x3, chunk_pos, chunk_offset, this_block, ivec3(xx,yy,zz), Dir::_z, Dir::x, Dir::_y, Dir::_x, Dir::y);
                     }
                 }
             }
