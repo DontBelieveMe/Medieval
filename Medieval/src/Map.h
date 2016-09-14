@@ -204,7 +204,7 @@ private:
 	class VertexArray
 	{
 		Vertex *arr;
-	public:
+	  public:
 		operator Vertex *() { return arr; }
 		operator const Vertex *() const { return arr; }
 		VertexArray()

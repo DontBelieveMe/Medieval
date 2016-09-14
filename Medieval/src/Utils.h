@@ -21,7 +21,7 @@
 #include <../extern/glad/glad.h>
 #include <glm/glm.hpp>
 #include <Input.h>
-	
+
 
 using glm::vec2;
 using glm::vec3;
@@ -54,10 +54,12 @@ using i64vec4 = glm::tvec4<int64_t, glm::highp>;
 F() F(d) F(i) F(u) F(b) F(i64) // Prefixes for types of vectors to print.
 #undef F
 
+#ifndef FORCEINLINE
 #ifdef _MSC_VER
 #define FORCEINLINE __forceinline
 #elif (__MINGW32__) || (__GNUC__)
 #define FORCEINLINE __attribute__((always_inline))
+#endif
 #endif
 
 // A useful macro for MSVC users to print to the VS Output window (not the console). Good for debugging
@@ -80,7 +82,7 @@ F() F(d) F(i) F(u) F(b) F(i64) // Prefixes for types of vectors to print.
 // Not sure what to prefix this name with...
 #define MEDIEVAL_ERROR(value) \
 	{ MSVC_LOG(value); Error(__FILE__, " [", __LINE__, "] ", value); }
-	
+
 namespace Internal
 {
     // Internal stuff for Jo().
@@ -130,14 +132,6 @@ inline int StrToInt(const char *_char)
 	return out;
 }
 
-inline std::string IntToStr(int _int)
-{
-	static std::ostringstream stream(_int);
-	std::string out = stream.str();
-	stream.clear();
-	return out;
-}
-
 template <typename T> int sign(T val)
 {
     return (val > 0) - (val < 0);
@@ -159,7 +153,7 @@ namespace math {
 	}
 }
 
-template <typename T> 
+template <typename T>
 FORCEINLINE T proper_div(T a, T b)
 {
 	if (a >= 0)
@@ -168,7 +162,7 @@ FORCEINLINE T proper_div(T a, T b)
 		return (a + 1 - math::abs(b)) / b;
 }
 
-template <typename T> 
+template <typename T>
 FORCEINLINE T proper_mod(T a, T b)
 {
 	if (a >= 0)
