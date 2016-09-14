@@ -51,7 +51,7 @@ struct NoiseData
 namespace MapFuncs
 {
 	template <int vertices_per_buffer>
-	void PushVertex(const Vertex &vertex, std::vector<VertexArray<vertices_per_buffer>>& buffer, int& vertices)
+	FORCEINLINE void PushVertex(const Vertex &vertex, std::vector<VertexArray<vertices_per_buffer>>& buffer, int& vertices)
 	{
 		if (vertices % vertices_per_buffer == 0)
 			buffer.push_back({});

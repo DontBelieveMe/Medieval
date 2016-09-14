@@ -20,6 +20,8 @@
 
 #include <../extern/glad/glad.h>
 #include <glm/glm.hpp>
+#include <Input.h>
+	
 
 using glm::vec2;
 using glm::vec3;
@@ -75,6 +77,10 @@ F() F(d) F(i) F(u) F(b) F(i64) // Prefixes for types of vectors to print.
 #define MSVC_LOG(s)
 #endif
 
+// Not sure what to prefix this name with...
+#define MEDIEVAL_ERROR(value) \
+	{ MSVC_LOG(value); Error(__FILE__, " [", __LINE__, "] ", value); }
+	
 namespace Internal
 {
     // Internal stuff for Jo().
@@ -108,7 +114,11 @@ template <typename ...P>
 void Error(P &&... p)
 {
 	std::cout << Jo(p...) << std::endl;
+	Input::SetMouseMode(Input::MouseMode::normal);
+#ifdef _MSC_VER
 	system("pause");
+#endif
+
 	std::exit(0);
 }
 
@@ -117,6 +127,14 @@ inline int StrToInt(const char *_char)
 	std::istringstream stream(_char);
 	int out;
 	stream >> out;
+	return out;
+}
+
+inline std::string IntToStr(int _int)
+{
+	static std::ostringstream stream(_int);
+	std::string out = stream.str();
+	stream.clear();
 	return out;
 }
 
@@ -131,23 +149,32 @@ template <typename I, typename F> I iround(F f)
     return I(f + .5 * sign(f));
 }
 
+// I think(...) this has led to some performance increases on MSVC
+// Feel free to change/contact me if you think otherwise and I'll remove it.
+// Barney.
+namespace math {
+	template <typename T>
+	FORCEINLINE T abs(T a) {
+		return a < 0 ? -a : a;
+	}
+}
 
 template <typename T> 
-__forceinline T proper_div(T a, T b)
+FORCEINLINE T proper_div(T a, T b)
 {
 	if (a >= 0)
 		return a / b;
 	else
-		return (a + 1 - std::abs(b)) / b;
+		return (a + 1 - math::abs(b)) / b;
 }
 
 template <typename T> 
-__forceinline T proper_mod(T a, T b)
+FORCEINLINE T proper_mod(T a, T b)
 {
 	if (a >= 0)
 		return a % b;
 	else
-		return std::abs(b) - 1 + (a + 1) % b;
+		return math::abs(b) - 1 + (a + 1) % b;
 }
 
 template <typename T> T clamp(T val, std::common_type_t<T> min, std::common_type_t<T> max)

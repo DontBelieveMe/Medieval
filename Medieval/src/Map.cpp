@@ -112,6 +112,7 @@ void Map::GenerateChunks(vec3 center)
 					}
 					return HermiteInterpolation(noise_line[0], noise_line[1], noise_line[2], noise_line[3], proper_mod(pos.y, grid_size) / float(grid_size));
 				};
+
 				auto InterpolateSubArray = [&](const float *arr, ivec2 pos, int grid_size)
 				{
 					int arr_size = Chunk::width / grid_size + 3;

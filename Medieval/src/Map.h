@@ -86,12 +86,12 @@ class Chunk
         data = new Block[depth][width][width];
 
         glGenVertexArrays(1, &vao);
-        if (!vao)
-            Error("Can't create VAO.");
+		if (!vao)
+			MEDIEVAL_ERROR("Can't create VAO");
 
         glGenBuffers(1, &vbo);
         if (!vbo)
-            Error("Can't create VBO.");
+			MEDIEVAL_ERROR("Can't create VAO");
 
         glBindVertexArray(vao);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -232,12 +232,11 @@ class Map
         chunks.erase(it);
     }
 
-  private:
-        
+  // This looks awesome with it to 1. Just saying.
+  #define AMBIENT_OCCLUSION 0
+  private:        
     void UpdateChunkMesh(ivec2 chunk_pos)
     {
-		// This looks awesome with it to 1. Just saying.
-        #define AMBIENT_OCCLUSION 0
 
         auto it = chunks.find(chunk_pos);
         if (it == chunks.end())
@@ -291,12 +290,6 @@ class Map
 
         ivec3 chunk_offset(chunk_pos.x * Chunk::width, 0, chunk_pos.y * Chunk::width);
 
-		/*ChunksMapType::const_iterator chunk_iters_3x3[3 * 3]
-		{
-			chunks.find(chunk_pos + ivec2(-1,-1)), chunks.find(chunk_pos + ivec2(-1,0)), chunks.find(chunk_pos + ivec2(-1,1)),
-		    chunks.find(chunk_pos + ivec2(0,-1)), it,                                   chunks.find(chunk_pos + ivec2(0,1)),
-			chunks.find(chunk_pos + ivec2(1,-1)), chunks.find(chunk_pos + ivec2(1,0)), chunks.find(chunk_pos + ivec2(1,1))
-		};*/
         ChunksMapType::const_iterator chunk_iters_3x3[3][3]
         {
             {chunks.find(chunk_pos + ivec2(-1,-1)), chunks.find(chunk_pos + ivec2(-1,0)), chunks.find(chunk_pos + ivec2(-1,1))},
@@ -313,7 +306,7 @@ class Map
         };
 
 
-        auto GenSide = [&](Block this_block, ivec3 pos, Dir up, Dir a, Dir b, Dir c, Dir d)
+        auto GenSide = [&](const Block& this_block, ivec3 pos, Dir up, Dir a, Dir b, Dir c, Dir d)
         {
             if (GetBlockFast(chunk_offset + pos + dir11[up]).type == Block::Type::air)
             {
@@ -400,16 +393,17 @@ class Map
                 }
                 else
                 #endif
+
                 MapFuncs::PushQuad<vertices_per_buffer>(corners[0], corners[1], corners[2], corners[3], buffer, vertices);
             }
             #undef AMBIENT_OCCLUSION
         };
 
-        for (int yy = 0; yy < Chunk::depth; yy++)
+        for (int yy = 0; yy < Chunk::depth; ++yy)
         {
-            for (int xx = 0; xx < Chunk::width; xx++)
+            for (int xx = 0; xx < Chunk::width; ++xx)
             {
-                for (int zz = 0; zz < Chunk::width; zz++)
+				for (int zz = 0; zz < Chunk::width; ++zz)
                 {
                     Block this_block = GetBlockFast(chunk_offset+ivec3(xx,yy,zz));
                     if (this_block.Visible())
@@ -501,18 +495,20 @@ class Map
         SetBlockI(chunks.find({proper_div(pos.x, Chunk::width), proper_div(pos.z, Chunk::width)}), pos, block);
     }
 
-    Block GetBlockI(ChunksMapType::const_iterator it, ivec3 pos) const
+    Block GetBlockI(const ChunksMapType::const_iterator& it, const ivec3& pos) const
     {
-        if (pos.y < 0 || pos.y >= Chunk::depth)
+		if (pos.y < 0 || pos.y >= Chunk::depth)
             return Block{};
-        if (it == chunks.end())
-            return Block{};
+		
+		if(it == chunks.end())
+			return Block{};
+
         ivec3 block_pos(proper_mod(pos.x, Chunk::width),
                         pos.y, // Note the lack of proper_mod().
                         proper_mod(pos.z, Chunk::width));
         return it->second.get(block_pos);
     }
-    Block GetBlock(ivec3 pos) const
+    Block GetBlock(const ivec3& pos) const
     {
         return GetBlockI(chunks.find({proper_div(pos.x, Chunk::width), proper_div(pos.z, Chunk::width)}), pos);
     }
@@ -522,7 +518,7 @@ class Map
         return chunks.find(pos) != chunks.end();
     }
 
-    static ivec2 GetChunkPosForBlock(ivec3 pos)
+    static FORCEINLINE ivec2 GetChunkPosForBlock(ivec3 pos)
     {
         return {proper_div(pos.x, Chunk::width), proper_div(pos.z, Chunk::width)};
     }
